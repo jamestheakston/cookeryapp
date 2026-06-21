@@ -98,6 +98,10 @@
                             </button>
                         </div>
                     </form>
+                    <div id="formSuccessAlert" class="hidden mt-4 p-3 bg-green-50 border border-green-200 rounded-xl text-green-700 text-sm text-center">
+                        <i class="fa-solid fa-check-circle mr-2"></i>
+                        Successfully joined the waitlist!
+                    </div>
                 </div>
             </div>
 
@@ -176,7 +180,11 @@
         // Supabase initialization
         const supabaseUrl = 'https://hmcwibvfyuackbdxhxlk.supabase.co';
         const supabaseKey = 'sb_publishable_lHrh720t_VAxe1kmldtGjg_A0QL_Ax4';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        let supabase;
+        if (!window.supabaseClient) {
+            window.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        }
+        supabase = window.supabaseClient;
         
         // Generate a random high-quality starting position queue between 1200 and 1800
         const randomStartQueue = Math.floor(Math.random() * (1800 - 1200 + 1)) + 1200;
@@ -204,6 +212,9 @@
                     document.getElementById('userPosition').textContent = `#${existingUser.position.toLocaleString()}`;
                     document.getElementById('referralCount').textContent = existingUser.referral_count || 0;
                     document.getElementById('referralUrl').value = `https://cookeryapp.pages.dev/?ref=${existingUser.referral_code}`;
+                    
+                    // Show success alert below form
+                    document.getElementById('formSuccessAlert').classList.remove('hidden');
                 } else {
                     // Get current count to determine position
                     const { count } = await supabase
@@ -267,6 +278,9 @@
                     document.getElementById('userPosition').textContent = `#${position.toLocaleString()}`;
                     document.getElementById('referralCount').textContent = '0';
                     document.getElementById('referralUrl').value = `https://cookeryapp.pages.dev/?ref=${referralCode}`;
+                    
+                    // Show success alert below form
+                    document.getElementById('formSuccessAlert').classList.remove('hidden');
                 }
 
                 document.getElementById('waitlistFormContainer').style.display = 'none';
