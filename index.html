@@ -180,11 +180,11 @@
         // Supabase initialization
         const supabaseUrl = 'https://hmcwibvfyuackbdxhxlk.supabase.co';
         const supabaseKey = 'sb_publishable_lHrh720t_VAxe1kmldtGjg_A0QL_Ax4';
-        let supabase;
+        let SupabaseClient;
         if (!window.supabaseClient) {
             window.supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
         }
-        supabase = window.supabaseClient;
+        SupabaseClient = window.supabaseClient;
         
         // Generate a random high-quality starting position queue between 1200 and 1800
         const randomStartQueue = Math.floor(Math.random() * (1800 - 1200 + 1)) + 1200;
@@ -201,7 +201,7 @@
 
             try {
                 // Check if email already exists
-                const { data: existingUser, error: checkError } = await supabase
+                const { data: existingUser, error: checkError } = await SupabaseClient
                     .from('waitlist')
                     .select('*')
                     .eq('email', email)
@@ -217,7 +217,7 @@
                     document.getElementById('formSuccessAlert').classList.remove('hidden');
                 } else {
                     // Get current count to determine position
-                    const { count } = await supabase
+                    const { count } = await SupabaseClient
                         .from('waitlist')
                         .select('*', { count: 'exact', head: true });
                     
@@ -229,7 +229,7 @@
                     const referrerCode = urlParams.get('ref');
                     
                     // Insert new user into Supabase
-                    const { data: newUser, error: insertError } = await supabase
+                    const { data: newUser, error: insertError } = await SupabaseClient
                         .from('waitlist')
                         .insert({
                             email: email,
@@ -246,13 +246,13 @@
 
                     // Update referrer's count if applicable and send notification email
                     if (referrerCode) {
-                        await supabase
+                        await SupabaseClient
                             .from('waitlist')
-                            .update({ referral_count: supabase.raw('referral_count + 1') })
+                            .update({ referral_count: SupabaseClient.raw('referral_count + 1') })
                             .eq('referral_code', referrerCode);
 
                         // Fetch referrer's data to send notification email
-                        const { data: referrerData } = await supabase
+                        const { data: referrerData } = await SupabaseClient
                             .from('waitlist')
                             .select('*')
                             .eq('referral_code', referrerCode)
