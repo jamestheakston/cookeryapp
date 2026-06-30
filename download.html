@@ -96,10 +96,15 @@
             background-color: #1c1917;
             color: #ffffff;
         }
-        .btn-secondary {
-            background-color: transparent;
-            border: 1px solid #1c1917;
-            color: #1c1917;
+        .qr-code {
+            display: block;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+            border-radius: 12px;
+            border: 1px solid #e7e5e4;
+            padding: 8px;
+            background-color: #ffffff;
         }
         .hidden {
             display: none;
@@ -123,6 +128,31 @@
             </div>
         </div>
 
+        <div id="tablet-state" class="hidden">
+            <div class="status-badge">Not Supported</div>
+            <h1>We don’t support iPad.</h1>
+            <p>Cookery is currently optimized for mobile display viewports. Scan the code below with your iPhone to install the app build directly.</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://cookeryapp.pages.dev/download&color=1c1917" alt="Download QR Code" class="qr-code">
+        </div>
+
+        <div id="desktop-state" class="hidden">
+            <h1>Try out the web version</h1>
+            <p>Access your collection, recipes, and preferences directly from your desktop browser setup.</p>
+            <div style="margin-bottom: 40px;">
+                <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                    <tr>
+                        <td align="center" style="background-color: #1c1917; border-radius: 16px;">
+                            <a href="https://cookeryai.pages.dev" style="display: inline-block; padding: 14px 32px; font-size: 15px; font-weight: 600; color: #ffffff; text-decoration: none; letter-spacing: -0.01em;">
+                                Open Web App
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <p style="margin-bottom: 16px; font-size: 14px;">Want to download the iOS version instead? Scan below:</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://cookeryapp.pages.dev/download&color=1c1917" alt="Download QR Code" class="qr-code">
+        </div>
+
         <div id="android-state" class="hidden">
             <div class="status-badge">Not Available</div>
             <h1>Cookery is not currently available on Android.</h1>
@@ -132,11 +162,17 @@
 
     <script>
         var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        var isIPad = /iPad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        var isAndroidTablet = /android/i.test(userAgent) && !/mobile/i.test(userAgent);
 
-        if (/android/i.test(userAgent)) {
+        if (isIPad || isAndroidTablet) {
+            showState('tablet-state');
+        } else if (/android/i.test(userAgent)) {
             showState('android-state');
-        } else {
+        } else if (/iPhone|iPod/.test(userAgent) && !window.MSStream) {
             showState('confirm-state');
+        } else {
+            showState('desktop-state');
         }
 
         function handleConfirm(isIOS) {
@@ -149,6 +185,8 @@
 
         function showState(id) {
             document.getElementById('confirm-state').classList.add('hidden');
+            document.getElementById('tablet-state').classList.add('hidden');
+            document.getElementById('desktop-state').classList.add('hidden');
             document.getElementById('android-state').classList.add('hidden');
             document.getElementById(id).classList.remove('hidden');
         }
