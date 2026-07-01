@@ -795,7 +795,7 @@
             const apps = JSON.parse(localStorage.getItem('cookery_apps') || '[]');
             if (apps.length > 0) {
                 appsContainer.innerHTML = apps.map((app, index) => `
-                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.2s;" onclick="openAppAnalytics(${app.id})">
+                    <a href="app-details.html?id=${app.id}" style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 16px; margin-bottom: 12px; display: block; text-decoration: none; transition: all 0.2s;">
                         <div style="display: flex; justify-content: space-between; align-items: start;">
                             <div>
                                 <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: #1c1917;">${app.name}</h3>
@@ -804,7 +804,7 @@
                             </div>
                             <span class="badge-draft">Not Submitted</span>
                         </div>
-                    </div>
+                    </a>
                 `).join('');
             } else {
                 appsContainer.innerHTML = `
