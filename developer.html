@@ -590,7 +590,7 @@
         const portalSections = document.querySelectorAll('.portal-section');
         const loadingOverlay = document.getElementById('loading-overlay');
         const createAppBtn = document.getElementById('create-app-btn');
-        const openCreateAppModal = document.getElementById('open-create-app-modal');
+        const openCreateAppModalBtn = document.getElementById('open-create-app-modal');
         const cancelCreateApp = document.getElementById('cancel-create-app');
         const createAppModal = document.getElementById('create-app-modal');
         const appNameInput = document.getElementById('app-name');
@@ -963,7 +963,7 @@
             showAlert('Success', 'Application created successfully! When the Cookery OAuth Platform becomes available, it will automatically be sent for review.');
         }
 
-        openCreateAppModal.addEventListener('click', openCreateAppModal);
+        openCreateAppModalBtn.addEventListener('click', openCreateAppModal);
         cancelCreateApp.addEventListener('click', closeCreateAppModal);
         closeAnalytics.addEventListener('click', closeAppAnalytics);
         createAppBtn.addEventListener('click', createApplication);
