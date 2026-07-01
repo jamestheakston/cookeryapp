@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery Developer Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        @media screen and (max-width: 600px) {
+            .email-container { width: 100% !important; padding: 20px !important; }
+            .stack-column { display: block !important; width: 100% !important; max-width: 100% !important; text-align: left !important; padding-left: 0 !important; padding-right: 0 !important; }
+            .stack-column-padding { padding-top: 24px !important; }
+        }
+        .hidden { display: none !important; }
+        .github-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #24292f;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+        .github-btn:hover {
+            background-color: #1c1e22;
+        }
+        .github-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        .modal h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        .modal p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+        .modal input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+        .modal input:focus {
+            outline: none;
+            border-color: #1c1917;
+        }
+        .modal button {
+            width: 100%;
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .modal button:hover {
+            background-color: #2c2a28;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #faf8f5; -webkit-font-smoothing: antialiased;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #faf8f5;">
+        <tr>
+            <td align="center" style="padding: 40px 20px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="550" class="email-container" style="background-color: transparent;">
+                    
+                    <tr>
+                        <td align="center" style="padding-bottom: 40px;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="vertical-align: middle;">
+                                        <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" style="display: block; width: 36px; height: 36px; border-radius: 10px; object-fit: cover;">
+                                    </td>
+                                    <td style="font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 700; color: #1c1917; padding-left: 12px; vertical-align: middle; letter-spacing: -0.02em;">
+                                        Cookery
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="center" style="padding-bottom: 24px;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td align="center" style="background-color: #fdfbeb; border: 1px solid #fbf5c4; padding: 6px 14px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: #ca9627; letter-spacing: 0.05em; text-transform: uppercase;">
+                                        Developer Portal
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr id="login-section">
+                        <td align="center" style="padding-bottom: 32px;">
+                            <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; line-height: 1.2; letter-spacing: -0.01em; padding-bottom: 16px;">
+                                Developer Portal
+                            </h1>
+                            <p style="margin: 0; font-size: 16px; color: #78716c; line-height: 1.6; max-width: 440px; font-weight: 300; padding-bottom: 24px;">
+                                Sign in with your GitHub account to access the Cookery developer platform.
+                            </p>
+                            <button id="github-login" class="github-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                Sign in with GitHub
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr id="content-section" class="hidden">
+                        <td align="center" style="padding-bottom: 16px;">
+                            <h1 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; line-height: 1.2; letter-spacing: -0.01em;">
+                                Welcome, <span id="user-name">Developer</span>
+                            </h1>
+                        </td>
+                    </tr>
+
+                    <tr id="content-section" class="hidden">
+                        <td align="center" style="padding-bottom: 32px;">
+                            <p style="margin: 0; font-size: 16px; color: #78716c; line-height: 1.6; max-width: 440px; font-weight: 300;">
+                                We're building an OAuth provider to let developers integrate Cookery into their applications. Stay tuned for API documentation and developer tools.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr id="content-section" class="hidden">
+                        <td style="background-color: #ffffff; border: 1px solid rgba(231, 229, 228, 0.6); border-radius: 24px; padding: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <h2 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 400; color: #1c1917; padding-bottom: 12px;">
+                                            What's Coming
+                                        </h2>
+                                        <p style="margin: 0; font-size: 14px; color: #78716c; line-height: 1.6; font-weight: 300; padding-bottom: 32px;">
+                                            Our developer platform will include:
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 16px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td class="stack-column" width="50%" style="vertical-align: top; padding-right: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">OAuth 2.0</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Secure authentication flow for integrating Cookery accounts into your apps.</span>
+                                                </td>
+                                                <td class="stack-column stack-column-padding" width="50%" style="vertical-align: top; padding-left: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">REST API</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Access recipes, collections, and user data through our comprehensive API.</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 16px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td class="stack-column" width="50%" style="vertical-align: top; padding-right: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">SDKs</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Official SDKs for popular platforms to streamline integration.</span>
+                                                </td>
+                                                <td class="stack-column stack-column-padding" width="50%" style="vertical-align: top; padding-left: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">Dashboard</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Manage your applications, API keys, and usage analytics.</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr id="content-section" class="hidden">
+                        <td style="background-color: #ffffff; border: 1px solid rgba(231, 229, 228, 0.6); border-radius: 24px; padding: 40px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); margin-top: 24px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <h2 style="margin: 0; font-family: 'Playfair Display', Georgia, serif; font-size: 22px; font-weight: 400; color: #1c1917; padding-bottom: 12px;">
+                                            Use Cases
+                                        </h2>
+                                        <p style="margin: 0; font-size: 14px; color: #78716c; line-height: 1.6; font-weight: 300; padding-bottom: 32px;">
+                                            Here are some ways developers can integrate Cookery into their applications:
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 16px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td class="stack-column" width="50%" style="vertical-align: top; padding-right: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">Meal Planning Apps</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Import Cookery recipes directly into weekly meal plans and shopping lists.</span>
+                                                </td>
+                                                <td class="stack-column stack-column-padding" width="50%" style="vertical-align: top; padding-left: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">Grocery Delivery</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Let users add ingredients from Cookery recipes to their delivery orders.</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding-bottom: 16px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td class="stack-column" width="50%" style="vertical-align: top; padding-right: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">Social Platforms</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Enable users to share and discover Cookery recipes within your community.</span>
+                                                </td>
+                                                <td class="stack-column stack-column-padding" width="50%" style="vertical-align: top; padding-left: 20px;">
+                                                    <span style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 6px;">Smart Kitchen</span>
+                                                    <span style="display: block; font-size: 13px; color: #78716c; line-height: 1.5; font-weight: 300;">Connect Cookery recipes to smart appliances for automated cooking guidance.</span>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="center" style="padding-top: 40px;">
+                            <p style="margin: 0; font-size: 12px; color: #a8a29e; line-height: 1.5;">
+                                &copy; 2026 Cookery App. All ingredients curated thoughtfully.
+                            </p>
+                            <p style="margin: 8px 0 0 0; font-size: 12px;">
+                                <a href="index.html" style="color: #a8a29e; text-decoration: underline;">Back to Home</a>
+                            </p>
+                            <p id="logout-section" class="hidden" style="margin: 8px 0 0 0; font-size: 12px;">
+                                <a href="#" id="logout-btn" style="color: #a8a29e; text-decoration: underline;">Sign Out</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div id="onboarding-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Welcome to Cookery</h2>
+            <p>Let's get to know you. What should we call you?</p>
+            <input type="text" id="name-input" placeholder="Enter your name" />
+            <button id="save-name-btn">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+
+        const SupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const loginSection = document.getElementById('login-section');
+        const contentSection = document.querySelectorAll('#content-section');
+        const logoutSection = document.getElementById('logout-section');
+        const userName = document.getElementById('user-name');
+        const githubLoginBtn = document.getElementById('github-login');
+        const logoutBtn = document.getElementById('logout-btn');
+        const onboardingModal = document.getElementById('onboarding-modal');
+        const nameInput = document.getElementById('name-input');
+        const saveNameBtn = document.getElementById('save-name-btn');
+
+        async function checkAuth() {
+            const { data: { session } } = await SupabaseClient.auth.getSession();
+            if (session) {
+                checkOnboarding(session.user);
+            } else {
+                showLogin();
+            }
+        }
+
+        function showLogin() {
+            loginSection.classList.remove('hidden');
+            contentSection.forEach(el => el.classList.add('hidden'));
+            logoutSection.classList.add('hidden');
+        }
+
+        function getGreeting() {
+            const hour = new Date().getHours();
+            if (hour < 12) return 'Good morning';
+            if (hour < 18) return 'Good afternoon';
+            return 'Good evening';
+        }
+
+        function showContent(user) {
+            loginSection.classList.add('hidden');
+            contentSection.forEach(el => el.classList.remove('hidden'));
+            logoutSection.classList.remove('hidden');
+            
+            const displayName = user.user_metadata?.display_name || user.user_metadata?.user_name || user.email?.split('@')[0] || 'Developer';
+            const greeting = getGreeting();
+            userName.textContent = `${greeting}, ${displayName}`;
+        }
+
+        async function signInWithGitHub() {
+            const { data, error } = await SupabaseClient.auth.signInWithOAuth({
+                provider: 'github',
+                options: {
+                    redirectTo: window.location.href
+                }
+            });
+            if (error) {
+                console.error('Error signing in:', error.message);
+                alert('Error signing in: ' + error.message);
+            }
+        }
+
+        async function signOut() {
+            const { error } = await SupabaseClient.auth.signOut();
+            if (error) {
+                console.error('Error signing out:', error.message);
+            } else {
+                showLogin();
+            }
+        }
+
+        githubLoginBtn.addEventListener('click', signInWithGitHub);
+        logoutBtn.addEventListener('click', signOut);
+
+        async function checkOnboarding(user) {
+            if (!user.user_metadata?.display_name) {
+                onboardingModal.classList.remove('hidden');
+                contentSection.forEach(el => el.classList.add('hidden'));
+                nameInput.focus();
+            } else {
+                showContent(user);
+            }
+        }
+
+        async function saveUserName() {
+            const name = nameInput.value.trim();
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+
+            const { error } = await SupabaseClient.auth.updateUser({
+                data: { display_name: name }
+            });
+
+            if (error) {
+                console.error('Error saving name:', error.message);
+                alert('Error saving name: ' + error.message);
+            } else {
+                onboardingModal.classList.add('hidden');
+                const { data:{ session } } = await SupabaseClient.auth.getSession();
+                if (session) {
+                    showContent(session.user);
+                }
+            }
+        }
+
+        saveNameBtn.addEventListener('click', saveUserName);
+        nameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') saveUserName();
+        });
+
+        // Check for OAuth callback
+        SupabaseClient.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                checkOnboarding(session.user);
+            } else if (event === 'SIGNED_OUT') {
+                showLogin();
+            }
+        });
+
+        // Initial auth check
+        checkAuth();
+    </script>
+</body>
+</html>
