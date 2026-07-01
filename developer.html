@@ -609,7 +609,7 @@
         const scopesContainer = document.getElementById('scopes-container');
         const newScopeInput = document.getElementById('new-scope-input');
         const addScopeBtn = document.getElementById('add-scope-btn');
-        const saveAppSettings = document.getElementById('save-app-settings');
+        const saveAppSettingsBtn = document.getElementById('save-app-settings');
         const deleteAppBtn = document.getElementById('delete-app-btn');
         const appTabs = document.querySelectorAll('.app-tab');
         const tabContents = document.querySelectorAll('.tab-content');
@@ -998,7 +998,7 @@
         });
         
         // Save and delete
-        saveAppSettings.addEventListener('click', saveAppSettings);
+        saveAppSettingsBtn.addEventListener('click', saveAppSettings);
         deleteAppBtn.addEventListener('click', deleteApp);
         
         // Custom alert modal
