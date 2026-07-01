@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
     <style>
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
         table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
@@ -170,9 +171,13 @@
         }
         .portal-section {
             display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
         }
         .portal-section.active {
             display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
         }
         .card {
             background-color: #ffffff;
@@ -208,6 +213,21 @@
             .portal-container {
                 flex-direction: column;
             }
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(250, 248, 245, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .loading-overlay.hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -248,19 +268,19 @@
             </div>
             
             <div class="nav-section">Platform</div>
-            <a class="nav-item active" data-section="dashboard">Dashboard</a>
-            <a class="nav-item" data-section="api">API Documentation</a>
-            <a class="nav-item" data-section="apps">My Applications</a>
+            <a class="nav-item active" data-section="dashboard" href="#dashboard">Dashboard</a>
+            <a class="nav-item" data-section="api" href="#api">API Documentation</a>
+            <a class="nav-item" data-section="apps" href="#apps">My Applications</a>
             
             <div class="nav-section">Account</div>
-            <a class="nav-item" data-section="settings">Settings</a>
+            <a class="nav-item" data-section="settings" href="#settings">Settings</a>
             <a class="nav-item" id="sidebar-logout">Sign Out</a>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
             <!-- Dashboard Section -->
-            <div id="section-dashboard" class="portal-section active">
+            <div id="section-dashboard" class="portal-section active" style="display: block; visibility: visible; opacity: 1;">
                 <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 16px 0;">
                     <span id="user-name">Good morning, Developer</span>
                 </h1>
@@ -316,7 +336,7 @@
             </div>
 
             <!-- API Section -->
-            <div id="section-api" class="portal-section">
+            <div id="section-api" class="portal-section" style="display: none; visibility: hidden; opacity: 0;">
                 <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 16px 0;">
                     API Documentation
                 </h1>
@@ -327,18 +347,37 @@
             </div>
 
             <!-- Apps Section -->
-            <div id="section-apps" class="portal-section">
+            <div id="section-apps" class="portal-section" style="display: none; visibility: hidden; opacity: 0;">
                 <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 16px 0;">
                     My Applications
                 </h1>
+                
                 <div class="card">
-                    <h2>No Applications Yet</h2>
-                    <p>You haven't created any applications yet. Once our platform launches, you'll be able to create and manage your apps here.</p>
+                    <h2>Create Application</h2>
+                    <p>You can create applications, and when the Cookery OAuth Platform becomes available, it will automatically be sent for review.</p>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px;">Application Name</label>
+                        <input type="text" id="app-name" placeholder="My Awesome App" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
+                    </div>
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px;">Description</label>
+                        <textarea id="app-description" placeholder="Describe your application..." rows="3" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box; resize: vertical;"></textarea>
+                    </div>
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px;">Redirect URL</label>
+                        <input type="url" id="app-redirect-url" placeholder="https://yourapp.com/callback" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
+                    </div>
+                    <button id="create-app-btn" style="background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Create Application</button>
+                </div>
+
+                <div id="applications-list" class="card" style="display: none;">
+                    <h2>Your Applications</h2>
+                    <div id="apps-container"></div>
                 </div>
             </div>
 
             <!-- Settings Section -->
-            <div id="section-settings" class="portal-section">
+            <div id="section-settings" class="portal-section" style="display: none; visibility: hidden; opacity: 0;">
                 <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 16px 0;">
                     Settings
                 </h1>
@@ -355,6 +394,10 @@
                 <a href="index.html" style="color: #a8a29e; text-decoration: underline;">Back to Home</a>
             </p>
         </div>
+    </div>
+
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 300px; height: 300px" autoplay loop></dotlottie-wc>
     </div>
 
     <div id="onboarding-modal" class="modal-overlay hidden">
@@ -382,9 +425,26 @@
         const saveNameBtn = document.getElementById('save-name-btn');
         const navItems = document.querySelectorAll('.nav-item[data-section]');
         const portalSections = document.querySelectorAll('.portal-section');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const createAppBtn = document.getElementById('create-app-btn');
+        const appNameInput = document.getElementById('app-name');
+        const appDescriptionInput = document.getElementById('app-description');
+        const appRedirectUrlInput = document.getElementById('app-redirect-url');
+        const applicationsList = document.getElementById('applications-list');
+        const appsContainer = document.getElementById('apps-container');
+
+        function showLoading() {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
 
         async function checkAuth() {
+            showLoading();
             const { data: { session } } = await SupabaseClient.auth.getSession();
+            hideLoading();
             if (session) {
                 checkOnboarding(session.user);
             } else {
@@ -416,6 +476,7 @@
         }
 
         async function signInWithGitHub() {
+            showLoading();
             const { data, error } = await SupabaseClient.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
@@ -423,6 +484,7 @@
                 }
             });
             if (error) {
+                hideLoading();
                 console.error('Error signing in:', error.message);
                 alert('Error signing in: ' + error.message);
             }
@@ -441,20 +503,56 @@
         sidebarLogout.addEventListener('click', signOut);
 
         // Navigation
+        function switchSection(section) {
+            console.log('Switching to section:', section);
+            
+            // Update nav active state
+            navItems.forEach(nav => {
+                nav.classList.remove('active');
+                if (nav.dataset.section === section) {
+                    nav.classList.add('active');
+                }
+            });
+            
+            // Hide all sections first
+            portalSections.forEach(sec => {
+                sec.classList.remove('active');
+                sec.style.display = 'none';
+                sec.style.visibility = 'hidden';
+                sec.style.opacity = '0';
+            });
+            
+            // Show corresponding section
+            const targetSection = document.getElementById(`section-${section}`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                targetSection.style.display = 'block';
+                targetSection.style.visibility = 'visible';
+                targetSection.style.opacity = '1';
+            }
+        }
+
         navItems.forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const section = item.dataset.section;
-                
-                // Update nav active state
-                navItems.forEach(nav => nav.classList.remove('active'));
-                item.classList.add('active');
-                
-                // Show corresponding section
-                portalSections.forEach(sec => sec.classList.remove('active'));
-                document.getElementById(`section-${section}`).classList.add('active');
+                if (section) {
+                    window.location.hash = section;
+                }
             });
         });
+
+        // Handle hash changes
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.slice(1) || 'dashboard';
+            switchSection(hash);
+        });
+
+        // Load initial section from hash
+        function loadInitialSection() {
+            const hash = window.location.hash.slice(1) || 'dashboard';
+            switchSection(hash);
+        }
 
         async function checkOnboarding(user) {
             if (!user.user_metadata?.display_name) {
@@ -475,16 +573,19 @@
                 return;
             }
 
+            showLoading();
             const { error } = await SupabaseClient.auth.updateUser({
                 data: { display_name: name }
             });
 
             if (error) {
+                hideLoading();
                 console.error('Error saving name:', error.message);
                 alert('Error saving name: ' + error.message);
             } else {
                 onboardingModal.classList.add('hidden');
                 const { data:{ session } } = await SupabaseClient.auth.getSession();
+                hideLoading();
                 if (session) {
                     showContent(session.user);
                 }
@@ -495,6 +596,73 @@
         nameInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') saveUserName();
         });
+
+        // Application creation
+        function loadApplications() {
+            const apps = JSON.parse(localStorage.getItem('cookery_apps') || '[]');
+            if (apps.length > 0) {
+                applicationsList.style.display = 'block';
+                appsContainer.innerHTML = apps.map((app, index) => `
+                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 16px; margin-bottom: 12px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: #1c1917;">${app.name}</h3>
+                                <p style="margin: 0; font-size: 13px; color: #78716c;">${app.description || 'No description'}</p>
+                                <p style="margin: 4px 0 0 0; font-size: 12px; color: #a8a29e;">Redirect: ${app.redirectUrl}</p>
+                            </div>
+                            <span style="background-color: #fdfbeb; border: 1px solid #fbf5c4; padding: 4px 12px; border-radius: 9999px; font-size: 11px; font-weight: 600; color: #ca9627;">Pending Review</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function createApplication() {
+            const name = appNameInput.value.trim();
+            const description = appDescriptionInput.value.trim();
+            const redirectUrl = appRedirectUrlInput.value.trim();
+
+            if (!name) {
+                alert('Please enter an application name');
+                return;
+            }
+
+            if (!redirectUrl) {
+                alert('Please enter a redirect URL');
+                return;
+            }
+
+            const apps = JSON.parse(localStorage.getItem('cookery_apps') || '[]');
+            const newApp = {
+                id: Date.now(),
+                name,
+                description,
+                redirectUrl,
+                createdAt: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            apps.push(newApp);
+            localStorage.setItem('cookery_apps', JSON.stringify(apps));
+
+            // Clear form
+            appNameInput.value = '';
+            appDescriptionInput.value = '';
+            appRedirectUrlInput.value = '';
+
+            // Reload applications list
+            loadApplications();
+
+            alert('Application created successfully! When the Cookery OAuth Platform becomes available, it will automatically be sent for review.');
+        }
+
+        createAppBtn.addEventListener('click', createApplication);
+
+        // Load applications when page loads
+        loadApplications();
+
+        // Load initial section from hash
+        loadInitialSection();
 
         // Check for OAuth callback
         SupabaseClient.auth.onAuthStateChange((event, session) => {
