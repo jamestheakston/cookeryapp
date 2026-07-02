@@ -427,7 +427,15 @@
     </div>
 
     <div id="loading-overlay" class="loading-overlay hidden">
-        <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px" autoplay loop></dotlottie-wc>
+        <svg style="width: 64px; height: 64px; color: #1c1917;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" style="animation: spin 1s linear infinite;"></path>
+        </svg>
+        <style>
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        </style>
     </div>
 
     <div id="onboarding-modal" class="modal-overlay hidden">
@@ -467,6 +475,17 @@
             <h2 id="alert-title" style="margin: 0 0 12px 0;">Alert</h2>
             <p id="alert-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;"></p>
             <button id="alert-ok-btn" style="width: 100%; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">OK</button>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal-overlay hidden">
+        <div class="modal" style="max-width: 400px;">
+            <h2 id="confirm-title" style="margin: 0 0 12px 0;">Confirm</h2>
+            <p id="confirm-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;"></p>
+            <div style="display: flex; gap: 12px;">
+                <button id="confirm-cancel-btn" style="flex: 1; background-color: #faf8f5; color: #1c1917; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">Cancel</button>
+                <button id="confirm-ok-btn" style="flex: 1; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Confirm</button>
+            </div>
         </div>
     </div>
 
@@ -608,6 +627,11 @@
         const editAppDescription = document.getElementById('edit-app-description');
         const editAppRedirectUrl = document.getElementById('edit-app-redirect-url');
         const appLogoPreview = document.getElementById('app-logo-preview');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmTitle = document.getElementById('confirm-title');
+        const confirmMessage = document.getElementById('confirm-message');
+        const confirmOkBtn = document.getElementById('confirm-ok-btn');
+        const confirmCancelBtn = document.getElementById('confirm-cancel-btn');
         const appLogoUpload = document.getElementById('app-logo-upload');
         const uploadLogoBtn = document.getElementById('upload-logo-btn');
         const scopesContainer = document.getElementById('scopes-container');
@@ -698,9 +722,18 @@
 
         githubLoginBtn.addEventListener('click', signInWithGitHub);
         sidebarLogout.addEventListener('click', () => {
-            if (confirm('Are you sure you want to sign out?')) {
-                signOut();
-            }
+            confirmTitle.textContent = 'Sign Out';
+            confirmMessage.textContent = 'Are you sure you want to sign out?';
+            confirmModal.classList.remove('hidden');
+        });
+        
+        confirmCancelBtn.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+        });
+        
+        confirmOkBtn.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+            signOut();
         });
 
         // Navigation
