@@ -71,6 +71,7 @@
             background-color: #1c1917;
             color: #ffffff;
             border-bottom: 2px solid #9333ea;
+            border-radius: 6px 6px 0 0;
         }
         
         .scope-tag {
@@ -222,25 +223,20 @@
             
             <!-- Tabs -->
             <div style="display: flex; gap: 8px; margin-bottom: 32px; border-bottom: 1px solid #e7e5e4; padding-bottom: 16px;">
-                <button class="app-tab active" data-tab="analytics" style="padding: 8px 16px; background: none; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; color: #78716c; cursor: pointer; transition: all 0.2s;">Analytics</button>
+                <button class="app-tab active" data-tab="analytics" style="padding: 8px 16px; background: none; border: none; border-bottom: 2px solid #9333ea; border-radius: 6px 6px 0 0; font-size: 14px; font-weight: 500; color: #78716c; cursor: pointer; transition: all 0.2s;">Analytics</button>
                 <button class="app-tab" data-tab="settings" style="padding: 8px 16px; background: none; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; color: #78716c; cursor: pointer; transition: all 0.2s;">Settings</button>
             </div>
             
             <!-- Analytics Tab -->
             <div id="tab-analytics" class="tab-content" style="position: relative;">
                 <div id="data-status" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(250, 248, 245, 0.85); border-radius: 12px; z-index: 10;">
-                    <svg id="loading-icon" style="width: 64px; height: 64px; margin: 0 auto 16px; color: #a8a29e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
+                    <dotlottie-wc id="loading-icon" src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px; margin: 0 auto 16px;" autoplay loop></dotlottie-wc>
                     <h3 id="status-title" style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Fetching data...</h3>
                     <p id="status-message" style="margin: 0; font-size: 14px; color: #78716c;">Please wait while we load your analytics.</p>
                 </div>
                 
                 <div style="display: flex; gap: 24px; margin-bottom: 24px;">
                     <div style="flex: 1; position: relative; background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 40px;">
-                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(250, 248, 245, 0.4); border-radius: 12px; z-index: 5;">
-                            <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px;" autoplay loop></dotlottie-wc>
-                        </div>
                         <div style="opacity: 0.15;">
                             <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #1c1917;">User Growth</h3>
                             <div style="height: 150px; display: flex; align-items: flex-end; gap: 8px;">
@@ -256,9 +252,6 @@
                     </div>
                     
                     <div style="flex: 1; position: relative; background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 40px;">
-                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(250, 248, 245, 0.4); border-radius: 12px; z-index: 5;">
-                            <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px;" autoplay loop></dotlottie-wc>
-                        </div>
                         <div style="opacity: 0.15;">
                             <h3 style="margin: 0 0 16px 0; font-size: 16px; font-weight: 600; color: #1c1917;">API Requests</h3>
                             <div style="height: 150px; display: flex; align-items: flex-end; gap: 8px;">
@@ -300,7 +293,7 @@
                         <div>
                             <input type="file" id="app-logo-upload" accept="image/*" style="display: none;">
                             <button id="upload-logo-btn" style="background-color: #faf8f5; color: #1c1917; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">Upload Logo</button>
-                            <p style="margin: 4px 0 0 0; font-size: 12px; color: #a8a29e;">PNG, JPG up to 2MB</p>
+                            <p style="margin: 4px 0 0 0; font-size: 12px; color: #a8a29e;">PNG, JPG up to 2MB. Recommended size: 64x64px</p>
                         </div>
                     </div>
                 </div>
@@ -412,7 +405,7 @@
             
             if (!currentApp) {
                 showAlert('Error', 'App not found');
-                window.location.href = 'developer.html';
+                window.location.href = '/developer/noapp.html';
                 return;
             }
             
