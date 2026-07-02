@@ -427,7 +427,7 @@
     </div>
 
     <div id="loading-overlay" class="loading-overlay hidden">
-        <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 300px; height: 300px" autoplay loop></dotlottie-wc>
+        <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px" autoplay loop></dotlottie-wc>
     </div>
 
     <div id="onboarding-modal" class="modal-overlay hidden">
@@ -697,7 +697,11 @@
         }
 
         githubLoginBtn.addEventListener('click', signInWithGitHub);
-        sidebarLogout.addEventListener('click', signOut);
+        sidebarLogout.addEventListener('click', () => {
+            if (confirm('Are you sure you want to sign out?')) {
+                signOut();
+            }
+        });
 
         // Navigation
         function switchSection(section) {
