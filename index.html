@@ -19,6 +19,138 @@
             .stack-column { display: block !important; width: 100% !important; max-width: 100% !important; text-align: left !important; padding-left: 0 !important; padding-right: 0 !important; }
             .stack-column-padding { padding-top: 24px !important; }
         }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .modal-header h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #78716c;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #1c1917;
+        }
+        .eula-content {
+            background-color: #faf8f5;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 24px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 24px;
+            font-size: 12px;
+            color: #78716c;
+            line-height: 1.6;
+        }
+        .eula-content h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        .eula-content h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 16px 0 8px 0;
+        }
+        .eula-content p {
+            margin: 0 0 12px 0;
+        }
+        .eula-content strong {
+            color: #1c1917;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .checkbox-container label {
+            font-size: 14px;
+            color: #1c1917;
+            cursor: pointer;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .modal-buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .modal-buttons .btn-cancel {
+            background-color: transparent;
+            border: 1px solid #1c1917;
+            color: #1c1917;
+        }
+        .modal-buttons .btn-cancel:hover:not(:disabled) {
+            background-color: #faf8f5;
+        }
+        .modal-buttons .btn-download {
+            background-color: #1c1917;
+            border: none;
+            color: #ffffff;
+        }
+        .modal-buttons .btn-download:hover:not(:disabled) {
+            background-color: #2c2a28;
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #faf8f5; -webkit-font-smoothing: antialiased;">
@@ -148,5 +280,95 @@
             </td>
         </tr>
     </table>
+
+    <!-- Terms & Conditions Modal -->
+    <div id="terms-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Terms & Conditions</h2>
+                <button class="modal-close" id="close-modal">&times;</button>
+            </div>
+            <div class="eula-content">
+                <h3>LICENSE & END USER AGREEMENT</h3>
+                <p>Copyright (c) 2026 James Theakston & PIXEL CANVAS LABS APP DEVELOPMENT STUDIO</p>
+                
+                <h4>1. PERMITTED USES & COPIES</h4>
+                <p>Permission is hereby granted to any person obtaining a copy of this software and associated documentation files from this repository to view, download, fork, and copy the code for personal or educational use, subject to the following conditions:</p>
+                <p><strong>Mandatory Attribution:</strong> The original copyright notice, author credits, and this permission notice must be included intact in all copies, forks, or substantial portions of the software.</p>
+                <p><strong>Credit Requirement:</strong> Clear, visible acknowledgment must be given to James Theakston & PIXEL CANVAS LABS APP DEVELOPMENT STUDIO in the documentation or repository description of any derivative works.</p>
+                
+                <h4>2. RESTRICTIONS</h4>
+                <p>You may not repackage, sublicense, or sell this software, its code, or its AI recipe assets for commercial profit without explicit, written permission from the original authors.</p>
+                
+                <h4>3. BETA SOFTWARE NOTICE</h4>
+                <p>This software is in a beta testing phase. It is provided strictly on an "as-is" and "as-available" basis. It is expected to contain software bugs, glitches, and operational defects. The primary purpose of public hosting is to obtain development feedback, track performance, and identify errors. Do not rely on the correct functioning or performance of this software.</p>
+                
+                <h4>4. AI-GENERATED CONTENT & FOOD SAFETY WARNING</h4>
+                <p>All recipes, ingredient lists, measurements, substitution suggestions, cooking times, and temperatures generated or displayed by this software are handled by Artificial Intelligence (AI). AI models can make errors, hallucinate incorrect data, or provide inaccurate and potentially hazardous instructions.</p>
+                <p><strong>Verify Before Cooking:</strong> You must use your own judgment and culinary common sense. Always verify that cooking temperatures, preparation methods, and raw ingredient handling align with standard public food safety guidelines.</p>
+                <p><strong>Allergies & Dietary Restrictions:</strong> The AI may fail to recognize cross-contamination risks or incorrect ingredients for specific dietary restrictions. Always inspect ingredients against your personal health and allergy profile before consuming.</p>
+                <p><strong>Assumption of Risk:</strong> By using or testing this app, you acknowledge that cooking involves inherent risks (including burns, cuts, and foodborne illness) and agree to assume full responsibility for those risks.</p>
+                
+                <h4>5. DISCLAIMER OF WARRANTY & LIABILITY</h4>
+                <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.</p>
+                <p>IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS (JAMES THEAKSTON & PIXEL CANVAS LABS) BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+                <p>THIS INCLUDES, WITHOUT LIMITATION, ANY DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES FOR: RUINED MEALS, DAMAGED KITCHEN APPLIANCES, FOOD POISONING, ALLERGIC REACTIONS, OR PHYSICAL INJURIES RESULTING FROM RELIANCE ON AI-GENERATED CONTENT OR SOFTWARE MALFUNCTIONS.</p>
+            </div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="eula-checkbox">
+                <label for="eula-checkbox">I agree to the EULA & Beta Statement</label>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" id="cancel-download">Cancel</button>
+                <button class="btn-download" id="confirm-download" disabled>Download IPA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const downloadLink = document.querySelector('a[href*="Cookery.ipa"]');
+        const termsModal = document.getElementById('terms-modal');
+        const closeModalBtn = document.getElementById('close-modal');
+        const cancelDownloadBtn = document.getElementById('cancel-download');
+        const confirmDownloadBtn = document.getElementById('confirm-download');
+        const eulaCheckbox = document.getElementById('eula-checkbox');
+        const DOWNLOAD_URL = 'https://github.com/jamestheakston/cookeryios/releases/latest/download/Cookery.ipa';
+
+        // Open modal when download link is clicked
+        downloadLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            termsModal.classList.remove('hidden');
+        });
+
+        // Close modal functions
+        function closeModal() {
+            termsModal.classList.add('hidden');
+            eulaCheckbox.checked = false;
+            confirmDownloadBtn.disabled = true;
+        }
+
+        closeModalBtn.addEventListener('click', closeModal);
+        cancelDownloadBtn.addEventListener('click', closeModal);
+
+        // Close modal when clicking outside
+        termsModal.addEventListener('click', (e) => {
+            if (e.target === termsModal) {
+                closeModal();
+            }
+        });
+
+        // Enable/disable download button based on checkbox
+        eulaCheckbox.addEventListener('change', () => {
+            confirmDownloadBtn.disabled = !eulaCheckbox.checked;
+        });
+
+        // Download when confirm button is clicked
+        confirmDownloadBtn.addEventListener('click', () => {
+            if (eulaCheckbox.checked) {
+                window.location.href = DOWNLOAD_URL;
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
