@@ -229,7 +229,7 @@
             <div id="tab-analytics" class="tab-content">
                 <div style="display: flex; gap: 24px; margin-bottom: 24px;">
                     <div style="flex: 1; position: relative; background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 40px;">
-                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(250, 248, 245, 0.9); border-radius: 12px;">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(250, 248, 245, 0.4); border-radius: 12px;">
                             <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px;" autoplay loop></dotlottie-wc>
                         </div>
                         <div style="opacity: 0.3;">
@@ -247,7 +247,7 @@
                     </div>
                     
                     <div style="flex: 1; position: relative; background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 40px;">
-                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(250, 248, 245, 0.9); border-radius: 12px;">
+                        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background-color: rgba(250, 248, 245, 0.4); border-radius: 12px;">
                             <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px;" autoplay loop></dotlottie-wc>
                         </div>
                         <div style="opacity: 0.3;">
@@ -265,12 +265,12 @@
                     </div>
                 </div>
                 
-                <div style="text-align: center; padding: 40px 20px;">
-                    <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #a8a29e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                <div id="data-status" style="text-align: center; padding: 40px 20px;">
+                    <svg id="loading-icon" style="width: 64px; height: 64px; margin: 0 auto 16px; color: #a8a29e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
-                    <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">No users yet</h3>
-                    <p style="margin: 0; font-size: 14px; color: #78716c;">Your app doesn't have any users.</p>
+                    <h3 id="status-title" style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Fetching data...</h3>
+                    <p id="status-message" style="margin: 0; font-size: 14px; color: #78716c;">Please wait while we load your analytics.</p>
                 </div>
             </div>
             
@@ -495,6 +495,17 @@
         
         // Load app on page load
         loadApp();
+        
+        // Simulate data fetching with 3-second delay
+        setTimeout(() => {
+            const statusTitle = document.getElementById('status-title');
+            const statusMessage = document.getElementById('status-message');
+            const loadingIcon = document.getElementById('loading-icon');
+            
+            statusTitle.textContent = 'No data available';
+            statusMessage.textContent = 'The OAuth system is not finished yet. Analytics will be available once the platform is live.';
+            loadingIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>';
+        }, 3000);
     </script>
 </body>
 </html>
