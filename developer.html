@@ -428,12 +428,12 @@
 
     <div id="loading-overlay" class="loading-overlay hidden">
         <svg style="width: 64px; height: 64px; color: #1c1917;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" style="animation: spin 1s linear infinite;"></path>
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32" style="animation: spin 1s linear infinite;"></circle>
         </svg>
         <style>
             @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
+                from { transform: rotate(0deg); stroke-dashoffset: 32; }
+                to { transform: rotate(360deg); stroke-dashoffset: 0; }
             }
         </style>
     </div>
