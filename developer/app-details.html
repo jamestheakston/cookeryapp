@@ -358,8 +358,10 @@
         function switchTab(tabName) {
             appTabs.forEach(tab => {
                 tab.classList.remove('active');
+                tab.style.borderBottom = 'none';
                 if (tab.dataset.tab === tabName) {
                     tab.classList.add('active');
+                    tab.style.borderBottom = '2px solid #9333ea';
                 }
             });
             
@@ -393,27 +395,46 @@
             renderScopes();
         }
         
-        function loadApp() {
+        async function loadApp() {
             if (!appId) {
                 showAlert('Error', 'No app ID provided');
                 window.location.href = 'developer.html';
                 return;
             }
             
-            const apps = JSON.parse(localStorage.getItem('cookery_apps') || '[]');
-            currentApp = apps.find(a => a.id === appId);
+            // Get current user
+            const { data: { session } } = await SupabaseClient.auth.getSession();
+            if (!session?.user) {
+                window.location.href = 'developer.html';
+                return;
+            }
             
-            if (!currentApp) {
+            const { data: app, error } = await SupabaseClient
+                .from('apps')
+                .select('*')
+                .eq('id', appId)
+                .single();
+            
+            if (error || !app) {
                 showAlert('Error', 'App not found');
                 window.location.href = '/developer/noapp.html';
                 return;
             }
             
+            // Check if user owns the app (RLS handles this, but double-check)
+            if (app.user_id !== session.user.id) {
+                showAlert('Error', 'You do not have permission to view this application');
+                window.location.href = 'developer.html';
+                return;
+            }
+            
+            currentApp = app;
+            
             appNameEl.textContent = currentApp.name;
             appDescriptionEl.textContent = currentApp.description || '';
             editAppName.value = currentApp.name;
             editAppDescription.value = currentApp.description || '';
-            editAppRedirectUrl.value = currentApp.redirectUrl;
+            editAppRedirectUrl.value = currentApp.redirect_url;
             currentAppScopes = currentApp.scopes || [];
             renderScopes();
             
@@ -422,29 +443,46 @@
             }
         }
         
-        function saveAppSettings() {
-            const apps = JSON.parse(localStorage.getItem('cookery_apps') || '[]');
-            const appIndex = apps.findIndex(a => a.id === appId);
+        async function saveAppSettings() {
+            const { error } = await SupabaseClient
+                .from('apps')
+                .update({
+                    name: editAppName.value.trim(),
+                    description: editAppDescription.value.trim(),
+                    redirect_url: editAppRedirectUrl.value.trim(),
+                    scopes: currentAppScopes
+                })
+                .eq('id', appId);
             
-            if (appIndex !== -1) {
-                apps[appIndex].name = editAppName.value.trim();
-                apps[appIndex].description = editAppDescription.value.trim();
-                apps[appIndex].redirectUrl = editAppRedirectUrl.value.trim();
-                apps[appIndex].scopes = currentAppScopes;
-                
-                localStorage.setItem('cookery_apps', JSON.stringify(apps));
-                currentApp = apps[appIndex];
-                appNameEl.textContent = currentApp.name;
-                appDescriptionEl.textContent = currentApp.description || '';
-                showAlert('Success', 'Application settings saved successfully!');
+            if (error) {
+                console.error('Error saving app settings:', error);
+                showAlert('Error', 'Failed to save application settings: ' + error.message);
+                return;
             }
+            
+            currentApp.name = editAppName.value.trim();
+            currentApp.description = editAppDescription.value.trim();
+            currentApp.redirect_url = editAppRedirectUrl.value.trim();
+            currentApp.scopes = currentAppScopes;
+            
+            appNameEl.textContent = currentApp.name;
+            appDescriptionEl.textContent = currentApp.description || '';
+            showAlert('Success', 'Application settings saved successfully!');
         }
         
-        function deleteApp() {
+        async function deleteApp() {
             if (confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
-                const apps = JSON.parse(localStorage.getItem('cookery_apps') || '[]');
-                const filteredApps = apps.filter(a => a.id !== appId);
-                localStorage.setItem('cookery_apps', JSON.stringify(filteredApps));
+                const { error } = await SupabaseClient
+                    .from('apps')
+                    .delete()
+                    .eq('id', appId);
+                
+                if (error) {
+                    console.error('Error deleting app:', error);
+                    showAlert('Error', 'Failed to delete application: ' + error.message);
+                    return;
+                }
+                
                 window.location.href = 'developer.html';
             }
         }
