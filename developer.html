@@ -314,7 +314,6 @@
             
             <div class="nav-section">Platform</div>
             <a class="nav-item active" data-section="dashboard" href="#dashboard">Dashboard</a>
-            <a class="nav-item" data-section="api" href="#api">API Documentation</a>
             <a class="nav-item" data-section="apps" href="#apps">My Applications</a>
             
             <div class="nav-section">Account</div>
@@ -413,7 +412,19 @@
                 </h1>
                 <div class="card">
                     <h2>Account Settings</h2>
-                    <p>Manage your account preferences and developer settings. More options will be available soon.</p>
+                    <p>Manage your account preferences and developer settings.</p>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #1c1917; margin-bottom: 8px;">Name</label>
+                        <input type="text" id="settings-name" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+                    </div>
+                    
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-size: 14px; font-weight: 500; color: #1c1917; margin-bottom: 8px;">Email</label>
+                        <input type="email" id="settings-email" disabled style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #faf8f5;">
+                    </div>
+                    
+                    <button id="save-settings-btn" style="background-color: #1c1917; color: #ffffff; padding: 14px 32px; border-radius: 16px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border: none;">Save Changes</button>
                 </div>
             </div>
 
@@ -645,6 +656,9 @@
         const alertTitle = document.getElementById('alert-title');
         const alertMessage = document.getElementById('alert-message');
         const alertOkBtn = document.getElementById('alert-ok-btn');
+        const settingsName = document.getElementById('settings-name');
+        const settingsEmail = document.getElementById('settings-email');
+        const saveSettingsBtn = document.getElementById('save-settings-btn');
         let currentAppId = null;
         let currentAppScopes = [];
 
@@ -698,6 +712,7 @@
             userName.textContent = `${greeting}, ${displayName}`;
             
             loadApplications();
+            loadSettings();
         }
 
         async function signInWithGitHub() {
@@ -1002,6 +1017,38 @@
             }
         }
 
+        function loadSettings() {
+            if (!currentUser) return;
+            
+            settingsName.value = currentUser.user_metadata?.display_name || '';
+            settingsEmail.value = currentUser.email || '';
+        }
+
+        async function saveSettings() {
+            const name = settingsName.value.trim();
+            
+            if (!name) {
+                showAlert('Required', 'Please enter your name');
+                return;
+            }
+
+            const { error } = await SupabaseClient.auth.updateUser({
+                data: { display_name: name }
+            });
+
+            if (error) {
+                showAlert('Error', 'Failed to save settings: ' + error.message);
+                return;
+            }
+
+            currentUser.user_metadata.display_name = name;
+            const displayName = currentUser.user_metadata?.display_name || currentUser.user_metadata?.user_name || currentUser.email?.split('@')[0] || 'Developer';
+            const greeting = getGreeting();
+            userName.textContent = `${greeting}, ${displayName}`;
+            
+            showAlert('Success', 'Settings saved successfully!');
+        }
+
         async function createApplication() {
             const name = appNameInput.value.trim();
             const description = appDescriptionInput.value.trim();
@@ -1080,6 +1127,7 @@
         // Save and delete
         saveAppSettingsBtn.addEventListener('click', saveAppSettings);
         deleteAppBtn.addEventListener('click', deleteApp);
+        saveSettingsBtn.addEventListener('click', saveSettings);
         
         // Custom alert modal
         alertOkBtn.addEventListener('click', () => {
@@ -1088,6 +1136,11 @@
 
         // Load applications when page loads
         loadApplications();
+
+        // Clear URL hash unless it's for OAuth
+        if (window.location.hash && !window.location.hash.includes('access_token')) {
+            history.replaceState(null, null, ' ');
+        }
 
         // Load initial section from hash
         loadInitialSection();
