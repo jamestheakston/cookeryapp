@@ -427,13 +427,13 @@
     </div>
 
     <div id="loading-overlay" class="loading-overlay hidden">
-        <svg style="width: 64px; height: 64px; color: #1c1917;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32" style="animation: spin 1s linear infinite;"></circle>
+        <svg style="width: 64px; height: 64px; color: #1c1917; animation: spin 1s linear infinite;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="8"></circle>
         </svg>
         <style>
             @keyframes spin {
-                from { transform: rotate(0deg); stroke-dashoffset: 32; }
-                to { transform: rotate(360deg); stroke-dashoffset: 0; }
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
             }
         </style>
     </div>
