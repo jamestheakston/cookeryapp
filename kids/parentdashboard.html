@@ -480,7 +480,7 @@
         const signupPassword = document.getElementById('signup-password');
         const signupBtn = document.getElementById('signup-btn');
         const showSignup = document.getElementById('show-signup');
-        const showLogin = document.getElementById('show-login');
+        const showLoginBtn = document.getElementById('show-login');
         const navItems = document.querySelectorAll('.nav-item[data-section]');
         const portalSections = document.querySelectorAll('.portal-section');
         const loadingOverlay = document.getElementById('loading-overlay');
@@ -760,7 +760,7 @@
             e.preventDefault();
             showSignup();
         });
-        showLogin.addEventListener('click', (e) => {
+        showLoginBtn.addEventListener('click', (e) => {
             e.preventDefault();
             showLogin();
         });
