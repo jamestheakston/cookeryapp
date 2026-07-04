@@ -135,6 +135,88 @@
         .hidden {
             display: none !important;
         }
+        .info-icon {
+            position: relative;
+            display: inline-block;
+        }
+        .info-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 100;
+            margin-bottom: 8px;
+        }
+        .info-icon:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .modal-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        .modal-message {
+            font-size: 14px;
+            color: #78716c;
+            margin: 0 0 24px 0;
+            line-height: 1.6;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .modal-btn-primary {
+            background-color: #1c1917;
+            color: #ffffff;
+        }
+        .modal-btn-secondary {
+            background-color: #e7e5e4;
+            color: #1c1917;
+        }
+        .modal-btn:hover {
+            opacity: 0.9;
+        }
         .input-group {
             margin-bottom: 20px;
         }
@@ -309,13 +391,13 @@
             </div>
             
             <div id="login-loading" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 500px; height: 600px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
+                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 150px; height: 150px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Please wait</h3>
                 <p style="margin: 0; font-size: 14px; color: #78716c;">Signing you in...</p>
             </div>
             
             <div id="login-error" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/75d1820c-b02e-4c3f-a7bc-6bae8951f0cb/2mHp5KTzJP.lottie" style="width: 500px; height: 500px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
+                <dotlottie-wc src="https://lottie.host/75d1820c-b02e-4c3f-a7bc-6bae8951f0cb/2mHp5KTzJP.lottie" style="width: 150px; height: 150px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Error</h3>
                 <p id="login-error-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;">An error occurred</p>
                 <button id="retry-login-btn" class="btn btn-primary">Try Again</button>
@@ -481,6 +563,48 @@
         </style>
     </div>
 
+    <!-- Custom Alert Modal -->
+    <div id="alert-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="modal-title" id="alert-modal-title">Alert</h3>
+            <p class="modal-message" id="alert-modal-message">Message goes here</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-primary" id="alert-modal-ok">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="modal-title" id="confirm-modal-title">Confirm</h3>
+            <p class="modal-message" id="confirm-modal-message">Are you sure?</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" id="confirm-modal-cancel">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="confirm-modal-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Kid Modal -->
+    <div id="edit-kid-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="modal-title">Edit Child</h3>
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="edit-kid-name" placeholder="Enter name">
+            </div>
+            <div class="input-group">
+                <label>Age</label>
+                <input type="number" id="edit-kid-age" placeholder="Enter age" min="1" max="18">
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" id="edit-kid-cancel">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="edit-kid-save">Save</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
@@ -520,8 +644,24 @@
         const settingsName = document.getElementById('settings-name');
         const settingsEmail = document.getElementById('settings-email');
         const saveSettingsBtn = document.getElementById('save-settings-btn');
+        const alertModal = document.getElementById('alert-modal');
+        const alertModalTitle = document.getElementById('alert-modal-title');
+        const alertModalMessage = document.getElementById('alert-modal-message');
+        const alertModalOk = document.getElementById('alert-modal-ok');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmModalTitle = document.getElementById('confirm-modal-title');
+        const confirmModalMessage = document.getElementById('confirm-modal-message');
+        const confirmModalCancel = document.getElementById('confirm-modal-cancel');
+        const confirmModalConfirm = document.getElementById('confirm-modal-confirm');
+        const editKidModal = document.getElementById('edit-kid-modal');
+        const editKidName = document.getElementById('edit-kid-name');
+        const editKidAge = document.getElementById('edit-kid-age');
+        const editKidCancel = document.getElementById('edit-kid-cancel');
+        const editKidSave = document.getElementById('edit-kid-save');
 
         let currentUser = null;
+        let confirmCallback = null;
+        let currentEditingKidId = null;
 
         function showLoading() {
             loadingOverlay.classList.remove('hidden');
@@ -529,6 +669,19 @@
 
         function hideLoading() {
             loadingOverlay.classList.add('hidden');
+        }
+
+        function showAlert(title, message) {
+            alertModalTitle.textContent = title;
+            alertModalMessage.textContent = message;
+            alertModal.classList.remove('hidden');
+        }
+
+        function showConfirm(title, message, callback) {
+            confirmModalTitle.textContent = title;
+            confirmModalMessage.textContent = message;
+            confirmCallback = callback;
+            confirmModal.classList.remove('hidden');
         }
 
         function showLogin() {
@@ -571,6 +724,7 @@
             
             const displayName = user.user_metadata?.display_name || user.user_metadata?.user_name || user.email?.split('@')[0] || 'Parent';
             userName.textContent = `${greeting}, ${displayName}!`;
+            userName.insertAdjacentHTML('afterend', '<p style="font-size: 14px; color: #78716c; margin: 0 0 32px 0;">Manage your children\'s cooking journey and track their progress.</p>');
             
             loadKids();
             loadSettings();
@@ -581,7 +735,7 @@
             const password = loginPassword.value.trim();
 
             if (!email || !password) {
-                alert('Please enter email and password');
+                showAlert('Required', 'Please enter email and password');
                 return;
             }
 
@@ -616,7 +770,7 @@
             const password = signupPassword.value.trim();
 
             if (!name || !email || !password) {
-                alert('Please fill in all fields');
+                showAlert('Required', 'Please fill in all fields');
                 return;
             }
 
@@ -634,12 +788,12 @@
             hideLoading();
 
             if (error) {
-                alert('Error creating account: ' + error.message);
+                showAlert('Error', 'Error creating account: ' + error.message);
                 return;
             }
 
             if (data.user) {
-                alert('Account created successfully! Please sign in.');
+                showAlert('Success', 'Account created successfully! Please sign in.');
                 showLogin();
             }
         }
@@ -696,9 +850,19 @@
                         <div class="kid-info">
                             <h3>${kid.name}</h3>
                             <p>Age: ${kid.age}</p>
-                            <p class="kid-email">${kid.email}</p>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <p class="kid-email">${kid.email}</p>
+                                <div class="info-icon" data-tooltip="This is your child's custom email address. They can use this to login.">
+                                    <svg style="width: 16px; height: 16px; color: #78716c; cursor: pointer;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
-                        <button onclick="deleteKid('${kid.id}')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;">Delete</button>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="manageKid('${kid.id}')" style="background: none; border: 1px solid #e7e5e4; color: #1c1917; cursor: pointer; font-size: 14px; padding: 6px 12px; border-radius: 6px;">Manage</button>
+                            <button onclick="deleteKid('${kid.id}')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px; padding: 6px 12px;">Delete</button>
+                        </div>
                     </div>
                 `).join('');
             } else {
@@ -719,12 +883,12 @@
             const age = parseInt(kidAge.value);
 
             if (!name || !age) {
-                alert('Please enter kid\'s name and age');
+                showAlert('Required', 'Please enter kid\'s name and age');
                 return;
             }
 
             if (age < 1 || age > 18) {
-                alert('Age must be between 1 and 18');
+                showAlert('Invalid Age', 'Age must be between 1 and 18');
                 return;
             }
 
@@ -743,7 +907,7 @@
                 .single();
 
             if (error) {
-                alert('Error adding kid: ' + error.message);
+                showAlert('Error', 'Error adding kid: ' + error.message);
                 return;
             }
 
@@ -754,21 +918,69 @@
         }
 
         async function deleteKid(kidId) {
-            if (!confirm('Are you sure you want to delete this kid?')) {
+            showConfirm('Delete Child', 'Are you sure you want to delete this child? This action cannot be undone.', async () => {
+                const { error } = await SupabaseClient
+                    .from('kids')
+                    .delete()
+                    .eq('id', kidId);
+
+                if (error) {
+                    showAlert('Error', 'Error deleting kid: ' + error.message);
+                    return;
+                }
+
+                loadKids();
+            });
+        }
+
+        async function manageKid(kidId) {
+            const { data: kid, error } = await SupabaseClient
+                .from('kids')
+                .select('*')
+                .eq('id', kidId)
+                .single();
+
+            if (error) {
+                showAlert('Error', 'Error loading kid data: ' + error.message);
+                return;
+            }
+
+            currentEditingKidId = kidId;
+            editKidName.value = kid.name;
+            editKidAge.value = kid.age;
+            editKidModal.classList.remove('hidden');
+        }
+
+        async function saveKidEdit() {
+            const name = editKidName.value.trim();
+            const age = parseInt(editKidAge.value);
+
+            if (!name || !age) {
+                showAlert('Required', 'Please enter name and age');
+                return;
+            }
+
+            if (age < 1 || age > 18) {
+                showAlert('Invalid Age', 'Age must be between 1 and 18');
                 return;
             }
 
             const { error } = await SupabaseClient
                 .from('kids')
-                .delete()
-                .eq('id', kidId);
+                .update({ name, age })
+                .eq('id', currentEditingKidId);
 
             if (error) {
-                alert('Error deleting kid: ' + error.message);
+                showAlert('Error', 'Error updating kid: ' + error.message);
                 return;
             }
 
+            editKidModal.classList.add('hidden');
+            editKidName.value = '';
+            editKidAge.value = '';
+            currentEditingKidId = null;
             loadKids();
+            showAlert('Success', 'Child updated successfully!');
         }
 
         function loadSettings() {
@@ -782,7 +994,7 @@
             const name = settingsName.value.trim();
             
             if (!name) {
-                alert('Please enter your name');
+                showAlert('Required', 'Please enter your name');
                 return;
             }
 
@@ -791,13 +1003,22 @@
             });
 
             if (error) {
-                alert('Error saving settings: ' + error.message);
+                showAlert('Error', 'Error saving settings: ' + error.message);
                 return;
             }
 
             currentUser.user_metadata.display_name = name;
-            userName.textContent = `Welcome, ${name}!`;
-            alert('Settings saved successfully!');
+            const hour = new Date().getHours();
+            let greeting;
+            if (hour < 12) {
+                greeting = 'Good morning';
+            } else if (hour < 18) {
+                greeting = 'Good afternoon';
+            } else {
+                greeting = 'Good evening';
+            }
+            userName.textContent = `${greeting}, ${name}!`;
+            showAlert('Success', 'Settings saved successfully!');
         }
 
         // Event Listeners
@@ -836,12 +1057,35 @@
 
         confirmAddKid.addEventListener('click', addKid);
 
-        sidebarLogout.addEventListener('click', async () => {
-            await SupabaseClient.auth.signOut();
-            showLogin();
+        sidebarLogout.addEventListener('click', () => {
+            showConfirm('Sign Out', 'Are you sure you want to sign out?', async () => {
+                await SupabaseClient.auth.signOut();
+                showLogin();
+            });
         });
 
         saveSettingsBtn.addEventListener('click', saveSettings);
+        alertModalOk.addEventListener('click', () => {
+            alertModal.classList.add('hidden');
+        });
+        confirmModalCancel.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+            confirmCallback = null;
+        });
+        confirmModalConfirm.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+            if (confirmCallback) {
+                confirmCallback();
+                confirmCallback = null;
+            }
+        });
+        editKidCancel.addEventListener('click', () => {
+            editKidModal.classList.add('hidden');
+            editKidName.value = '';
+            editKidAge.value = '';
+            currentEditingKidId = null;
+        });
+        editKidSave.addEventListener('click', saveKidEdit);
 
         // Check for existing session
         async function checkSession() {
