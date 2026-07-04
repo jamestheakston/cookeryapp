@@ -659,23 +659,23 @@
     </div>
     
     <!-- Add Kid Modal -->
-    <div id="add-kid-modal" class="modal hidden">
-        <div class="modal-content">
-            <h3 class="modal-title">Add Child</h3>
+    <div id="add-kid-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Add Child</h2>
             
             <div class="input-group">
                 <label>Name</label>
-                <input type="text" id="kid-name" placeholder="Enter kid's name">
+                <input type="text" id="kid-name" placeholder="Enter kid's name" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin-bottom: 16px; box-sizing: border-box;">
             </div>
             
             <div class="input-group">
                 <label>Age</label>
-                <input type="number" id="kid-age" placeholder="Enter age" min="1" max="18">
+                <input type="number" id="kid-age" placeholder="Enter age" min="1" max="18" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin-bottom: 16px; box-sizing: border-box;">
             </div>
             
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-secondary" id="cancel-add-kid">Cancel</button>
-                <button class="modal-btn modal-btn-primary" id="confirm-add-kid">Add Child</button>
+            <div style="display: flex; gap: 12px;">
+                <button id="cancel-add-kid" style="flex: 1; background-color: #e7e5e4; color: #1c1917; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Cancel</button>
+                <button id="confirm-add-kid" style="flex: 1; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Add Child</button>
             </div>
         </div>
     </div>
@@ -918,6 +918,11 @@
             }
 
             if (data.user) {
+                // Add welcome notification
+                currentUser = data.user;
+                await addNotification('Welcome to Cookery Kids', 'Prepare your kids for life. Teach them how to cook amazing recipes safely.');
+                currentUser = null;
+                
                 showAlert('Success', 'Account created successfully! Please sign in.');
                 showLogin();
             }
@@ -953,6 +958,7 @@
             const { error } = await SupabaseClient
                 .from('notifications')
                 .insert({
+                    id: Date.now(),
                     user_id: currentUser.id,
                     title,
                     message,
