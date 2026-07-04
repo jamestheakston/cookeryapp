@@ -135,6 +135,15 @@
         .hidden {
             display: none !important;
         }
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
         .info-icon {
             position: relative;
             display: inline-block;
@@ -216,6 +225,22 @@
         }
         .modal-btn:hover {
             opacity: 0.9;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .notification-badge {
+            background-color: #ef4444;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
         }
         .input-group {
             margin-bottom: 20px;
@@ -391,7 +416,9 @@
             </div>
             
             <div id="login-loading" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 300px; height: 300px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
+                <svg style="width: 64px; height: 64px; color: #1c1917; animation: spin 1s linear infinite; margin: 0 auto 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="8"></circle>
+                </svg>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Please wait</h3>
                 <p style="margin: 0; font-size: 14px; color: #78716c;">Signing you in...</p>
             </div>
@@ -455,6 +482,10 @@
             <a class="nav-item" data-section="kids" href="#">My Kids</a>
             
             <div class="nav-section">Account</div>
+            <a class="nav-item" data-section="notifications" href="#" style="display: flex; align-items: center; justify-content: space-between;">
+                Notifications
+                <span id="notifications-badge" class="notification-badge hidden">1</span>
+            </a>
             <a class="nav-item" data-section="settings" href="#">Settings</a>
             
             <div style="margin-top: 32px;">
@@ -528,6 +559,30 @@
                 </div>
             </div>
             
+            <!-- Notifications Section -->
+            <div id="section-notifications" class="portal-section">
+                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 32px 0;">Notifications</h1>
+                
+                <div class="card">
+                    <div style="display: flex; align-items: flex-start; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #e7e5e4; margin-bottom: 20px;">
+                        <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <span style="font-size: 16px; font-weight: 600; color: #1c1917;">Cookery</span>
+                                <div class="info-icon" data-tooltip="Official Account">
+                                    <svg style="width: 16px; height: 16px; color: #3b82f6;" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Welcome to Cookery Kids</h3>
+                            <p style="margin: 0 0 8px 0; font-size: 14px; color: #78716c; line-height: 1.6;">Prepare your kids for life. Teach them how to cook amazing recipes safely.</p>
+                            <span style="font-size: 12px; color: #a8a29e;">Just now</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <!-- Child Management Section -->
             <div id="section-child-manage" class="portal-section">
                 <button onclick="switchSection('kids')" style="background: none; border: none; color: #78716c; cursor: pointer; font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 4px;">
@@ -537,7 +592,7 @@
                     Back to My Kids
                 </button>
                 
-                <div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                <div id="child-manage-action-required" style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
                     <svg style="width: 20px; height: 20px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                     </svg>
@@ -583,6 +638,11 @@
                         <input type="number" id="manage-kid-age" min="1" max="18">
                     </div>
                     
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="manage-kid-password" placeholder="Set a password for your child">
+                    </div>
+                    
                     <button id="save-manage-kid-btn" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
@@ -616,12 +676,6 @@
         <svg style="width: 64px; height: 64px; color: #1c1917; animation: spin 1s linear infinite;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="8"></circle>
         </svg>
-        <style>
-            @keyframes spin {
-                from { transform: rotate(0deg); }
-                to { transform: rotate(360deg); }
-            }
-        </style>
     </div>
 
     <!-- Custom Alert Modal -->
@@ -885,6 +939,42 @@
             return result;
         }
 
+        function addNotification(title, message) {
+            const notificationsSection = document.getElementById('section-notifications');
+            const card = notificationsSection.querySelector('.card');
+            const now = new Date();
+            const timeString = 'Just now';
+            
+            const newNotification = document.createElement('div');
+            newNotification.style.cssText = 'display: flex; align-items: flex-start; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #e7e5e4; margin-bottom: 20px;';
+            newNotification.innerHTML = `
+                <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <span style="font-size: 16px; font-weight: 600; color: #1c1917;">Cookery</span>
+                        <div class="info-icon" data-tooltip="Official Account">
+                            <svg style="width: 16px; height: 16px; color: #3b82f6;" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 600; color: #1c1917;">${title}</h3>
+                    <p style="margin: 0 0 8px 0; font-size: 14px; color: #78716c; line-height: 1.6;">${message}</p>
+                    <span style="font-size: 12px; color: #a8a29e;">${timeString}</span>
+                </div>
+            `;
+            
+            card.insertBefore(newNotification, card.firstChild);
+            
+            // Update notifications badge
+            const notificationsBadge = document.getElementById('notifications-badge');
+            if (notificationsBadge) {
+                const currentCount = parseInt(notificationsBadge.textContent) || 0;
+                notificationsBadge.textContent = currentCount + 1;
+                notificationsBadge.classList.remove('hidden');
+            }
+        }
+
         function generateKidEmail(kidName) {
             const sanitizedName = kidName.toLowerCase().replace(/[^a-z0-9]/g, '');
             const code = generateRandomCode();
@@ -911,6 +1001,14 @@
                 kidsContainer.innerHTML = kids.map(kid => `
                     <div class="kid-card">
                         <div class="kid-info">
+                            ${!kid.password ? `
+                            <div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 6px; padding: 6px 10px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px;">
+                                <svg style="width: 14px; height: 14px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <span style="font-size: 12px; font-weight: 600; color: #d97706;">Action required</span>
+                            </div>
+                            ` : ''}
                             <h3>${kid.name}</h3>
                             <p>Age: ${kid.age}</p>
                             <div style="display: flex; align-items: center; gap: 4px;">
@@ -978,6 +1076,7 @@
             kidName.value = '';
             kidAge.value = '';
             loadKids();
+            addNotification(`${name} added`, `You've successfully added ${name} to your family. Don't forget to set a password for them!`);
         }
 
         async function deleteKid(kidId) {
@@ -1013,12 +1112,23 @@
             document.getElementById('child-manage-email').textContent = kid.email;
             document.getElementById('manage-kid-name').value = kid.name;
             document.getElementById('manage-kid-age').value = kid.age;
+            
+            const actionRequiredBanner = document.getElementById('child-manage-action-required');
+            if (actionRequiredBanner) {
+                if (kid.password) {
+                    actionRequiredBanner.classList.add('hidden');
+                } else {
+                    actionRequiredBanner.classList.remove('hidden');
+                }
+            }
+            
             switchSection('child-manage');
         }
 
         async function saveKidEdit() {
             const name = document.getElementById('manage-kid-name').value.trim();
             const age = parseInt(document.getElementById('manage-kid-age').value);
+            const password = document.getElementById('manage-kid-password').value.trim();
 
             if (!name || !age) {
                 showAlert('Required', 'Please enter name and age');
@@ -1030,9 +1140,14 @@
                 return;
             }
 
+            const updateData = { name, age };
+            if (password) {
+                updateData.password = password;
+            }
+
             const { error } = await SupabaseClient
                 .from('kids')
-                .update({ name, age })
+                .update(updateData)
                 .eq('id', currentEditingKidId);
 
             if (error) {
@@ -1041,6 +1156,15 @@
             }
 
             document.getElementById('child-manage-name').textContent = name;
+            document.getElementById('manage-kid-password').value = '';
+            
+            if (password) {
+                const actionRequiredBanner = document.getElementById('child-manage-action-required');
+                if (actionRequiredBanner) {
+                    actionRequiredBanner.classList.add('hidden');
+                }
+            }
+            
             showAlert('Success', 'Child updated successfully!');
             loadKids();
         }
