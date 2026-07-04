@@ -759,6 +759,36 @@
             customAlertModal.classList.remove('hidden');
         }
 
+        function showConfirm(title, message, onConfirm) {
+            confirmTitle.textContent = title;
+            confirmMessage.textContent = message;
+            confirmModal.classList.remove('hidden');
+            
+            // Remove existing listeners
+            const newOkBtn = confirmOkBtn.cloneNode(true);
+            const newCancelBtn = confirmCancelBtn.cloneNode(true);
+            confirmOkBtn.parentNode.replaceChild(newOkBtn, confirmOkBtn);
+            confirmCancelBtn.parentNode.replaceChild(newCancelBtn, confirmCancelBtn);
+            
+            // Add new listeners
+            newOkBtn.addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+                onConfirm();
+            });
+            
+            newCancelBtn.addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+            });
+            
+            // Update references
+            document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+            });
+            document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+                confirmModal.classList.add('hidden');
+            });
+        }
+
         async function checkAuth() {
             showLoading();
             const { data: { session } } = await SupabaseClient.auth.getSession();
