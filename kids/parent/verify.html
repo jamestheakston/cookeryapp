@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Account | Cookery Kids</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #faf8f5;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 480px;
+            width: 90%;
+            padding: 40px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+        .logo img {
+            width: 48px;
+            height: 48px;
+        }
+        .logo span {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid rgba(231, 229, 228, 0.6);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 32px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+            text-align: center;
+        }
+        p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1c1917;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #1c1917;
+        }
+        button {
+            width: 100%;
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 14px 32px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            border: none;
+        }
+        button:hover {
+            background-color: #2c2a28;
+        }
+        button:disabled {
+            background-color: #a8a29e;
+            cursor: not-allowed;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading.active {
+            display: block;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e7e5e4;
+            border-top-color: #1c1917;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .error {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #dc2626;
+            display: none;
+        }
+        .error.active {
+            display: block;
+        }
+        .success {
+            background-color: #dcfce7;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #16a34a;
+            display: none;
+        }
+        .success.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo">
+            <span>Cookery Kids</span>
+        </div>
+        
+        <div class="card">
+            <h1>Verify Your Account</h1>
+            <p>To ensure the safety of our community, we need to verify that you are an adult before you can add children to your account.</p>
+            
+            <div id="error" class="error"></div>
+            <div id="success" class="success"></div>
+            
+            <div id="form-content">
+                <div class="input-group">
+                    <label for="birth-date">Date of Birth</label>
+                    <input type="date" id="birth-date" required>
+                </div>
+                
+                <button id="verify-btn" onclick="verifyAccount()">Verify Account</button>
+            </div>
+            
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p>Verifying your account...</p>
+            </div>
+            
+            <a href="/kids/parentdashboard.html" class="back-link">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function verifyAccount() {
+            const birthDateInput = document.getElementById('birth-date');
+            const errorEl = document.getElementById('error');
+            const successEl = document.getElementById('success');
+            const formContent = document.getElementById('form-content');
+            const loading = document.getElementById('loading');
+            const verifyBtn = document.getElementById('verify-btn');
+
+            const birthDate = birthDateInput.value;
+            
+            if (!birthDate) {
+                errorEl.textContent = 'Please enter your date of birth';
+                errorEl.classList.add('active');
+                return;
+            }
+
+            // Calculate age
+            const birth = new Date(birthDate);
+            const today = new Date();
+            let age = today.getFullYear() - birth.getFullYear();
+            const monthDiff = today.getMonth() - birth.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+                age--;
+            }
+
+            if (age < 18) {
+                errorEl.textContent = 'You must be at least 18 years old to use Cookery Kids';
+                errorEl.classList.add('active');
+                return;
+            }
+
+            // Show loading
+            formContent.style.display = 'none';
+            loading.classList.add('active');
+            errorEl.classList.remove('active');
+            successEl.classList.remove('active');
+
+            try {
+                const { data: { user } } = await supabase.auth.getUser();
+                
+                if (!user) {
+                    throw new Error('Please sign in first');
+                }
+
+                // Update user metadata
+                const { error } = await supabase.auth.updateUser({
+                    data: { verified: true }
+                });
+
+                if (error) throw error;
+
+                // Show success
+                loading.classList.remove('active');
+                successEl.textContent = 'Account verified successfully! Redirecting to dashboard...';
+                successEl.classList.add('active');
+
+                // Redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/kids/parentdashboard.html';
+                }, 2000);
+
+            } catch (error) {
+                loading.classList.remove('active');
+                formContent.style.display = 'block';
+                errorEl.textContent = error.message || 'Verification failed. Please try again.';
+                errorEl.classList.add('active');
+            }
+        }
+
+        // Check if user is logged in
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                window.location.href = '/kids/parentdashboard.html';
+            }
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>
