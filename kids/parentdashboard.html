@@ -507,6 +507,13 @@
                 <h1 id="dashboard-greeting" style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Good morning!</h1>
                 <p style="font-size: 16px; color: #78716c; margin: 0 0 32px 0;">Manage your children's cooking journey and track their progress.</p>
                 
+                <div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <svg style="width: 20px; height: 20px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span style="font-size: 14px; font-weight: 500; color: #92400e;">Cookery Kids is currently in development. Full launch expected in 2028.</span>
+                </div>
+                
                 <div class="card">
                     <h2>Quick Stats</h2>
                     <p>Overview of your family's cooking journey.</p>
@@ -921,6 +928,7 @@
                 // Add welcome notification
                 currentUser = data.user;
                 await addNotification('Welcome to Cookery Kids', 'Prepare your kids for life. Teach them how to cook amazing recipes safely.');
+                await addNotification('Verify your account', 'Please verify your account to confirm you are an adult. This is required to add children, manage their profiles, and access all features.');
                 currentUser = null;
                 
                 showAlert('Success', 'Account created successfully! Please sign in.');
@@ -1005,6 +1013,7 @@
             
             card.innerHTML = notifications.map(notification => {
                 const timeString = getTimeAgo(notification.created_at);
+                const isVerification = notification.title === 'Verify your account';
                 return `
                     <div style="display: flex; align-items: flex-start; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #e7e5e4; margin-bottom: 20px; ${!notification.read ? 'background-color: #faf8f5; padding: 16px; border-radius: 8px;' : ''}">
                         <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
@@ -1020,8 +1029,16 @@
                             </div>
                             <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 600; color: #1c1917;">${notification.title}</h3>
                             <p style="margin: 0 0 8px 0; font-size: 14px; color: #78716c; line-height: 1.6;">${notification.message}</p>
-                            <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                                 <span style="font-size: 12px; color: #a8a29e;">${timeString}</span>
+                                ${isVerification ? `
+                                    <a href="/kids/parent/verify" style="display: inline-flex; align-items: center; gap: 6px; background-color: #3b82f6; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
+                                        Verify account
+                                        <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                    </a>
+                                ` : ''}
                                 ${!notification.read ? `<button onclick="markAsRead(${notification.id})" style="background: none; border: none; color: #3b82f6; cursor: pointer; font-size: 12px; font-weight: 600;">Mark as read</button>` : ''}
                             </div>
                         </div>
@@ -1144,6 +1161,13 @@
 
             if (age < 1 || age > 18) {
                 showAlert('Invalid Age', 'Age must be between 1 and 18');
+                return;
+            }
+
+            // Check if user is verified
+            const { data: { user } } = await SupabaseClient.auth.getUser();
+            if (!user?.user_metadata?.verified) {
+                showAlert('Verification Required', 'Please verify your account before adding children. Check your notifications for the verification link.');
                 return;
             }
 
