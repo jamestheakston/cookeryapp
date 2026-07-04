@@ -311,6 +311,33 @@
                         <button id="add-scope-btn" style="background-color: #1c1917; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: background-color 0.2s;">Add</button>
                     </div>
                 </div>
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px;">OAuth Endpoints</label>
+                    <p style="margin: 0 0 12px 0; font-size: 13px; color: #78716c;">Share these endpoints with third-party applications that need to integrate with your OAuth 2.1 server.</p>
+                    
+                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 16px;">
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 11px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Authorization endpoint</span>
+                            <code style="display: block; font-size: 12px; color: #1c1917; background-color: #ffffff; padding: 6px 10px; border-radius: 4px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/oauth/authorize</code>
+                        </div>
+                        
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 11px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Token endpoint</span>
+                            <code style="display: block; font-size: 12px; color: #1c1917; background-color: #ffffff; padding: 6px 10px; border-radius: 4px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/oauth/token</code>
+                        </div>
+                        
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 11px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">JWKS endpoint</span>
+                            <code style="display: block; font-size: 12px; color: #1c1917; background-color: #ffffff; padding: 6px 10px; border-radius: 4px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/.well-known/jwks.json</code>
+                        </div>
+                        
+                        <div>
+                            <span style="display: block; font-size: 11px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">OIDC discovery</span>
+                            <code style="display: block; font-size: 12px; color: #1c1917; background-color: #ffffff; padding: 6px 10px; border-radius: 4px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/.well-known/openid-configuration</code>
+                        </div>
+                    </div>
+                </div>
                 <div style="display: flex; gap: 12px; margin-top: 32px;">
                     <button id="save-app-settings" style="flex: 1; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Save Changes</button>
                     <button id="delete-app-btn" style="background-color: #fef2f2; color: #dc2626; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #fecaca; cursor: pointer; transition: background-color 0.2s;">Delete App</button>
