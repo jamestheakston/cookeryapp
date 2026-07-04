@@ -203,7 +203,7 @@
     <script>
         const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
-        const supabaseClient = window.supabase || supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function verifyAccount() {
             const birthDateInput = document.getElementById('birth-date');
