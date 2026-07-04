@@ -403,6 +403,35 @@
                     </div>
                     <div id="apps-container" style="margin-top: 24px;"></div>
                 </div>
+                
+                <div class="card">
+                    <h2>OAuth Endpoints</h2>
+                    <p>Use these endpoints to integrate Cookery OAuth into your applications.</p>
+                    
+                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Authorization Endpoint</span>
+                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/oauth/authorize</code>
+                        </div>
+                        
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Token Endpoint</span>
+                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/oauth/token</code>
+                        </div>
+                        
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">JWKS Endpoint</span>
+                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/.well-known/jwks.json</code>
+                        </div>
+                        
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">OpenID Configuration</span>
+                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/.well-known/openid-configuration</code>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 13px; color: #78716c;">To use OAuth, register your application in the Supabase dashboard under Authentication > OAuth Apps. You'll receive a client ID and client secret to use with these endpoints.</p>
+                </div>
             </div>
 
             <!-- Settings Section -->
