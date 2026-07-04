@@ -538,7 +538,7 @@
             <div id="section-kids" class="portal-section">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
                     <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0;">My Kids</h1>
-                    <button id="add-kid-btn" class="btn btn-primary">Add Kid</button>
+                    <button id="add-kid-btn" class="btn btn-primary hidden">Add Kid</button>
                 </div>
                 
                 <div id="kids-container">
@@ -548,6 +548,9 @@
                         </svg>
                         <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">No kids added yet</h3>
                         <p style="margin: 0; font-size: 14px; color: #78716c;">Add your first kid to get started with Cookery Kids.</p>
+                        <div id="verification-required-message" style="margin-top: 16px; padding: 16px; background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; display: none;">
+                            <p style="margin: 0; font-size: 14px; color: #92400e; font-weight: 500;">You need to verify your account before adding children. Check your notifications for the verification link.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1015,7 +1018,7 @@
                 const timeString = getTimeAgo(notification.created_at);
                 const isVerification = notification.title === 'Verify your account';
                 return `
-                    <div style="display: flex; align-items: flex-start; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #e7e5e4; margin-bottom: 20px; ${!notification.read ? 'background-color: #faf8f5; padding: 16px; border-radius: 8px;' : ''}">
+                    <div style="display: flex; align-items: flex-start; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #e7e5e4; margin-bottom: 20px; ${!notification.read ? 'background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%); padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6;' : ''}">
                         <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
                         <div style="flex: 1;">
                             <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
@@ -1030,7 +1033,6 @@
                             <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 600; color: #1c1917;">${notification.title}</h3>
                             <p style="margin: 0 0 8px 0; font-size: 14px; color: #78716c; line-height: 1.6;">${notification.message}</p>
                             <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                                <span style="font-size: 12px; color: #a8a29e;">${timeString}</span>
                                 ${isVerification ? `
                                     <a href="/kids/parent/verify" style="display: inline-flex; align-items: center; gap: 6px; background-color: #3b82f6; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
                                         Verify account
@@ -1039,6 +1041,7 @@
                                         </svg>
                                     </a>
                                 ` : ''}
+                                <span style="font-size: 12px; color: #a8a29e;">${timeString}</span>
                                 ${!notification.read ? `<button onclick="markAsRead(${notification.id})" style="background: none; border: none; color: #3b82f6; cursor: pointer; font-size: 12px; font-weight: 600;">Mark as read</button>` : ''}
                             </div>
                         </div>
@@ -1094,6 +1097,20 @@
 
         async function loadKids() {
             if (!currentUser) return;
+            
+            const { data: { user } } = await SupabaseClient.auth.getUser();
+            const isVerified = user?.user_metadata?.verified;
+            
+            const addKidBtn = document.getElementById('add-kid-btn');
+            const verificationMessage = document.getElementById('verification-required-message');
+            
+            if (isVerified) {
+                addKidBtn.classList.remove('hidden');
+                verificationMessage.style.display = 'none';
+            } else {
+                addKidBtn.classList.add('hidden');
+                verificationMessage.style.display = 'block';
+            }
             
             const { data: kids, error } = await SupabaseClient
                 .from('kids')
