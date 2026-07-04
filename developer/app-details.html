@@ -302,6 +302,31 @@
                     <p style="margin: 0 0 8px 0; font-size: 14px; font-weight: 600; color: #1c1917;">Developer Policy Agreement</p>
                     <p style="margin: 0 0 8px 0; font-size: 13px; color: #78716c;">Navigate to the <a href="/developer.html#settings" style="color: #3b82f6; text-decoration: underline;">Agreements section in the developer settings</a> to manage your policy consent.</p>
                 </div>
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px;">OAuth Client Credentials</label>
+                    <p style="margin: 0 0 12px 0; font-size: 13px; color: #78716c;">Your OAuth client credentials for integrating with third-party applications.</p>
+                    
+                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 16px;">
+                        <div style="margin-bottom: 12px;">
+                            <span style="display: block; font-size: 11px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Client ID</span>
+                            <div style="display: flex; gap: 8px;">
+                                <code id="oauth-client-id" style="flex: 1; display: block; font-size: 12px; color: #1c1917; background-color: #ffffff; padding: 6px 10px; border-radius: 4px; border: 1px solid #e7e5e4; word-break: break-all;">Not registered</code>
+                                <button id="copy-client-id-btn" style="background-color: #faf8f5; color: #1c1917; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div id="client-secret-container" style="display: none;">
+                            <span style="display: block; font-size: 11px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Client Secret</span>
+                            <div style="display: flex; gap: 8px;">
+                                <code id="oauth-client-secret" style="flex: 1; display: block; font-size: 12px; color: #1c1917; background-color: #ffffff; padding: 6px 10px; border-radius: 4px; border: 1px solid #e7e5e4; word-break: break-all;">Not available</code>
+                                <button id="copy-client-secret-btn" style="background-color: #faf8f5; color: #1c1917; padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">Copy</button>
+                            </div>
+                            <p style="margin: 8px 0 0 0; font-size: 11px; color: #dc2626;">⚠️ Keep this secret secure. Never share it publicly.</p>
+                        </div>
+                    </div>
+                </div>
+                
                 <div style="margin-bottom: 24px;">
                     <label style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px;">OAuth Scopes</label>
                     <p style="margin: 0 0 12px 0; font-size: 13px; color: #78716c;">Define what permissions your app requests. Users can add scopes within the OAuth request.</p>
