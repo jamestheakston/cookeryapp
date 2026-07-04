@@ -323,6 +323,11 @@
     </div>
     
     <script>
+        const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+
+        const SupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const urlParams = new URLSearchParams(window.location.search);
         const appId = parseInt(urlParams.get('id'));
         
@@ -545,4 +550,3 @@
     </script>
 </body>
 </html>
- 
