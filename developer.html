@@ -1251,8 +1251,8 @@
             showLoading();
 
             try {
-                // Register OAuth client dynamically
-                const oauthResponse = await fetch(`${SUPABASE_URL}/auth/v1/oauth/clients`, {
+                // Register OAuth client via Edge Function
+                const oauthResponse = await fetch(`${SUPABASE_URL}/functions/v1/register-oauth-client`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
@@ -1267,7 +1267,7 @@
 
                 if (!oauthResponse.ok) {
                     const errorData = await oauthResponse.json();
-                    throw new Error(errorData.message || 'Failed to register OAuth client');
+                    throw new Error(errorData.error || 'Failed to register OAuth client');
                 }
 
                 const oauthData = await oauthResponse.json();
