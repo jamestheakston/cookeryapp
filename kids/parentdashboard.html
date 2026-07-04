@@ -284,17 +284,19 @@
                     <p style="font-size: 14px; color: #78716c; margin: 0;">Parent Dashboard</p>
                 </div>
                 
-                <div class="input-group">
-                    <label>Email</label>
-                    <input type="email" id="login-email" placeholder="Enter your email">
+                <div style="max-width: 320px; margin: 0 auto;">
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password">
+                    </div>
+                    
+                    <button id="login-btn" class="btn btn-primary" style="width: 100%;">Sign In</button>
                 </div>
-                
-                <div class="input-group">
-                    <label>Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password">
-                </div>
-                
-                <button id="login-btn" class="btn btn-primary" style="width: 100%;">Sign In</button>
                 
                 <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #78716c;">
                     Don't have an account? <a href="#" id="show-signup" style="color: #1c1917; text-decoration: underline;">Sign Up</a>
@@ -306,13 +308,13 @@
             </div>
             
             <div id="login-loading" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px; margin: 0 auto 24px;" autoplay loop></dotlottie-wc>
+                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Please wait</h3>
                 <p style="margin: 0; font-size: 14px; color: #78716c;">Signing you in...</p>
             </div>
             
             <div id="login-error" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/75d1820c-b02e-4c3f-a7bc-6bae8951f0cb/2mHp5KTzJP.lottie" style="width: 300px; height: 300px; margin: 0 auto 24px;" autoplay loop></dotlottie-wc>
+                <dotlottie-wc src="https://lottie.host/75d1820c-b02e-4c3f-a7bc-6bae8951f0cb/2mHp5KTzJP.lottie" style="width: 200px; height: 200px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Error</h3>
                 <p id="login-error-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;">An error occurred</p>
                 <button id="retry-login-btn" class="btn btn-primary">Try Again</button>
