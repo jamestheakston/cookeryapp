@@ -34,6 +34,7 @@
         .logo img {
             width: 48px;
             height: 48px;
+            border-radius: 12px;
         }
         .logo span {
             font-family: 'Playfair Display', Georgia, serif;
@@ -202,7 +203,7 @@
     <script>
         const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase || supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function verifyAccount() {
             const birthDateInput = document.getElementById('birth-date');
@@ -243,18 +244,30 @@
             successEl.classList.remove('active');
 
             try {
-                const { data: { user } } = await supabase.auth.getUser();
+                const { data: { user } } = await supabaseClient.auth.getUser();
                 
                 if (!user) {
                     throw new Error('Please sign in first');
                 }
 
                 // Update user metadata
-                const { error } = await supabase.auth.updateUser({
+                const { error } = await supabaseClient.auth.updateUser({
                     data: { verified: true }
                 });
 
                 if (error) throw error;
+
+                // Add success notification
+                await supabaseClient
+                    .from('notifications')
+                    .insert({
+                        id: Date.now(),
+                        user_id: user.id,
+                        title: 'Account Verified',
+                        message: 'Your account has been verified successfully. You can now add children and manage their profiles.',
+                        read: false,
+                        created_at: new Date().toISOString()
+                    });
 
                 // Show success
                 loading.classList.remove('active');
@@ -276,7 +289,7 @@
 
         // Check if user is logged in
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             
             if (!session) {
                 window.location.href = '/kids/parentdashboard.html';
