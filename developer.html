@@ -403,35 +403,6 @@
                     </div>
                     <div id="apps-container" style="margin-top: 24px;"></div>
                 </div>
-                
-                <div class="card">
-                    <h2>OAuth Endpoints</h2>
-                    <p>Use these endpoints to integrate Cookery OAuth into your applications.</p>
-                    
-                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px; margin-bottom: 16px;">
-                        <div style="margin-bottom: 12px;">
-                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Authorization Endpoint</span>
-                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/oauth/authorize</code>
-                        </div>
-                        
-                        <div style="margin-bottom: 12px;">
-                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Token Endpoint</span>
-                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/oauth/token</code>
-                        </div>
-                        
-                        <div style="margin-bottom: 12px;">
-                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">JWKS Endpoint</span>
-                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/.well-known/jwks.json</code>
-                        </div>
-                        
-                        <div style="margin-bottom: 12px;">
-                            <span style="display: block; font-size: 12px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">OpenID Configuration</span>
-                            <code style="display: block; font-size: 13px; color: #1c1917; background-color: #ffffff; padding: 8px 12px; border-radius: 6px; border: 1px solid #e7e5e4; word-break: break-all;">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1/.well-known/openid-configuration</code>
-                        </div>
-                    </div>
-                    
-                    <p style="font-size: 13px; color: #78716c;">To use OAuth, register your application in the Supabase dashboard under Authentication > OAuth Apps. You'll receive a client ID and client secret to use with these endpoints.</p>
-                </div>
             </div>
 
             <!-- Settings Section -->
@@ -460,15 +431,16 @@
                     <h2>Agreements</h2>
                     <p>Manage your consent and agreements with Cookery.</p>
                     
-                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                    <div id="developer-policy-section" style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
                             <span style="font-size: 14px; font-weight: 600; color: #1c1917;">Cookery Developer Policy Agreement</span>
-                            <span style="font-size: 12px; color: #78716c;">Last Updated: July 4th, 2026</span>
+                            <span id="policy-status" style="font-size: 12px; color: #dc2626;">Not Signed</span>
                         </div>
-                        <p style="margin: 0 0 16px 0; font-size: 13px; color: #78716c;">You have agreed to the Cookery Developer Policy, which governs your use of the developer platform and image hosting services.</p>
+                        <p id="policy-status-text" style="margin: 0 0 16px 0; font-size: 13px; color: #78716c;">You must agree to the Cookery Developer Policy before creating applications.</p>
                         <div style="display: flex; gap: 12px;">
                             <button id="view-policy-btn" style="background-color: #faf8f5; color: #1c1917; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">View</button>
-                            <button id="revoke-consent-btn" style="background-color: #fef2f2; color: #dc2626; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #fecaca; cursor: pointer; transition: background-color 0.2s;">Revoke Consent</button>
+                            <button id="sign-policy-btn" style="background-color: #1c1917; color: #ffffff; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Sign Agreement</button>
+                            <button id="revoke-consent-btn" class="hidden" style="background-color: #fef2f2; color: #dc2626; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #fecaca; cursor: pointer; transition: background-color 0.2s;">Revoke Consent</button>
                         </div>
                     </div>
                     
@@ -750,6 +722,10 @@
         const viewPrivacyBtn = document.getElementById('view-privacy-btn');
         const revokePrivacyBtn = document.getElementById('revoke-privacy-btn');
         const privacyCloseBtn = document.getElementById('privacy-close-btn');
+        const signPolicyBtn = document.getElementById('sign-policy-btn');
+        const policyStatus = document.getElementById('policy-status');
+        const policyStatusText = document.getElementById('policy-status-text');
+        const developerPolicySection = document.getElementById('developer-policy-section');
         const confirmModal = document.getElementById('confirm-modal');
         const confirmTitle = document.getElementById('confirm-title');
         const confirmMessage = document.getElementById('confirm-message');
@@ -1170,6 +1146,54 @@
             
             settingsName.value = currentUser.user_metadata?.display_name || '';
             settingsEmail.value = currentUser.email || '';
+            
+            // Check policy agreement status
+            updatePolicyStatus();
+        }
+        
+        function updatePolicyStatus() {
+            const hasSignedPolicy = currentUser.user_metadata?.developer_policy_signed === true;
+            
+            if (hasSignedPolicy) {
+                policyStatus.textContent = 'Signed';
+                policyStatus.style.color = '#16a34a';
+                policyStatusText.textContent = 'You have agreed to the Cookery Developer Policy, which governs your use of the developer platform and image hosting services.';
+                signPolicyBtn.classList.add('hidden');
+                revokeConsentBtn.classList.remove('hidden');
+            } else {
+                policyStatus.textContent = 'Not Signed';
+                policyStatus.style.color = '#dc2626';
+                policyStatusText.textContent = 'You must agree to the Cookery Developer Policy before creating applications.';
+                signPolicyBtn.classList.remove('hidden');
+                revokeConsentBtn.classList.add('hidden');
+            }
+        }
+        
+        async function signDeveloperPolicy() {
+            showLoading();
+            
+            try {
+                const { error } = await SupabaseClient.auth.updateUser({
+                    data: { developer_policy_signed: true, developer_policy_signed_at: new Date().toISOString() }
+                });
+                
+                if (error) {
+                    showAlert('Error', 'Failed to sign policy: ' + error.message);
+                    return;
+                }
+                
+                // Update local user metadata
+                currentUser.user_metadata.developer_policy_signed = true;
+                currentUser.user_metadata.developer_policy_signed_at = new Date().toISOString();
+                
+                updatePolicyStatus();
+                showAlert('Success', 'You have successfully agreed to the Cookery Developer Policy.');
+            } catch (error) {
+                console.error('Error signing policy:', error);
+                showAlert('Error', 'Failed to sign policy');
+            } finally {
+                hideLoading();
+            }
         }
 
         async function saveSettings() {
@@ -1210,6 +1234,12 @@
 
             if (!redirectUrl) {
                 showAlert('Required', 'Please enter a redirect URL');
+                return;
+            }
+
+            // Check if user has signed the developer policy
+            if (!currentUser.user_metadata?.developer_policy_signed) {
+                showAlert('Policy Agreement Required', 'Please sign the Cookery Developer Policy in Settings before creating an application.');
                 return;
             }
 
@@ -1318,12 +1348,28 @@
                     return;
                 }
                 
+                // Clear policy signed status
+                const { error: updateError } = await SupabaseClient.auth.updateUser({
+                    data: { developer_policy_signed: false, developer_policy_signed_at: null }
+                });
+                
+                if (updateError) {
+                    console.error('Error updating policy status:', updateError);
+                } else {
+                    currentUser.user_metadata.developer_policy_signed = false;
+                    currentUser.user_metadata.developer_policy_signed_at = null;
+                    updatePolicyStatus();
+                }
+                
                 // Reload applications list
                 loadApplications();
                 
                 showAlert('Success', 'Your consent has been revoked and all applications have been deleted.');
             });
         });
+        
+        // Sign policy
+        signPolicyBtn.addEventListener('click', signDeveloperPolicy);
         
         // Privacy policy modal
         viewPrivacyBtn.addEventListener('click', () => {
