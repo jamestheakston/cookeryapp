@@ -1017,6 +1017,12 @@
                                 <h3 style="margin: 0 0 4px 0; font-size: 16px; font-weight: 600; color: #1c1917;">${app.name}</h3>
                                 <p style="margin: 0; font-size: 13px; color: #78716c;">${app.description || 'No description'}</p>
                                 <p style="margin: 4px 0 0 0; font-size: 12px; color: #a8a29e;">Redirect: ${app.redirect_url}</p>
+                                ${app.oauth_client_id ? `
+                                <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e7e5e4;">
+                                    <p style="margin: 0 0 4px 0; font-size: 11px; font-weight: 600; color: #a8a29e; text-transform: uppercase; letter-spacing: 0.05em;">OAuth Client ID</p>
+                                    <code style="display: block; font-size: 12px; color: #1c1917; background-color: #ffffff; padding: 4px 8px; border-radius: 4px; border: 1px solid #e7e5e4; word-break: break-all;">${app.oauth_client_id}</code>
+                                </div>
+                                ` : ''}
                             </div>
                             <span class="badge-draft">Not Submitted</span>
                         </div>
@@ -1212,30 +1218,64 @@
                 return;
             }
 
-            const { data, error } = await SupabaseClient
-                .from('apps')
-                .insert({
-                    id: Date.now(),
-                    user_id: currentUser.id,
-                    name,
-                    description,
-                    redirect_url: redirectUrl,
-                    status: 'pending'
-                })
-                .select()
-                .single();
+            showLoading();
 
-            if (error) {
+            try {
+                // Register OAuth client dynamically
+                const oauthResponse = await fetch(`${SUPABASE_URL}/auth/v1/oauth/clients`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        redirect_uris: [redirectUrl],
+                        client_type: 'public'
+                    })
+                });
+
+                if (!oauthResponse.ok) {
+                    const errorData = await oauthResponse.json();
+                    throw new Error(errorData.message || 'Failed to register OAuth client');
+                }
+
+                const oauthData = await oauthResponse.json();
+
+                // Create app in database with OAuth credentials
+                const { data, error } = await SupabaseClient
+                    .from('apps')
+                    .insert({
+                        id: Date.now(),
+                        user_id: currentUser.id,
+                        name,
+                        description,
+                        redirect_url: redirectUrl,
+                        oauth_client_id: oauthData.client_id,
+                        oauth_client_secret: oauthData.client_secret || null,
+                        oauth_client_type: 'public',
+                        status: 'pending'
+                    })
+                    .select()
+                    .single();
+
+                if (error) {
+                    console.error('Error creating app:', error);
+                    showAlert('Error', 'Failed to create application: ' + error.message);
+                    return;
+                }
+
+                // Close modal and reload applications list
+                closeCreateAppModal();
+                loadApplications();
+
+                showAlert('Success', 'Application created successfully! OAuth client registered with ID: ' + oauthData.client_id);
+            } catch (error) {
                 console.error('Error creating app:', error);
                 showAlert('Error', 'Failed to create application: ' + error.message);
-                return;
+            } finally {
+                hideLoading();
             }
-
-            // Close modal and reload applications list
-            closeCreateAppModal();
-            loadApplications();
-
-            showAlert('Success', 'Application created successfully! When the Cookery OAuth Platform becomes available, it will automatically be sent for review.');
         }
 
         openCreateAppModalBtn.addEventListener('click', openCreateAppModal);
