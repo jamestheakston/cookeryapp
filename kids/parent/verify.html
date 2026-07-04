@@ -327,6 +327,9 @@
 
                 if (error) throw error;
 
+                // Refresh session to get updated email_confirmed status
+                await supabaseClient.auth.refreshSession();
+
                 // Clear countdown if running
                 if (countdownInterval) {
                     clearInterval(countdownInterval);
