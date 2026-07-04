@@ -391,13 +391,15 @@
             </div>
             
             <div id="login-loading" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 150px; height: 150px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
+                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 300px; height: 300px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Please wait</h3>
                 <p style="margin: 0; font-size: 14px; color: #78716c;">Signing you in...</p>
             </div>
             
             <div id="login-error" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/75d1820c-b02e-4c3f-a7bc-6bae8951f0cb/2mHp5KTzJP.lottie" style="width: 150px; height: 150px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
+                <svg style="width: 64px; height: 64px; margin: 0 auto 24px; color: #ef4444;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Error</h3>
                 <p id="login-error-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;">An error occurred</p>
                 <button id="retry-login-btn" class="btn btn-primary">Try Again</button>
@@ -463,8 +465,8 @@
         <div class="main-content">
             <!-- Dashboard Section -->
             <div id="section-dashboard" class="portal-section active">
-                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Welcome back!</h1>
-                <p id="user-name" style="font-size: 16px; color: #78716c; margin: 0 0 32px 0;">Loading...</p>
+                <h1 id="dashboard-greeting" style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Good morning!</h1>
+                <p style="font-size: 16px; color: #78716c; margin: 0 0 32px 0;">Manage your children's cooking journey and track their progress.</p>
                 
                 <div class="card">
                     <h2>Quick Stats</h2>
@@ -525,16 +527,75 @@
                     <button id="save-settings-btn" class="btn btn-primary">Save Changes</button>
                 </div>
             </div>
+            
+            <!-- Child Management Section -->
+            <div id="section-child-manage" class="portal-section">
+                <button onclick="switchSection('kids')" style="background: none; border: none; color: #78716c; cursor: pointer; font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 4px;">
+                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to My Kids
+                </button>
+                
+                <div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <svg style="width: 20px; height: 20px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div>
+                        <span style="font-size: 14px; font-weight: 600; color: #d97706; display: block;">Action required</span>
+                        <span style="font-size: 13px; color: #92400e;">You haven't set a password for this child yet.</span>
+                    </div>
+                </div>
+                
+                <h1 id="child-manage-name" style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Child Name</h1>
+                <p id="child-manage-email" style="font-size: 16px; color: #78716c; margin: 0 0 32px 0;">child@email.com</p>
+                
+                <div class="card">
+                    <h2>Child Stats</h2>
+                    <p>Overview of your child's cooking progress.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Recipes Made</p>
+                        </div>
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Badges Earned</p>
+                        </div>
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Cooking Sessions</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Edit Child</h2>
+                    <p>Update your child's information.</p>
+                    
+                    <div class="input-group">
+                        <label>Name</label>
+                        <input type="text" id="manage-kid-name">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Age</label>
+                        <input type="number" id="manage-kid-age" min="1" max="18">
+                    </div>
+                    
+                    <button id="save-manage-kid-btn" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
         </div>
     </div>
     
     <!-- Add Kid Modal -->
-    <div id="add-kid-modal" class="modal-overlay hidden">
-        <div class="modal">
-            <h2>Add Kid</h2>
+    <div id="add-kid-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3 class="modal-title">Add Child</h3>
             
             <div class="input-group">
-                <label>Kid's Name</label>
+                <label>Name</label>
                 <input type="text" id="kid-name" placeholder="Enter kid's name">
             </div>
             
@@ -543,9 +604,9 @@
                 <input type="number" id="kid-age" placeholder="Enter age" min="1" max="18">
             </div>
             
-            <div class="modal-buttons">
-                <button class="btn-cancel" id="cancel-add-kid">Cancel</button>
-                <button class="btn-confirm" id="confirm-add-kid">Add Kid</button>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-secondary" id="cancel-add-kid">Cancel</button>
+                <button class="modal-btn modal-btn-primary" id="confirm-add-kid">Add Child</button>
             </div>
         </div>
     </div>
@@ -723,8 +784,10 @@
             }
             
             const displayName = user.user_metadata?.display_name || user.user_metadata?.user_name || user.email?.split('@')[0] || 'Parent';
-            userName.textContent = `${greeting}, ${displayName}!`;
-            userName.insertAdjacentHTML('afterend', '<p style="font-size: 14px; color: #78716c; margin: 0 0 32px 0;">Manage your children\'s cooking journey and track their progress.</p>');
+            const dashboardGreeting = document.getElementById('dashboard-greeting');
+            if (dashboardGreeting) {
+                dashboardGreeting.textContent = `${greeting}, ${displayName}!`;
+            }
             
             loadKids();
             loadSettings();
@@ -946,14 +1009,16 @@
             }
 
             currentEditingKidId = kidId;
-            editKidName.value = kid.name;
-            editKidAge.value = kid.age;
-            editKidModal.classList.remove('hidden');
+            document.getElementById('child-manage-name').textContent = kid.name;
+            document.getElementById('child-manage-email').textContent = kid.email;
+            document.getElementById('manage-kid-name').value = kid.name;
+            document.getElementById('manage-kid-age').value = kid.age;
+            switchSection('child-manage');
         }
 
         async function saveKidEdit() {
-            const name = editKidName.value.trim();
-            const age = parseInt(editKidAge.value);
+            const name = document.getElementById('manage-kid-name').value.trim();
+            const age = parseInt(document.getElementById('manage-kid-age').value);
 
             if (!name || !age) {
                 showAlert('Required', 'Please enter name and age');
@@ -975,12 +1040,9 @@
                 return;
             }
 
-            editKidModal.classList.add('hidden');
-            editKidName.value = '';
-            editKidAge.value = '';
-            currentEditingKidId = null;
-            loadKids();
+            document.getElementById('child-manage-name').textContent = name;
             showAlert('Success', 'Child updated successfully!');
+            loadKids();
         }
 
         function loadSettings() {
@@ -1017,7 +1079,10 @@
             } else {
                 greeting = 'Good evening';
             }
-            userName.textContent = `${greeting}, ${name}!`;
+            const dashboardGreeting = document.getElementById('dashboard-greeting');
+            if (dashboardGreeting) {
+                dashboardGreeting.textContent = `${greeting}, ${name}!`;
+            }
             showAlert('Success', 'Settings saved successfully!');
         }
 
@@ -1086,6 +1151,7 @@
             currentEditingKidId = null;
         });
         editKidSave.addEventListener('click', saveKidEdit);
+        document.getElementById('save-manage-kid-btn').addEventListener('click', saveKidEdit);
 
         // Check for existing session
         async function checkSession() {
