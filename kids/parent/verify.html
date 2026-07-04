@@ -318,17 +318,22 @@
                     throw new Error('Please sign in first');
                 }
 
+                console.log('Verifying OTP for email:', user.email, 'with token:', otpCode);
+
                 // Verify OTP code
-                const { error } = await supabaseClient.auth.verifyOtp({
+                const { data, error } = await supabaseClient.auth.verifyOtp({
                     email: user.email,
                     token: otpCode,
                     type: 'email',
                 });
 
+                console.log('OTP verification result:', data, error);
+
                 if (error) throw error;
 
                 // Refresh session to get updated email_confirmed status
                 await supabaseClient.auth.refreshSession();
+                console.log('Session refreshed');
 
                 // Clear countdown if running
                 if (countdownInterval) {
@@ -345,6 +350,7 @@
                 }, 2000);
 
             } catch (error) {
+                console.error('OTP verification error:', error);
                 loading.classList.remove('active');
                 verifyOtpSection.style.display = 'block';
                 errorEl.textContent = error.message || 'Invalid verification code. Please try again.';
