@@ -589,8 +589,8 @@
                 <div class="card">
                     <h2>Verification Status</h2>
                     <div id="verification-status-message"></div>
-                    <p>Reset your verification status. This will require you to verify your account again before you can add children or access certain features.</p>
-                    <button id="reset-verification-btn" class="btn" style="background-color: #ef4444; color: #ffffff;">Reset Verification</button>
+                    <p>Send a new verification code to your email address if you didn't receive it or need to verify again.</p>
+                    <button id="reset-verification-btn" class="btn" style="background-color: #3b82f6; color: #ffffff;">Send Verification Code</button>
                 </div>
             </div>
             
@@ -956,7 +956,7 @@
                 // Add welcome notification
                 currentUser = data.user;
                 await addNotification('Welcome to Cookery Kids', 'Prepare your kids for life. Teach them how to cook amazing recipes safely.');
-                await addNotification('Verify your account', 'Please verify your account to confirm you are an adult. This is required to add children, manage their profiles, and access all features.');
+                await addNotification('Verify your account', 'Please verify your email address to confirm your account. This is required to add children and access all features.');
                 currentUser = null;
                 
                 showAlert('Success', 'Account created successfully! Please sign in.');
@@ -1133,7 +1133,7 @@
             if (!currentUser) return;
             
             const { data: { user } } = await SupabaseClient.auth.getUser();
-            const isVerified = user?.user_metadata?.verified;
+            const isVerified = user?.email_confirmed;
             
             const addKidBtn = document.getElementById('add-kid-btn');
             const noKidsMessage = document.getElementById('no-kids-message');
@@ -1214,7 +1214,7 @@
 
             // Check if user is verified
             const { data: { user } } = await SupabaseClient.auth.getUser();
-            if (!user?.user_metadata?.verified) {
+            if (!user?.email_confirmed) {
                 showAlert('Verification Required', 'Please verify your account before adding children. Check your notifications for the verification link.');
                 return;
             }
@@ -1343,7 +1343,7 @@
             
             // Update verification status message
             const { data: { user } } = await SupabaseClient.auth.getUser();
-            const isVerified = user?.user_metadata?.verified;
+            const isVerified = user?.email_confirmed;
             const verificationStatusMessage = document.getElementById('verification-status-message');
             
             if (isVerified) {
@@ -1402,18 +1402,24 @@
         }
 
         async function resetVerification() {
-            showConfirm('Reset Verification', 'Are you sure you want to reset your verification status? You will need to verify your account again before you can add children or access certain features.', async () => {
-                const { error } = await SupabaseClient.auth.updateUser({
-                    data: { verified: false }
-                });
-
-                if (error) {
-                    showAlert('Error', 'Error resetting verification: ' + error.message);
+            showConfirm('Send Verification Code', 'Do you want to send a new verification code to your email address?', async () => {
+                const { data: { user } } = await SupabaseClient.auth.getUser();
+                
+                if (!user) {
+                    showAlert('Error', 'User not found');
                     return;
                 }
 
-                showAlert('Success', 'Verification status has been reset. Please verify your account again.');
-                loadKids();
+                const { error } = await SupabaseClient.auth.signInWithOtp({
+                    email: user.email,
+                });
+
+                if (error) {
+                    showAlert('Error', 'Error sending verification code: ' + error.message);
+                    return;
+                }
+
+                showAlert('Success', 'Verification code has been sent to your email. Please check your inbox and enter the code on the verification page.');
             });
         }
 
