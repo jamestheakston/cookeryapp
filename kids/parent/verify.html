@@ -177,23 +177,33 @@
         
         <div class="card">
             <h1>Verify Your Account</h1>
-            <p>To ensure the safety of our community, we need to verify that you are an adult before you can add children to your account.</p>
+            <p>To ensure the safety of our community, we need to verify your email address before you can add children to your account.</p>
             
             <div id="error" class="error"></div>
             <div id="success" class="success"></div>
             
-            <div id="form-content">
+            <div id="send-otp-section">
+                <p style="margin: 0 0 16px 0; font-size: 14px; color: #78716c;">Click the button below to send a verification code to your registered email address.</p>
+                <button id="send-otp-btn" onclick="sendOTP()">Send Verification Code</button>
+            </div>
+            
+            <div id="verify-otp-section" style="display: none;">
                 <div class="input-group">
-                    <label for="birth-date">Date of Birth</label>
-                    <input type="date" id="birth-date" required>
+                    <label for="otp-code">Verification Code</label>
+                    <input type="text" id="otp-code" placeholder="Enter 6-digit code" maxlength="6" style="letter-spacing: 4px; font-size: 20px; text-align: center; font-weight: 600;">
                 </div>
-                
-                <button id="verify-btn" onclick="verifyAccount()">Verify Account</button>
+                <button id="verify-otp-btn" onclick="verifyOTP()">Verify Code</button>
+                <p style="margin: 16px 0 0 0; font-size: 13px; color: #78716c;">
+                    <span id="resend-container">
+                        <a href="#" id="resend-link" onclick="sendOTP(); return false;" style="color: #3b82f6; text-decoration: underline;">Resend</a>
+                        <span id="resend-timer" style="display: none; color: #78716c;">Resend available in <span id="countdown">60</span>s</span>
+                    </span>
+                </p>
             </div>
             
             <div id="loading" class="loading">
                 <div class="spinner"></div>
-                <p>Verifying your account...</p>
+                <p id="loading-text">Sending verification code...</p>
             </div>
             
             <a href="/kids/parentdashboard.html" class="back-link">Back to Dashboard</a>
@@ -205,40 +215,20 @@
         const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        async function verifyAccount() {
-            const birthDateInput = document.getElementById('birth-date');
+        let resendCooldown = false;
+        let countdownInterval = null;
+
+        async function sendOTP() {
+            if (resendCooldown) return;
+
             const errorEl = document.getElementById('error');
             const successEl = document.getElementById('success');
-            const formContent = document.getElementById('form-content');
+            const sendOtpSection = document.getElementById('send-otp-section');
             const loading = document.getElementById('loading');
-            const verifyBtn = document.getElementById('verify-btn');
-
-            const birthDate = birthDateInput.value;
-            
-            if (!birthDate) {
-                errorEl.textContent = 'Please enter your date of birth';
-                errorEl.classList.add('active');
-                return;
-            }
-
-            // Calculate age
-            const birth = new Date(birthDate);
-            const today = new Date();
-            let age = today.getFullYear() - birth.getFullYear();
-            const monthDiff = today.getMonth() - birth.getMonth();
-            
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
-                age--;
-            }
-
-            if (age < 18) {
-                errorEl.textContent = 'You must be at least 18 years old to signup as a parent';
-                errorEl.classList.add('active');
-                return;
-            }
+            const loadingText = document.getElementById('loading-text');
 
             // Show loading
-            formContent.style.display = 'none';
+            sendOtpSection.style.display = 'none';
             loading.classList.add('active');
             errorEl.classList.remove('active');
             successEl.classList.remove('active');
@@ -250,39 +240,110 @@
                     throw new Error('Please sign in first');
                 }
 
-                // Update user metadata
-                const { error } = await supabaseClient.auth.updateUser({
-                    data: { verified: true }
+                // Send OTP code via email
+                const { error } = await supabaseClient.auth.signInWithOtp({
+                    email: user.email,
                 });
 
                 if (error) throw error;
 
-                // Add success notification
-                await supabaseClient
-                    .from('notifications')
-                    .insert({
-                        id: Date.now(),
-                        user_id: user.id,
-                        title: 'Account Verified',
-                        message: 'Your account has been verified successfully. You can now add children and manage their profiles.',
-                        read: false,
-                        created_at: new Date().toISOString()
-                    });
+                // Show OTP input section
+                loading.classList.remove('active');
+                document.getElementById('verify-otp-section').style.display = 'block';
+                successEl.textContent = 'Verification code sent! Please check your email and enter the 6-digit code below.';
+                successEl.classList.add('active');
 
-                // Show success
+                // Start 60-second cooldown
+                startCooldown();
+
+            } catch (error) {
+                loading.classList.remove('active');
+                sendOtpSection.style.display = 'block';
+                errorEl.textContent = error.message || 'Failed to send verification code. Please try again.';
+                errorEl.classList.add('active');
+            }
+        }
+
+        function startCooldown() {
+            resendCooldown = true;
+            let secondsLeft = 60;
+            
+            const resendLink = document.getElementById('resend-link');
+            const resendTimer = document.getElementById('resend-timer');
+            const countdown = document.getElementById('countdown');
+            
+            resendLink.style.display = 'none';
+            resendTimer.style.display = 'inline';
+            countdown.textContent = secondsLeft;
+            
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdown.textContent = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    resendCooldown = false;
+                    resendLink.style.display = 'inline';
+                    resendTimer.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        async function verifyOTP() {
+            const errorEl = document.getElementById('error');
+            const successEl = document.getElementById('success');
+            const verifyOtpSection = document.getElementById('verify-otp-section');
+            const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loading-text');
+            const otpCode = document.getElementById('otp-code').value.trim();
+
+            if (!otpCode || otpCode.length !== 6) {
+                errorEl.textContent = 'Please enter the 6-digit verification code';
+                errorEl.classList.add('active');
+                return;
+            }
+
+            // Show loading
+            verifyOtpSection.style.display = 'none';
+            loading.classList.add('active');
+            loadingText.textContent = 'Verifying code...';
+            errorEl.classList.remove('active');
+            successEl.classList.remove('active');
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                
+                if (!user) {
+                    throw new Error('Please sign in first');
+                }
+
+                // Verify OTP code
+                const { error } = await supabaseClient.auth.verifyOtp({
+                    email: user.email,
+                    token: otpCode,
+                    type: 'email',
+                });
+
+                if (error) throw error;
+
+                // Clear countdown if running
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                // Show success and redirect
                 loading.classList.remove('active');
                 successEl.textContent = 'Account verified successfully! Redirecting to dashboard...';
                 successEl.classList.add('active');
 
-                // Redirect after 2 seconds
                 setTimeout(() => {
                     window.location.href = '/kids/parentdashboard.html';
                 }, 2000);
 
             } catch (error) {
                 loading.classList.remove('active');
-                formContent.style.display = 'block';
-                errorEl.textContent = error.message || 'Verification failed. Please try again.';
+                verifyOtpSection.style.display = 'block';
+                errorEl.textContent = error.message || 'Invalid verification code. Please try again.';
                 errorEl.classList.add('active');
             }
         }
@@ -296,7 +357,7 @@
                 return;
             }
 
-            const isVerified = session.user?.user_metadata?.verified;
+            const isVerified = session.user?.email_confirmed;
             
             if (isVerified) {
                 const card = document.querySelector('.card');
