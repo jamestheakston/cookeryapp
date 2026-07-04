@@ -426,6 +426,36 @@
                     
                     <button id="save-settings-btn" style="background-color: #1c1917; color: #ffffff; padding: 14px 32px; border-radius: 16px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; border: none;">Save Changes</button>
                 </div>
+                
+                <div class="card">
+                    <h2>Agreements</h2>
+                    <p>Manage your consent and agreements with Cookery.</p>
+                    
+                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <span style="font-size: 14px; font-weight: 600; color: #1c1917;">Cookery Developer Policy Agreement</span>
+                            <span style="font-size: 12px; color: #78716c;">Last Updated: July 4th, 2026</span>
+                        </div>
+                        <p style="margin: 0 0 16px 0; font-size: 13px; color: #78716c;">You have agreed to the Cookery Developer Policy, which governs your use of the developer platform and image hosting services.</p>
+                        <div style="display: flex; gap: 12px;">
+                            <button id="view-policy-btn" style="background-color: #faf8f5; color: #1c1917; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">View</button>
+                            <button id="revoke-consent-btn" style="background-color: #fef2f2; color: #dc2626; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #fecaca; cursor: pointer; transition: background-color 0.2s;">Revoke Consent</button>
+                        </div>
+                    </div>
+                    
+                    <div style="background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <span style="font-size: 14px; font-weight: 600; color: #1c1917;">Cookery Privacy Policy Agreement</span>
+                            <span style="font-size: 12px; color: #78716c;">Last Updated: July 4th, 2026</span>
+                        </div>
+                        <p style="margin: 0 0 16px 0; font-size: 13px; color: #78716c;">You have agreed to the Cookery Privacy Policy, which governs how we collect, use, and protect your personal data.</p>
+                        <div style="display: flex; gap: 12px;">
+                            <button id="view-privacy-btn" style="background-color: #faf8f5; color: #1c1917; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">View</button>
+                            <button id="revoke-privacy-btn" style="background-color: #fef2f2; color: #dc2626; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #fecaca; cursor: pointer; transition: background-color 0.2s;">Revoke Consent</button>
+                        </div>
+                        <p style="margin: 8px 0 0 0; font-size: 12px; color: #a8a29e;">This agreement is required for platform functionality and cannot be revoked.</p>
+                    </div>
+                </div>
             </div>
 
             <p style="font-size: 12px; color: #a8a29e; line-height: 1.5; margin-top: 40px;">
@@ -459,7 +489,7 @@
     </div>
 
     <div id="create-app-modal" class="modal-overlay hidden">
-        <div class="modal">
+        <div class="modal" style="max-width: 500px;">
             <h2>Create Application</h2>
             <p>You can create applications, and when the Cookery OAuth Platform becomes available, it will automatically be sent for review.</p>
             <div style="margin-bottom: 16px;">
@@ -474,6 +504,12 @@
                 <label style="display: block; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px;">Redirect URL</label>
                 <input type="url" id="app-redirect-url" placeholder="https://yourapp.com/callback" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
             </div>
+            <div style="margin-bottom: 24px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; color: #1c1917; margin-bottom: 8px; cursor: pointer;">
+                    <input type="checkbox" id="policy-agreement" style="width: 16px; height: 16px; cursor: pointer;">
+                    <span>I agree to the <a href="#" id="developer-policy-link" style="color: #3b82f6; text-decoration: underline;">Developer Policy</a></span>
+                </label>
+            </div>
             <div style="display: flex; gap: 12px;">
                 <button id="cancel-create-app" style="flex: 1; background-color: #faf8f5; color: #1c1917; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: 1px solid #e7e5e4; cursor: pointer; transition: background-color 0.2s;">Cancel</button>
                 <button id="create-app-btn" style="flex: 1; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Create Application</button>
@@ -486,6 +522,44 @@
             <h2 id="alert-title" style="margin: 0 0 12px 0;">Alert</h2>
             <p id="alert-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;"></p>
             <button id="alert-ok-btn" style="width: 100%; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">OK</button>
+        </div>
+    </div>
+    
+    <div id="developer-policy-modal" class="modal-overlay hidden">
+        <div class="modal" style="max-width: 500px; max-height: 80vh; overflow-y: auto;">
+            <h2 style="margin: 0 0 16px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 400; color: #1c1917;">Developer Policy</h2>
+            <div style="margin-bottom: 24px; font-size: 13px; color: #78716c; line-height: 1.6;">
+                <p style="margin: 0 0 12px 0; font-weight: 600; color: #1c1917;">By uploading content to the Cookery platform, you agree to the following terms:</p>
+                <ul style="margin: 0 0 12px 0; padding-left: 20px;">
+                    <li style="margin-bottom: 8px;">You will not use your app for any malicious purposes, including but not limited to: malware distribution, phishing, data theft, or any form of cyber attack.</li>
+                    <li style="margin-bottom: 8px;">You will not attempt to exploit vulnerabilities in the Cookery platform or any connected services.</li>
+                    <li style="margin-bottom: 8px;">You will not collect or store user data beyond what is necessary for your app's functionality.</li>
+                    <li style="margin-bottom: 8px;">You will not share user data with third parties without explicit user consent.</li>
+                    <li style="margin-bottom: 8px;">You will comply with all applicable laws and regulations, including data protection laws (e.g., GDPR, CCPA).</li>
+                    <li style="margin-bottom: 8px;">You will not use the Cookery platform to distribute content that is illegal, harmful, hateful, or violates the rights of others.</li>
+                    <li style="margin-bottom: 8px;">You acknowledge that Cookery reserves the right to remove any app or content that violates these terms.</li>
+                    <li style="margin-bottom: 8px;">You will maintain the security of your app and promptly address any security vulnerabilities.</li>
+                    <li style="margin-bottom: 8px;">App logos and images are uploaded to ImgBB, a third-party image hosting service. By uploading images, you agree to ImgBB's terms of service and privacy policy.</li>
+                    <li style="margin-bottom: 8px;">You acknowledge that image URLs stored in Cookery's database are publicly accessible via ImgBB and should not contain sensitive information.</li>
+                </ul>
+                <p style="margin: 0; font-weight: 600; color: #1c1917;">Failure to comply with these terms may result in the removal of your app and termination of your access to the Cookery platform.</p>
+            </div>
+            <button id="policy-close-btn" style="width: 100%; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">I Understand</button>
+        </div>
+    </div>
+    
+    <div id="privacy-policy-modal" class="modal-overlay hidden">
+        <div class="modal" style="max-width: 500px; max-height: 80vh; overflow-y: auto;">
+            <h2 style="margin: 0 0 16px 0; font-family: 'Playfair Display', Georgia, serif; font-size: 20px; font-weight: 400; color: #1c1917;">Privacy Policy</h2>
+            <div style="margin-bottom: 24px; font-size: 13px; color: #78716c; line-height: 1.6;">
+                <p style="margin: 0 0 12px 0; font-weight: 600; color: #1c1917;">Cookery Privacy Policy</p>
+                <p style="margin: 0 0 12px 0;">We collect and process your personal data to provide the Cookery developer platform services. This includes your account information, application data, and usage analytics.</p>
+                <p style="margin: 0 0 12px 0;">We use your data to: authenticate your account, manage your applications, provide analytics, and improve our services. We do not sell your personal data to third parties.</p>
+                <p style="margin: 0 0 12px 0;">Your data is stored securely in Supabase and images are hosted on ImgBB. We implement appropriate technical and organizational measures to protect your data.</p>
+                <p style="margin: 0 0 12px 0;">You have the right to access, correct, or delete your personal data. To exercise these rights, please contact our support team.</p>
+                <p style="margin: 0; font-weight: 600; color: #1c1917;">By using the Cookery platform, you consent to this privacy policy.</p>
+            </div>
+            <button id="privacy-close-btn" style="width: 100%; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">I Understand</button>
         </div>
     </div>
 
@@ -638,6 +712,15 @@
         const editAppDescription = document.getElementById('edit-app-description');
         const editAppRedirectUrl = document.getElementById('edit-app-redirect-url');
         const appLogoPreview = document.getElementById('app-logo-preview');
+        const developerPolicyModal = document.getElementById('developer-policy-modal');
+        const developerPolicyLink = document.getElementById('developer-policy-link');
+        const policyCloseBtn = document.getElementById('policy-close-btn');
+        const viewPolicyBtn = document.getElementById('view-policy-btn');
+        const revokeConsentBtn = document.getElementById('revoke-consent-btn');
+        const privacyPolicyModal = document.getElementById('privacy-policy-modal');
+        const viewPrivacyBtn = document.getElementById('view-privacy-btn');
+        const revokePrivacyBtn = document.getElementById('revoke-privacy-btn');
+        const privacyCloseBtn = document.getElementById('privacy-close-btn');
         const confirmModal = document.getElementById('confirm-modal');
         const confirmTitle = document.getElementById('confirm-title');
         const confirmMessage = document.getElementById('confirm-message');
@@ -1053,6 +1136,7 @@
             const name = appNameInput.value.trim();
             const description = appDescriptionInput.value.trim();
             const redirectUrl = appRedirectUrlInput.value.trim();
+            const policyAgreement = document.getElementById('policy-agreement');
 
             if (!name) {
                 showAlert('Required', 'Please enter an application name');
@@ -1061,6 +1145,11 @@
 
             if (!redirectUrl) {
                 showAlert('Required', 'Please enter a redirect URL');
+                return;
+            }
+
+            if (!policyAgreement.checked) {
+                showAlert('Policy Agreement Required', 'Please agree to the Developer Policy before creating an application.');
                 return;
             }
 
@@ -1094,6 +1183,68 @@
         cancelCreateApp.addEventListener('click', closeCreateAppModal);
         closeAnalytics.addEventListener('click', closeAppAnalytics);
         createAppBtn.addEventListener('click', createApplication);
+        
+        // Developer policy modal
+        developerPolicyLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            developerPolicyModal.classList.remove('hidden');
+        });
+        
+        viewPolicyBtn.addEventListener('click', () => {
+            developerPolicyModal.classList.remove('hidden');
+        });
+        
+        policyCloseBtn.addEventListener('click', () => {
+            developerPolicyModal.classList.add('hidden');
+        });
+        
+        developerPolicyModal.addEventListener('click', (e) => {
+            if (e.target === developerPolicyModal) {
+                developerPolicyModal.classList.add('hidden');
+            }
+        });
+        
+        // Revoke consent
+        revokeConsentBtn.addEventListener('click', () => {
+            showConfirm('Revoke Developer Policy Consent', 'Are you sure you want to revoke your consent to the Cookery Developer Policy? This action will: 1) Remove all app images from ImgBB, 2) Delete all your applications immediately. This action cannot be undone.', async () => {
+                // Delete all user's apps
+                const { error: deleteError } = await SupabaseClient
+                    .from('apps')
+                    .delete()
+                    .eq('user_id', currentUser.id);
+                
+                if (deleteError) {
+                    console.error('Error deleting apps:', deleteError);
+                    showAlert('Error', 'Failed to delete applications: ' + deleteError.message);
+                    return;
+                }
+                
+                // Reload applications list
+                loadApplications();
+                
+                showAlert('Success', 'Your consent has been revoked and all applications have been deleted.');
+            });
+        });
+        
+        // Privacy policy modal
+        viewPrivacyBtn.addEventListener('click', () => {
+            privacyPolicyModal.classList.remove('hidden');
+        });
+        
+        privacyCloseBtn.addEventListener('click', () => {
+            privacyPolicyModal.classList.add('hidden');
+        });
+        
+        privacyPolicyModal.addEventListener('click', (e) => {
+            if (e.target === privacyPolicyModal) {
+                privacyPolicyModal.classList.add('hidden');
+            }
+        });
+        
+        // Revoke privacy consent (not allowed)
+        revokePrivacyBtn.addEventListener('click', () => {
+            showAlert('Cannot Revoke Consent', 'You cannot revoke your consent from the Privacy Policy. This agreement is required for platform functionality.');
+        });
         
         // Tab switching
         appTabs.forEach(tab => {
