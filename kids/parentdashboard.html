@@ -10,11 +10,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
     <style>
-        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; box-sizing: border-box; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; }
         img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
         table { border-collapse: collapse !important; }
         body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        *, *::before, *::after { box-sizing: border-box; }
         
         .container {
             display: flex;
@@ -284,7 +285,7 @@
                     <p style="font-size: 14px; color: #78716c; margin: 0;">Parent Dashboard</p>
                 </div>
                 
-                <div style="max-width: 320px; margin: 0 auto;">
+                <div>
                     <div class="input-group">
                         <label>Email</label>
                         <input type="email" id="login-email" placeholder="Enter your email">
@@ -308,13 +309,13 @@
             </div>
             
             <div id="login-loading" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
+                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 500px; height: 600px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Please wait</h3>
                 <p style="margin: 0; font-size: 14px; color: #78716c;">Signing you in...</p>
             </div>
             
             <div id="login-error" class="hidden" style="text-align: center; padding: 40px 20px;">
-                <dotlottie-wc src="https://lottie.host/75d1820c-b02e-4c3f-a7bc-6bae8951f0cb/2mHp5KTzJP.lottie" style="width: 200px; height: 200px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
+                <dotlottie-wc src="https://lottie.host/75d1820c-b02e-4c3f-a7bc-6bae8951f0cb/2mHp5KTzJP.lottie" style="width: 500px; height: 500px; margin: 0 auto 24px; object-fit: contain;" autoplay loop></dotlottie-wc>
                 <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Error</h3>
                 <p id="login-error-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;">An error occurred</p>
                 <button id="retry-login-btn" class="btn btn-primary">Try Again</button>
@@ -558,8 +559,18 @@
             
             currentUser = user;
             
+            const hour = new Date().getHours();
+            let greeting;
+            if (hour < 12) {
+                greeting = 'Good morning';
+            } else if (hour < 18) {
+                greeting = 'Good afternoon';
+            } else {
+                greeting = 'Good evening';
+            }
+            
             const displayName = user.user_metadata?.display_name || user.user_metadata?.user_name || user.email?.split('@')[0] || 'Parent';
-            userName.textContent = `Welcome, ${displayName}!`;
+            userName.textContent = `${greeting}, ${displayName}!`;
             
             loadKids();
             loadSettings();
@@ -722,6 +733,7 @@
             const { data, error } = await SupabaseClient
                 .from('kids')
                 .insert({
+                    id: Date.now(),
                     parent_id: currentUser.id,
                     name,
                     age,
