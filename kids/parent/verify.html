@@ -182,15 +182,6 @@
             <div id="error" class="error"></div>
             <div id="success" class="success"></div>
             
-            <div id="already-verified" style="display: none; text-align: center; padding: 40px 20px;">
-                <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <h3 style="margin: 0 0 8px 0; font-size: 20px; font-weight: 600; color: #1c1917;">Account Already Verified</h3>
-                <p style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;">Your account has already been verified. You can now add children and access all features.</p>
-                <a href="/kids/parentdashboard.html" style="display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none;">Go to Dashboard</a>
-            </div>
-            
             <div id="form-content">
                 <div class="input-group">
                     <label for="birth-date">Date of Birth</label>
@@ -308,8 +299,15 @@
             const isVerified = session.user?.user_metadata?.verified;
             
             if (isVerified) {
-                document.getElementById('form-content').style.display = 'none';
-                document.getElementById('already-verified').style.display = 'block';
+                const card = document.querySelector('.card');
+                card.innerHTML = `
+                    <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h1 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 400; color: #1c1917; text-align: center;">Account Already Verified</h1>
+                    <p style="margin: 0 0 32px 0; font-size: 14px; color: #78716c; text-align: center;">Your account has already been verified. You can now add children and access all features.</p>
+                    <a href="/kids/parentdashboard.html" style="display: block; background-color: #3b82f6; color: #ffffff; padding: 14px 32px; border-radius: 16px; font-size: 15px; font-weight: 600; text-decoration: none; text-align: center;">Go to Dashboard</a>
+                `;
             }
         }
 
