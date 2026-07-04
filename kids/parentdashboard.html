@@ -135,6 +135,7 @@
         }
         .input-group {
             margin-bottom: 20px;
+            text-align: center;
         }
         .input-group label {
             display: block;
@@ -142,6 +143,7 @@
             font-weight: 500;
             color: #1c1917;
             margin-bottom: 8px;
+            text-align: left;
         }
         .input-group input {
             width: 100%;
@@ -276,31 +278,39 @@
     <!-- Login Section -->
     <div id="login-section" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
         <div class="card" style="max-width: 400px; width: 100%;">
-            <div style="text-align: center; margin-bottom: 32px;">
-                <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="48" height="48" style="display: block; width: 48px; height: 48px; border-radius: 10px; margin: 0 auto 16px;">
-                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Cookery Kids</h1>
-                <p style="font-size: 14px; color: #78716c; margin: 0;">Parent Dashboard</p>
+            <div id="login-form">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="48" height="48" style="display: block; width: 48px; height: 48px; border-radius: 10px; margin: 0 auto 16px;">
+                    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Cookery Kids</h1>
+                    <p style="font-size: 14px; color: #78716c; margin: 0;">Parent Dashboard</p>
+                </div>
+                
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email">
+                </div>
+                
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password">
+                </div>
+                
+                <button id="login-btn" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                
+                <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #78716c;">
+                    Don't have an account? <a href="#" id="show-signup" style="color: #1c1917; text-decoration: underline;">Sign Up</a>
+                </p>
+                
+                <p style="text-align: center; margin-top: 16px; font-size: 12px;">
+                    <a href="../kids.html" style="color: #78716c; text-decoration: underline;">Back to Cookery Kids</a>
+                </p>
             </div>
             
-            <div class="input-group">
-                <label>Email</label>
-                <input type="email" id="login-email" placeholder="Enter your email">
+            <div id="login-loading" class="hidden" style="text-align: center; padding: 40px 20px;">
+                <dotlottie-wc src="https://lottie.host/2d96eb61-9bf1-4de1-b9f9-13db4e861fe8/eT0E0zZTct.lottie" style="width: 200px; height: 200px; margin: 0 auto 24px;" autoplay loop></dotlottie-wc>
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Please wait</h3>
+                <p style="margin: 0; font-size: 14px; color: #78716c;">Signing you in...</p>
             </div>
-            
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="login-password" placeholder="Enter your password">
-            </div>
-            
-            <button id="login-btn" class="btn btn-primary" style="width: 100%;">Sign In</button>
-            
-            <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #78716c;">
-                Don't have an account? <a href="#" id="show-signup" style="color: #1c1917; text-decoration: underline;">Sign Up</a>
-            </p>
-            
-            <p style="text-align: center; margin-top: 16px; font-size: 12px;">
-                <a href="../kids.html" style="color: #78716c; text-decoration: underline;">Back to Cookery Kids</a>
-            </p>
         </div>
     </div>
     
@@ -472,6 +482,8 @@
         const signupSection = document.getElementById('signup-section');
         const portalContainer = document.getElementById('portal-container');
         const userName = document.getElementById('user-name');
+        const loginForm = document.getElementById('login-form');
+        const loginLoading = document.getElementById('login-loading');
         const loginEmail = document.getElementById('login-email');
         const loginPassword = document.getElementById('login-password');
         const loginBtn = document.getElementById('login-btn');
@@ -479,8 +491,8 @@
         const signupEmail = document.getElementById('signup-email');
         const signupPassword = document.getElementById('signup-password');
         const signupBtn = document.getElementById('signup-btn');
-        const showSignup = document.getElementById('show-signup');
-        const showLoginBtn = document.getElementById('show-login');
+        const showSignupBtn = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
         const navItems = document.querySelectorAll('.nav-item[data-section]');
         const portalSections = document.querySelectorAll('.portal-section');
         const loadingOverlay = document.getElementById('loading-overlay');
@@ -548,15 +560,17 @@
                 return;
             }
 
-            showLoading();
+            loginForm.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            
             const { data, error } = await SupabaseClient.auth.signInWithPassword({
                 email,
                 password
             });
 
-            hideLoading();
-
             if (error) {
+                loginForm.classList.remove('hidden');
+                loginLoading.classList.add('hidden');
                 alert('Error signing in: ' + error.message);
                 return;
             }
@@ -756,11 +770,11 @@
         // Event Listeners
         loginBtn.addEventListener('click', signIn);
         signupBtn.addEventListener('click', signUp);
-        showSignup.addEventListener('click', (e) => {
+        showSignupBtn.addEventListener('click', (e) => {
             e.preventDefault();
             showSignup();
         });
-        showLoginBtn.addEventListener('click', (e) => {
+        showLoginLink.addEventListener('click', (e) => {
             e.preventDefault();
             showLogin();
         });
