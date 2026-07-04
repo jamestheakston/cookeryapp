@@ -589,8 +589,7 @@
                 <div class="card">
                     <h2>Verification Status</h2>
                     <div id="verification-status-message"></div>
-                    <p>Send a new verification code to your email address if you didn't receive it or need to verify again.</p>
-                    <button id="reset-verification-btn" class="btn" style="background-color: #3b82f6; color: #ffffff;">Send Verification Code</button>
+                    <div id="verification-action-container"></div>
                 </div>
             </div>
             
@@ -1345,6 +1344,7 @@
             const { data: { user } } = await SupabaseClient.auth.getUser();
             const isVerified = user?.email_confirmed;
             const verificationStatusMessage = document.getElementById('verification-status-message');
+            const verificationActionContainer = document.getElementById('verification-action-container');
             
             if (isVerified) {
                 verificationStatusMessage.innerHTML = `
@@ -1355,14 +1355,22 @@
                         <span style="font-size: 14px; font-weight: 500; color: #16a34a;">Your account is verified. You can add children and access all features.</span>
                     </div>
                 `;
+                verificationActionContainer.innerHTML = `
+                    <p style="margin: 0 0 16px 0; font-size: 14px; color: #78716c;">Reset your verification status if you need to verify your account again.</p>
+                    <button id="reset-verification-btn" class="btn" style="background-color: #ef4444; color: #ffffff;">Reset Verification</button>
+                `;
+                document.getElementById('reset-verification-btn').addEventListener('click', resetVerification);
             } else {
                 verificationStatusMessage.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; margin-bottom: 16px;">
                         <svg style="width: 20px; height: 20px; color: #d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
                         </svg>
-                        <span style="font-size: 14px; font-weight: 500; color: #92400e;">You need to verify your account to add children and access all features. <a href="/kids/parent/verify" style="color: #3b82f6; text-decoration: underline;">Verify now</a></span>
+                        <span style="font-size: 14px; font-weight: 500; color: #92400e;">You need to verify your account to add children and access all features.</span>
                     </div>
+                `;
+                verificationActionContainer.innerHTML = `
+                    <a href="/kids/parent/verify" class="btn" style="display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; border-radius: 16px; font-size: 15px; font-weight: 600; text-decoration: none;">Verify Now</a>
                 `;
             }
         }
@@ -1402,24 +1410,9 @@
         }
 
         async function resetVerification() {
-            showConfirm('Send Verification Code', 'Do you want to send a new verification code to your email address?', async () => {
-                const { data: { user } } = await SupabaseClient.auth.getUser();
-                
-                if (!user) {
-                    showAlert('Error', 'User not found');
-                    return;
-                }
-
-                const { error } = await SupabaseClient.auth.signInWithOtp({
-                    email: user.email,
-                });
-
-                if (error) {
-                    showAlert('Error', 'Error sending verification code: ' + error.message);
-                    return;
-                }
-
-                showAlert('Success', 'Verification code has been sent to your email. Please check your inbox and enter the code on the verification page.');
+            showConfirm('Reset Verification', 'Are you sure you want to reset your verification status? You will need to verify your account again before you can add children.', async () => {
+                // Redirect to verify page to go through verification process again
+                window.location.href = '/kids/parent/verify';
             });
         }
 
@@ -1530,8 +1523,6 @@
         });
 
         confirmAddKid.addEventListener('click', addKid);
-
-        document.getElementById('reset-verification-btn').addEventListener('click', resetVerification);
 
         document.getElementById('select-all-notifications').addEventListener('change', (e) => {
             const checkboxes = document.querySelectorAll('.notification-checkbox');
