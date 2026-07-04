@@ -178,6 +178,7 @@
         <div class="card">
             <h1>Verify Your Account</h1>
             <p>To ensure the safety of our community, we need to verify your email address before you can add children to your account.</p>
+            <p style="margin: 0 0 16px 0; font-size: 14px; color: #78716c;">Verification code will be sent to: <strong id="user-email" style="color: #1c1917;">Loading...</strong></p>
             
             <div id="error" class="error"></div>
             <div id="success" class="success"></div>
@@ -355,6 +356,12 @@
             if (!session) {
                 window.location.href = '/kids/parentdashboard.html';
                 return;
+            }
+
+            // Display user's email
+            const userEmailEl = document.getElementById('user-email');
+            if (userEmailEl && session.user?.email) {
+                userEmailEl.textContent = session.user.email;
             }
 
             const isVerified = session.user?.email_confirmed;
