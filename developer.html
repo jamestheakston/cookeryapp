@@ -445,6 +445,7 @@ const tokens = await response.json();</code></pre>
                             <li><code style="background-color: #ffffff; padding: 2px 6px; border-radius: 4px;">email</code> - Access user's email address</li>
                             <li><code style="background-color: #ffffff; padding: 2px 6px; border-radius: 4px;">profile</code> - Access user's profile information</li>
                             <li><code style="background-color: #ffffff; padding: 2px 6px; border-radius: 4px;">phone</code> - Access user's phone number</li>
+                            <li><code style="background-color: #ffffff; padding: 2px 6px; border-radius: 4px;">read:recipe</code> - Read user's recipes</li>
                         </ul>
                     </div>
                 </div>
@@ -1381,6 +1382,7 @@ const tokens = await response.json();</code></pre>
 
             try {
                 // Register OAuth client via Edge Function
+                console.log('Attempting to register OAuth client...');
                 const oauthResponse = await fetch(`${SUPABASE_URL}/functions/v1/register-oauth-client`, {
                     method: 'POST',
                     headers: {
@@ -1395,12 +1397,17 @@ const tokens = await response.json();</code></pre>
                     })
                 });
 
+                console.log('OAuth response status:', oauthResponse.status);
+                
                 if (!oauthResponse.ok) {
+                    const errorText = await oauthResponse.text();
+                    console.error('OAuth registration error:', errorText);
                     const errorData = await oauthResponse.json();
                     throw new Error(errorData.error || 'Failed to register OAuth client');
                 }
 
                 const oauthData = await oauthResponse.json();
+                console.log('OAuth registration success:', oauthData);
 
                 // Create app in database with OAuth credentials
                 const { data, error } = await SupabaseClient
