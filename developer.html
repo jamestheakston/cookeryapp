@@ -983,11 +983,22 @@
 
         // Load initial section from hash or jumpto parameter
         function loadInitialSection() {
-            // Check for OAuth callback parameters
+            // Check for custom OAuth redirect parameter
             const urlParams = new URLSearchParams(window.location.search);
+            const redirectParam = urlParams.get('redirect');
+            
+            if (redirectParam) {
+                console.log('Custom OAuth redirect detected:', redirectParam);
+                // Redirect to the consent URL provided by the custom OAuth provider
+                window.location.href = redirectParam;
+                return;
+            }
+            
+            // Check for standard OAuth callback parameters
             const hasOAuthParams = urlParams.has('code') || urlParams.has('error') || urlParams.has('access_token');
             
             if (hasOAuthParams) {
+                console.log('OAuth callback detected with params:', Object.fromEntries(urlParams));
                 // Let Supabase handle the OAuth callback
                 // Clear the parameters from URL after a short delay
                 setTimeout(() => {
@@ -1566,6 +1577,7 @@
             console.log('Auth state change:', event, session);
             
             if (event === 'SIGNED_IN' && session) {
+                hideLoading();
                 checkOnboarding(session.user);
             } else if (event === 'SIGNED_OUT') {
                 showLogin();
@@ -1575,6 +1587,19 @@
                 const { data: { session: refreshedSession } } = await SupabaseClient.auth.getSession();
                 if (refreshedSession) {
                     checkOnboarding(refreshedSession.user);
+                }
+            } else if (event === 'INITIAL_SESSION') {
+                console.log('Initial session:', session);
+                if (session) {
+                    checkOnboarding(session.user);
+                } else {
+                    // Check if we have a redirect parameter from custom OAuth
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.has('redirect')) {
+                        console.log('Custom OAuth redirect detected, but no session');
+                        hideLoading();
+                        showAlert('Authentication Failed', 'The custom OAuth provider did not return a valid session. Please try again or use GitHub sign-in.');
+                    }
                 }
             }
         });
