@@ -178,6 +178,55 @@
             color: #dc2626;
             margin: 0;
         }
+        
+        .login-form {
+            margin-top: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1c1917;
+        }
+        
+        .login-btn {
+            width: 100%;
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        
+        .login-btn:hover {
+            background-color: #2c2a28;
+        }
     </style>
 </head>
 <body>
@@ -228,6 +277,24 @@
                     <button id="approve-btn" class="approve-btn">Authorize</button>
                 </div>
             </div>
+            
+            <div id="login-section" class="hidden">
+                <p>You need to sign in to authorize this application.</p>
+                
+                <div class="login-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="your@email.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="••••••••">
+                    </div>
+                    
+                    <button id="login-btn" class="login-btn">Sign In</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -249,6 +316,10 @@
         const scopesList = document.getElementById('scopes-list');
         const approveBtn = document.getElementById('approve-btn');
         const denyBtn = document.getElementById('deny-btn');
+        const loginSection = document.getElementById('login-section');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('login-btn');
         
         let authorizationId = null;
         
@@ -292,9 +363,12 @@
             // Check if user is authenticated
             const session = await checkAuth();
             if (!session) {
-                // Redirect to login with return URL
-                const returnUrl = encodeURIComponent(window.location.href);
-                window.location.href = `/developer.html?redirect=${returnUrl}`;
+                // Show login form instead of redirecting
+                hideLoading();
+                title.textContent = 'Sign In Required';
+                description.textContent = 'You need to sign in to authorize this application.';
+                authDetails.classList.add('hidden');
+                loginSection.classList.remove('hidden');
                 return;
             }
             
@@ -335,11 +409,45 @@
                 }
                 
                 authDetails.classList.remove('hidden');
+                loginSection.classList.add('hidden');
                 hideLoading();
                 
             } catch (error) {
                 console.error('Error loading authorization details:', error);
                 showError('Failed to load authorization details');
+            }
+        }
+        
+        async function handleLogin() {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            
+            if (!email || !password) {
+                showError('Please enter both email and password');
+                return;
+            }
+            
+            showLoading();
+            
+            try {
+                const { data, error } = await SupabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                
+                if (error) {
+                    hideLoading();
+                    showError(error.message);
+                    return;
+                }
+                
+                // After successful login, reload authorization details
+                await loadAuthorizationDetails();
+                
+            } catch (error) {
+                console.error('Error signing in:', error);
+                hideLoading();
+                showError('Failed to sign in');
             }
         }
         
@@ -386,6 +494,7 @@
         // Event listeners
         approveBtn.addEventListener('click', handleApprove);
         denyBtn.addEventListener('click', handleDeny);
+        loginBtn.addEventListener('click', handleLogin);
         
         // Load authorization details on page load
         loadAuthorizationDetails();
