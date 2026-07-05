@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
         table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
@@ -151,6 +152,103 @@
         .hidden {
             display: none !important;
         }
+        
+        .connected-apps-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .app-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background-color: #faf8f5;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .app-icon {
+            width: 48px;
+            height: 48px;
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .app-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .app-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1c1917;
+            margin-bottom: 4px;
+        }
+        
+        .app-date {
+            font-size: 12px;
+            color: #a8a29e;
+            margin-bottom: 8px;
+        }
+        
+        .app-scopes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        
+        .scope-tag {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 11px;
+            color: #78716c;
+        }
+        
+        .revoke-btn {
+            background-color: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        
+        .revoke-btn:hover {
+            background-color: #fee2e2;
+        }
+        
+        .no-apps {
+            text-align: center;
+            padding: 40px 20px;
+            color: #78716c;
+        }
+        
+        .loading-text {
+            text-align: center;
+            padding: 40px 20px;
+            color: #78716c;
+        }
     </style>
 </head>
 <body style="margin: 0; padding: 0; background-color: #faf8f5; -webkit-font-smoothing: antialiased;">
@@ -291,7 +389,8 @@
                                 &copy; 2026 Cookery App. All ingredients curated thoughtfully.
                             </p>
                             <p style="margin: 8px 0 0 0; font-size: 12px;">
-                                <a href="developer.html" style="color: #1c1917; text-decoration: underline;">Developer Portal</a>
+                                <a href="developer.html" style="color: #1c1917; text-decoration: underline;">Developer Portal</a> | 
+                                <a href="#" id="connected-apps-link" style="color: #1c1917; text-decoration: underline;">Connected Apps</a>
                             </p>
                         </td>
                     </tr>
@@ -344,7 +443,23 @@
         </div>
     </div>
 
+    <!-- Connected Apps Modal -->
+    <div id="connected-apps-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Connected Apps</h2>
+                <button class="modal-close" id="close-connected-apps">&times;</button>
+            </div>
+            <div id="connected-apps-content" class="connected-apps-list">
+                <div class="loading-text">Loading your connected apps...</div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+        
         const downloadLink = document.querySelector('a[href*="Cookery.ipa"]');
         const termsModal = document.getElementById('terms-modal');
         const closeModalBtn = document.getElementById('close-modal');
@@ -352,6 +467,12 @@
         const confirmDownloadBtn = document.getElementById('confirm-download');
         const eulaCheckbox = document.getElementById('eula-checkbox');
         const DOWNLOAD_URL = 'https://github.com/jamestheakston/cookeryios/releases/latest/download/Cookery.ipa';
+        const connectedAppsLink = document.getElementById('connected-apps-link');
+        const connectedAppsModal = document.getElementById('connected-apps-modal');
+        const closeConnectedAppsBtn = document.getElementById('close-connected-apps');
+        const connectedAppsContent = document.getElementById('connected-apps-content');
+        
+        const SupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Open modal when download link is clicked
         downloadLink.addEventListener('click', (e) => {
@@ -388,6 +509,104 @@
                 closeModal();
             }
         });
+        
+        // Connected Apps Modal
+        connectedAppsLink.addEventListener('click', async (e) => {
+            e.preventDefault();
+            connectedAppsModal.classList.remove('hidden');
+            await loadConnectedApps();
+        });
+        
+        closeConnectedAppsBtn.addEventListener('click', () => {
+            connectedAppsModal.classList.add('hidden');
+        });
+        
+        connectedAppsModal.addEventListener('click', (e) => {
+            if (e.target === connectedAppsModal) {
+                connectedAppsModal.classList.add('hidden');
+            }
+        });
+        
+        async function loadConnectedApps() {
+            connectedAppsContent.innerHTML = '<div class="loading-text">Loading your connected apps...</div>';
+            
+            try {
+                const { data: { session } } = await SupabaseClient.auth.getSession();
+                
+                if (!session) {
+                    connectedAppsContent.innerHTML = '<div class="no-apps">Please sign in to view your connected apps.</div>';
+                    return;
+                }
+                
+                const { data: apps, error } = await SupabaseClient
+                    .from('apps')
+                    .select('*')
+                    .eq('user_id', session.user.id)
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    console.error('Error loading apps:', error);
+                    connectedAppsContent.innerHTML = '<div class="no-apps">Failed to load connected apps.</div>';
+                    return;
+                }
+                
+                if (!apps || apps.length === 0) {
+                    connectedAppsContent.innerHTML = '<div class="no-apps">You have no connected apps.</div>';
+                    return;
+                }
+                
+                connectedAppsContent.innerHTML = apps.map(app => `
+                    <div class="app-item" data-app-id="${app.id}">
+                        <div class="app-icon">
+                            ${app.logo_url 
+                                ? `<img src="${app.logo_url}" alt="${app.name}">` 
+                                : `<svg style="width: 24px; height: 24px; color: #a8a29e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                   </svg>`
+                            }
+                        </div>
+                        <div class="app-info">
+                            <div class="app-name">${app.name}</div>
+                            <div class="app-date">Connected ${new Date(app.created_at).toLocaleDateString()}</div>
+                            <div class="app-scopes">
+                                ${(app.scopes || []).map(scope => `<span class="scope-tag">${scope}</span>`).join('')}
+                            </div>
+                        </div>
+                        <button class="revoke-btn" onclick="revokeApp('${app.id}')">Revoke</button>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                console.error('Error loading connected apps:', error);
+                connectedAppsContent.innerHTML = '<div class="no-apps">Failed to load connected apps.</div>';
+            }
+        }
+        
+        window.revokeApp = async function(appId) {
+            if (!confirm('Are you sure you want to revoke access for this app?')) {
+                return;
+            }
+            
+            try {
+                const { error } = await SupabaseClient
+                    .from('apps')
+                    .delete()
+                    .eq('id', appId);
+                
+                if (error) {
+                    console.error('Error revoking app:', error);
+                    alert('Failed to revoke app access.');
+                    return;
+                }
+                
+                // Reload the list
+                await loadConnectedApps();
+                
+            } catch (error) {
+                console.error('Error revoking app:', error);
+                alert('Failed to revoke app access.');
+            }
+        };
     </script>
 </body>
 </html>
