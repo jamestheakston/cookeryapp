@@ -578,31 +578,33 @@
             }
             
             // Update OAuth server application using Edge Function
-            try {
-                const response = await fetch('https://ojvigxnwweixjhugekmm.supabase.co/functions/v1/update-oauth-client', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                    },
-                    body: JSON.stringify({
-                        clientId: appId,
-                        name: appName,
-                        description: appDescription,
-                        redirectUri: redirectUrl,
-                        scopes: currentAppScopes
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (!response.ok || data.error) {
-                    console.error('Error updating OAuth server:', data.error);
+            if (currentApp.oauth_client_id) {
+                try {
+                    const response = await fetch('https://ojvigxnwweixjhugekmm.supabase.co/functions/v1/update-oauth-client', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                        },
+                        body: JSON.stringify({
+                            clientId: currentApp.oauth_client_id,
+                            name: appName,
+                            description: appDescription,
+                            redirectUri: redirectUrl,
+                            scopes: currentAppScopes
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok || data.error) {
+                        console.error('Error updating OAuth server:', data.error);
+                        console.warn('Local update succeeded but OAuth server update failed');
+                    }
+                } catch (oauthError) {
+                    console.error('Error updating OAuth server:', oauthError);
                     console.warn('Local update succeeded but OAuth server update failed');
                 }
-            } catch (oauthError) {
-                console.error('Error updating OAuth server:', oauthError);
-                console.warn('Local update succeeded but OAuth server update failed');
             }
             
             currentApp.name = appName;
@@ -621,6 +623,10 @@
         
         async function deleteApp() {
             if (confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+                // Show loading state
+                deleteAppBtn.disabled = true;
+                deleteAppBtn.textContent = 'Deleting...';
+                
                 // Delete from local database
                 const { error } = await SupabaseClient
                     .from('apps')
@@ -630,33 +636,39 @@
                 if (error) {
                     console.error('Error deleting app:', error);
                     showAlert('Error', 'Failed to delete application: ' + error.message);
+                    deleteAppBtn.disabled = false;
+                    deleteAppBtn.textContent = 'Delete App';
                     return;
                 }
                 
                 // Delete from OAuth server using Edge Function
-                try {
-                    const response = await fetch('https://ojvigxnwweixjhugekmm.supabase.co/functions/v1/delete-oauth-client', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-                        },
-                        body: JSON.stringify({
-                            clientId: appId
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (!response.ok || data.error) {
-                        console.error('Error deleting OAuth client:', data.error);
+                if (currentApp.oauth_client_id) {
+                    try {
+                        const response = await fetch('https://ojvigxnwweixjhugekmm.supabase.co/functions/v1/delete-oauth-client', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                            },
+                            body: JSON.stringify({
+                                clientId: currentApp.oauth_client_id
+                            })
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (!response.ok || data.error) {
+                            console.error('Error deleting OAuth client:', data.error);
+                            console.warn('Local delete succeeded but OAuth server delete failed');
+                        }
+                    } catch (oauthError) {
+                        console.error('Error deleting OAuth client:', oauthError);
                         console.warn('Local delete succeeded but OAuth server delete failed');
                     }
-                } catch (oauthError) {
-                    console.error('Error deleting OAuth client:', oauthError);
-                    console.warn('Local delete succeeded but OAuth server delete failed');
                 }
                 
+                deleteAppBtn.disabled = false;
+                deleteAppBtn.textContent = 'Delete App';
                 window.location.href = '/developer';
             }
         }
