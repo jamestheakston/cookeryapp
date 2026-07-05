@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery OAuth Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #faf8f5;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 36px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+        .info-box {
+            background-color: #faf8f5;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .info-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #a8a29e;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+        .info-value {
+           font-size: 13px;
+            color: #1c1917;
+            word-break: break-all;
+        }
+        button {
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 14px 32px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #292524;
+        }
+        button:disabled {
+            background-color: #a8a29e;
+            cursor: not-allowed;
+        }
+        .user-info {
+            display: none;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e7e5e4;
+        }
+        .user-info.active {
+            display: block;
+        }
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin-bottom: 16px;
+        }
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1c1917;
+            margin-bottom: 4px;
+        }
+        .user-email {
+            font-size: 14px;
+            color: #78716c;
+        }
+        .token-info {
+            background-color: #faf8f5;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        .token-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+        .token-value {
+            font-size: 11px;
+            color: #78716c;
+            word-break: break-all;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Cookery OAuth Demo</h1>
+            <p>This demo shows how to integrate with Cookery's OAuth 2.1 provider using Supabase Auth with a custom provider.</p>
+            
+            <div class="info-box">
+                <div class="info-label">Issuer URL</div>
+                <div class="info-value">https://ojvigxnwweixjhugekmm.supabase.co/auth/v1</div>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-label">Custom Provider</div>
+                <div class="info-value">cookery</div>
+            </div>
+            
+            <button id="signInBtn">Sign in with Cookery</button>
+            <button id="signOutBtn" style="display: none; background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca;">Sign Out</button>
+            
+            <div id="userInfo" class="user-info">
+                <img id="userAvatar" class="user-avatar" src="" alt="User Avatar">
+                <div class="user-name" id="userName"></div>
+                <div class="user-email" id="userEmail"></div>
+                
+                <div class="token-info">
+                    <div class="token-label">Access Token</div>
+                    <div class="token-value" id="accessToken"></div>
+                </div>
+                
+                <div class="token-info">
+                    <div class="token-label">User ID</div>
+                    <div class="token-value" id="userId"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://mfjtdrqvmuwtoarkiezi.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_SPhsUI31nYbrrLjPBAaRBw_OkWQ2_Xn';
+
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const signInBtn = document.getElementById('signInBtn');
+        const signOutBtn = document.getElementById('signOutBtn');
+        const userInfo = document.getElementById('userInfo');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const accessToken = document.getElementById('accessToken');
+        const userId = document.getElementById('userId');
+
+        async function signInWithCookery() {
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'cookery',
+                options: {
+                    redirectTo: window.location.href,
+                    scopes: 'openid email profile'
+                }
+            });
+
+            if (error) {
+                console.error('Error signing in:', error);
+                alert('Error signing in: ' + error.message);
+            }
+        }
+
+        async function signOut() {
+            const { error } = await supabase.auth.signOut();
+            if (error) {
+                console.error('Error signing out:', error);
+            } else {
+                updateUI(null);
+            }
+        }
+
+        function updateUI(session) {
+            if (session?.user) {
+                signInBtn.style.display = 'none';
+                signOutBtn.style.display = 'block';
+                userInfo.classList.add('active');
+                
+                const user = session.user;
+                userName.textContent = user.user_metadata?.full_name || user.user_metadata?.name || 'User';
+                userEmail.textContent = user.email;
+                userAvatar.src = user.user_metadata?.avatar_url || 'https://via.placeholder.com/64';
+                accessToken.textContent = session.access_token || 'N/A';
+                userId.textContent = user.id;
+            } else {
+                signInBtn.style.display = 'block';
+                signOutBtn.style.display = 'none';
+                userInfo.classList.remove('active');
+            }
+        }
+
+        // Check for existing session
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            updateUI(session);
+        }
+
+        // Listen for auth state changes
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log('Auth state change:', event, session);
+            updateUI(session);
+        });
+
+        signInBtn.addEventListener('click', signInWithCookery);
+        signOutBtn.addEventListener('click', signOut);
+
+        // Initial check
+        checkSession();
+    </script>
+</body>
+</html>
