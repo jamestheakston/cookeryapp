@@ -1571,12 +1571,21 @@ const tokens = await response.json();</code></pre>
         // Load initial section from hash
         loadInitialSection();
 
-        // Check for OAuth callback
-        SupabaseClient.auth.onAuthStateChange((event, session) => {
+        // Check for OAuth callback and email verification
+        SupabaseClient.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth state change:', event, session);
+            
             if (event === 'SIGNED_IN' && session) {
                 checkOnboarding(session.user);
             } else if (event === 'SIGNED_OUT') {
                 showLogin();
+            } else if (event === 'USER_UPDATED' && session) {
+                // Handle email verification confirmation
+                console.log('User updated, refreshing session...');
+                const { data: { session: refreshedSession } } = await SupabaseClient.auth.getSession();
+                if (refreshedSession) {
+                    checkOnboarding(refreshedSession.user);
+                }
             }
         });
 
