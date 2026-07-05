@@ -139,7 +139,13 @@
             
             <div class="info-box">
                 <div class="info-label">Custom Provider</div>
-                <div class="info-value">cookery</div>
+                <div class="info-value">custom:cookery</div>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-label">Required Redirect URI</div>
+                <div class="info-value">https://mfjtdrqvmuwtoarkiezi.supabase.co/auth/v1/callback</div>
+                <p style="margin: 8px 0 0 0; font-size: 11px; color: #dc2626;">⚠️ Add this URL to your OAuth client's redirect URIs in Cookery app settings</p>
             </div>
             
             <button id="signInBtn">Sign in with Cookery</button>
@@ -182,7 +188,7 @@
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'custom:cookery',
                 options: {
-                    redirectTo: window.location.href,
+                    redirectTo: 'https://mfjtdrqvmuwtoarkiezi.supabase.co/auth/v1/callback',
                     scopes: 'openid email profile'
                 }
             });
