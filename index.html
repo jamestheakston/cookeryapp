@@ -450,6 +450,11 @@
                 <h2>Connected Apps</h2>
                 <button class="modal-close" id="close-connected-apps">&times;</button>
             </div>
+            <div style="margin-bottom: 16px; padding: 16px; background-color: #faf8f5; border: 1px solid #e7e5e4; border-radius: 12px;">
+                <p style="margin: 0; font-size: 13px; color: #78716c; line-height: 1.5;">
+                    <strong>What are connected apps?</strong> These are third-party applications that you've authorized to access your Cookery account. They can view information like your recipes, collections, and profile data based on the permissions you've granted. You can revoke access at any time.
+                </p>
+            </div>
             <div id="auth-controls" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e7e5e4; display: none;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span id="user-email" style="font-size: 13px; color: #78716c;"></span>
@@ -457,8 +462,22 @@
                 </div>
             </div>
             <div id="sign-in-prompt" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e7e5e4; display: none;">
-                <p style="margin: 0 0 12px 0; font-size: 13px; color: #78716c;">Sign in to manage your connected apps.</p>
-                <a href="developer.html" style="display: inline-block; background-color: #1c1917; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;">Sign In</a>
+                <div id="auth-form-container">
+                    <div id="auth-tabs" style="display: flex; gap: 16px; margin-bottom: 16px;">
+                        <button id="sign-in-tab" class="auth-tab active" style="background: none; border: none; padding: 8px 0; font-size: 14px; font-weight: 600; color: #1c1917; cursor: pointer; border-bottom: 2px solid #1c1917;">Sign In</button>
+                        <button id="sign-up-tab" class="auth-tab" style="background: none; border: none; padding: 8px 0; font-size: 14px; font-weight: 600; color: #78716c; cursor: pointer; border-bottom: 2px solid transparent;">Sign Up</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-email" style="display: block; font-size: 13px; font-weight: 500; color: #1c1917; margin-bottom: 8px;">Email</label>
+                        <input type="email" id="auth-email" style="width: 100%; padding: 10px 14px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password" style="display: block; font-size: 13px; font-weight: 500; color: #1c1917; margin-bottom: 8px;">Password</label>
+                        <input type="password" id="auth-password" style="width: 100%; padding: 10px 14px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
+                    </div>
+                    <button id="auth-submit-btn" style="width: 100%; background-color: #1c1917; color: #ffffff; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; margin-top: 8px;">Sign In</button>
+                    <p id="auth-error" style="margin: 12px 0 0 0; font-size: 12px; color: #dc2626; display: none;"></p>
+                </div>
             </div>
             <div id="connected-apps-content" class="connected-apps-list">
                 <div class="loading-text">Loading your connected apps...</div>
@@ -485,6 +504,14 @@
         const userEmail = document.getElementById('user-email');
         const signInPrompt = document.getElementById('sign-in-prompt');
         const signOutBtn = document.getElementById('sign-out-btn');
+        const signInTab = document.getElementById('sign-in-tab');
+        const signUpTab = document.getElementById('sign-up-tab');
+        const authEmail = document.getElementById('auth-email');
+        const authPassword = document.getElementById('auth-password');
+        const authSubmitBtn = document.getElementById('auth-submit-btn');
+        const authError = document.getElementById('auth-error');
+        
+        let isSignUpMode = false;
         
         const SupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -618,6 +645,85 @@
             } catch (error) {
                 console.error('Error signing out:', error);
                 alert('Failed to sign out.');
+            }
+        });
+        
+        // Auth tabs
+        signInTab.addEventListener('click', () => {
+            isSignUpMode = false;
+            signInTab.style.color = '#1c1917';
+            signInTab.style.borderBottom = '2px solid #1c1917';
+            signUpTab.style.color = '#78716c';
+            signUpTab.style.borderBottom = '2px solid transparent';
+            authSubmitBtn.textContent = 'Sign In';
+            authError.style.display = 'none';
+        });
+        
+        signUpTab.addEventListener('click', () => {
+            isSignUpMode = true;
+            signUpTab.style.color = '#1c1917';
+            signUpTab.style.borderBottom = '2px solid #1c1917';
+            signInTab.style.color = '#78716c';
+            signInTab.style.borderBottom = '2px solid transparent';
+            authSubmitBtn.textContent = 'Sign Up';
+            authError.style.display = 'none';
+        });
+        
+        // Auth submit
+        authSubmitBtn.addEventListener('click', async () => {
+            const email = authEmail.value.trim();
+            const password = authPassword.value;
+            
+            if (!email || !password) {
+                authError.textContent = 'Please enter both email and password';
+                authError.style.display = 'block';
+                return;
+            }
+            
+            authSubmitBtn.disabled = true;
+            authSubmitBtn.textContent = 'Loading...';
+            authError.style.display = 'none';
+            
+            try {
+                if (isSignUpMode) {
+                    const { data, error } = await SupabaseClient.auth.signUp({
+                        email,
+                        password
+                    });
+                    
+                    if (error) {
+                        authError.textContent = error.message;
+                        authError.style.display = 'block';
+                    } else {
+                        // Check if email confirmation is required
+                        if (data.user && !data.session) {
+                            authError.textContent = 'Please check your email to confirm your account';
+                            authError.style.display = 'block';
+                        } else {
+                            // Auto sign in after successful signup
+                            await loadConnectedApps();
+                        }
+                    }
+                } else {
+                    const { data, error } = await SupabaseClient.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+                    
+                    if (error) {
+                        authError.textContent = error.message;
+                        authError.style.display = 'block';
+                    } else {
+                        await loadConnectedApps();
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                authError.textContent = 'An unexpected error occurred';
+                authError.style.display = 'block';
+            } finally {
+                authSubmitBtn.disabled = false;
+                authSubmitBtn.textContent = isSignUpMode ? 'Sign Up' : 'Sign In';
             }
         });
         
