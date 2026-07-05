@@ -300,6 +300,19 @@
                 </svg>
                 Sign in with GitHub
             </button>
+            
+            <div style="display: flex; align-items: center; gap: 16px; margin: 24px 0;">
+                <div style="flex: 1; height: 1px; background-color: #e7e5e4;"></div>
+                <span style="font-size: 12px; color: #a8a29e; font-weight: 500;">or</span>
+                <div style="flex: 1; height: 1px; background-color: #e7e5e4;"></div>
+            </div>
+            
+            <button id="cookery-login" class="github-btn" style="background-color: #1c1917;">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+                Sign in with Cookery
+            </button>
         </div>
     </div>
 
@@ -815,6 +828,7 @@ const tokens = await response.json();</code></pre>
         const portalContainer = document.getElementById('portal-container');
         const userName = document.getElementById('user-name');
         const githubLoginBtn = document.getElementById('github-login');
+        const cookeryLoginBtn = document.getElementById('cookery-login');
         const sidebarLogout = document.getElementById('sidebar-logout');
         const onboardingModal = document.getElementById('onboarding-modal');
         const nameInput = document.getElementById('name-input');
@@ -982,6 +996,23 @@ const tokens = await response.json();</code></pre>
         }
 
         githubLoginBtn.addEventListener('click', signInWithGitHub);
+        
+        if (cookeryLoginBtn) {
+            cookeryLoginBtn.addEventListener('click', async () => {
+                const { data, error } = await SupabaseClient.auth.signInWithOAuth({
+                    provider: 'custom:cookerydev',
+                    options: {
+                        redirectTo: window.location.href
+                    }
+                });
+                
+                if (error) {
+                    console.error('Error signing in with Cookery:', error);
+                    alert('Error signing in with Cookery: ' + error.message);
+                }
+            });
+        }
+        
         sidebarLogout.addEventListener('click', () => {
             confirmTitle.textContent = 'Sign Out';
             confirmMessage.textContent = 'Are you sure you want to sign out?';
@@ -1458,22 +1489,29 @@ const tokens = await response.json();</code></pre>
         createAppBtn.addEventListener('click', createApplication);
         
         // Email verification buttons
-        document.getElementById('verify-account-btn').addEventListener('click', async () => {
-            const { data, error } = await SupabaseClient.auth.resend({
-                type: 'signup',
-                email: currentUser.email
-            });
-            
-            if (error) {
-                showAlert('Error', 'Failed to send verification email: ' + error.message);
-            } else {
-                showAlert('Success', 'Verification email sent! Please check your inbox.');
-            }
-        });
+        const verifyAccountBtn = document.getElementById('verify-account-btn');
+        const verifyAppBtn = document.getElementById('verify-app-btn');
         
-        document.getElementById('verify-app-btn').addEventListener('click', () => {
-            showAlert('Info', 'To verify a specific app, please navigate to the app details page and use the verification option there.');
-        });
+        if (verifyAccountBtn) {
+            verifyAccountBtn.addEventListener('click', async () => {
+                const { data, error } = await SupabaseClient.auth.resend({
+                    type: 'signup',
+                    email: currentUser.email
+                });
+                
+                if (error) {
+                    showAlert('Error', 'Failed to send verification email: ' + error.message);
+                } else {
+                    showAlert('Success', 'Verification email sent! Please check your inbox.');
+                }
+            });
+        }
+        
+        if (verifyAppBtn) {
+            verifyAppBtn.addEventListener('click', () => {
+                showAlert('Info', 'To verify a specific app, please navigate to the app details page and use the verification option there.');
+            });
+        }
         
         // Developer policy modal
         developerPolicyLink.addEventListener('click', (e) => {
