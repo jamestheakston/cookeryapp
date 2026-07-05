@@ -1274,11 +1274,23 @@
                         })
                     });
                     
-                    const data = await response.json();
-                    
-                    if (!response.ok || data.error) {
-                        console.error('Error updating OAuth server:', data.error);
+                    if (!response.ok) {
+                        console.error('Error updating OAuth server:', response.status, response.statusText);
                         console.warn('Local update succeeded but OAuth server update failed');
+                    } else {
+                        // Only parse JSON if there's content
+                        const text = await response.text();
+                        if (text) {
+                            try {
+                                const data = JSON.parse(text);
+                                if (data.error) {
+                                    console.error('Error updating OAuth server:', data.error);
+                                    console.warn('Local update succeeded but OAuth server update failed');
+                                }
+                            } catch (e) {
+                                console.warn('Could not parse OAuth server response:', text);
+                            }
+                        }
                     }
                 } catch (oauthError) {
                     console.error('Error updating OAuth server:', oauthError);
@@ -1335,11 +1347,23 @@
                             })
                         });
                         
-                        const data = await response.json();
-                        
-                        if (!response.ok || data.error) {
-                            console.error('Error deleting OAuth client:', data.error);
+                        if (!response.ok) {
+                            console.error('Error deleting OAuth client:', response.status, response.statusText);
                             console.warn('Local delete succeeded but OAuth server delete failed');
+                        } else {
+                            // Only parse JSON if there's content
+                            const text = await response.text();
+                            if (text) {
+                                try {
+                                    const data = JSON.parse(text);
+                                    if (data.error) {
+                                        console.error('Error deleting OAuth client:', data.error);
+                                        console.warn('Local delete succeeded but OAuth server delete failed');
+                                    }
+                                } catch (e) {
+                                    console.warn('Could not parse OAuth server response:', text);
+                                }
+                            }
                         }
                     } catch (oauthError) {
                         console.error('Error deleting OAuth client:', oauthError);
@@ -1533,11 +1557,23 @@
                             })
                         });
                         
-                        const updateData = await updateResponse.json();
-                        
-                        if (!updateResponse.ok || updateData.error) {
-                            console.error('Error updating OAuth server:', updateData.error);
+                        if (!updateResponse.ok) {
+                            console.error('Error updating OAuth server:', updateResponse.status, updateResponse.statusText);
                             console.warn('App created but OAuth server update failed');
+                        } else {
+                            // Only parse JSON if there's content
+                            const text = await updateResponse.text();
+                            if (text) {
+                                try {
+                                    const updateData = JSON.parse(text);
+                                    if (updateData.error) {
+                                        console.error('Error updating OAuth server:', updateData.error);
+                                        console.warn('App created but OAuth server update failed');
+                                    }
+                                } catch (e) {
+                                    console.warn('Could not parse OAuth server response:', text);
+                                }
+                            }
                         }
                     } catch (oauthError) {
                         console.error('Error updating OAuth server:', oauthError);
