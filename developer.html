@@ -1488,6 +1488,9 @@
             showLoading();
 
             try {
+                // Clean redirect URL - remove any brackets
+                const cleanRedirectUrl = redirectUrl.replace(/^\[|\]$/g, '');
+                
                 // Register OAuth client via Edge Function
                 console.log('Attempting to register OAuth client...');
                 const oauthResponse = await fetch(`${SUPABASE_URL}/functions/v1/register-oauth-client`, {
@@ -1499,7 +1502,7 @@
                     },
                     body: JSON.stringify({
                         name: name,
-                        redirect_uris: [redirectUrl],
+                        redirect_uris: [cleanRedirectUrl],
                         client_type: 'public'
                     })
                 });
@@ -1509,7 +1512,7 @@
                 if (!oauthResponse.ok) {
                     const errorText = await oauthResponse.text();
                     console.error('OAuth registration error:', errorText);
-                    const errorData = await oauthResponse.json();
+                    const errorData = JSON.parse(errorText);
                     throw new Error(errorData.error || 'Failed to register OAuth client');
                 }
 
