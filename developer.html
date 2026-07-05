@@ -316,6 +316,7 @@
             <a class="nav-item active" data-section="dashboard" href="#dashboard">Dashboard</a>
             <a class="nav-item" data-section="apps" href="#apps">My Applications</a>
             <a class="nav-item" data-section="api" href="#api">API Docs</a>
+            <a class="nav-item" href="/developer/demo.html">OAuth Demo</a>
             
             <div class="nav-section">Account</div>
             <a class="nav-item" data-section="settings" href="#settings">Settings</a>
@@ -1455,6 +1456,24 @@ const tokens = await response.json();</code></pre>
         cancelCreateApp.addEventListener('click', closeCreateAppModal);
         closeAnalytics.addEventListener('click', closeAppAnalytics);
         createAppBtn.addEventListener('click', createApplication);
+        
+        // Email verification buttons
+        document.getElementById('verify-account-btn').addEventListener('click', async () => {
+            const { data, error } = await SupabaseClient.auth.resend({
+                type: 'signup',
+                email: currentUser.email
+            });
+            
+            if (error) {
+                showAlert('Error', 'Failed to send verification email: ' + error.message);
+            } else {
+                showAlert('Success', 'Verification email sent! Please check your inbox.');
+            }
+        });
+        
+        document.getElementById('verify-app-btn').addEventListener('click', () => {
+            showAlert('Info', 'To verify a specific app, please navigate to the app details page and use the verification option there.');
+        });
         
         // Developer policy modal
         developerPolicyLink.addEventListener('click', (e) => {
