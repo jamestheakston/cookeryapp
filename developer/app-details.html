@@ -549,12 +549,17 @@
         }
         
         async function saveAppSettings() {
+            const appName = editAppName.value.trim();
+            const appDescription = editAppDescription.value.trim();
+            const redirectUrl = editAppRedirectUrl.value.trim();
+            
+            // Update in local database
             const { error } = await SupabaseClient
                 .from('apps')
                 .update({
-                    name: editAppName.value.trim(),
-                    description: editAppDescription.value.trim(),
-                    redirect_url: editAppRedirectUrl.value.trim(),
+                    name: appName,
+                    description: appDescription,
+                    redirect_url: redirectUrl,
                     scopes: currentAppScopes,
                     logo: uploadedLogoUrl || currentApp.logo
                 })
@@ -566,9 +571,37 @@
                 return;
             }
             
-            currentApp.name = editAppName.value.trim();
-            currentApp.description = editAppDescription.value.trim();
-            currentApp.redirect_url = editAppRedirectUrl.value.trim();
+            // Update OAuth server application using Edge Function
+            try {
+                const response = await fetch('https://ojvigxnwweixjhugekmm.supabase.co/functions/v1/update-oauth-client', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+                    },
+                    body: JSON.stringify({
+                        clientId: appId,
+                        name: appName,
+                        description: appDescription,
+                        redirectUri: redirectUrl,
+                        scopes: currentAppScopes
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok || data.error) {
+                    console.error('Error updating OAuth server:', data.error);
+                    console.warn('Local update succeeded but OAuth server update failed');
+                }
+            } catch (oauthError) {
+                console.error('Error updating OAuth server:', oauthError);
+                console.warn('Local update succeeded but OAuth server update failed');
+            }
+            
+            currentApp.name = appName;
+            currentApp.description = appDescription;
+            currentApp.redirect_url = redirectUrl;
             currentApp.scopes = currentAppScopes;
             currentApp.logo = uploadedLogoUrl || currentApp.logo;
             
@@ -590,7 +623,7 @@
                     return;
                 }
                 
-                window.location.href = 'developer.html';
+                window.location.href = '/developer';
             }
         }
         
