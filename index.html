@@ -531,12 +531,17 @@
             connectedAppsContent.innerHTML = '<div class="loading-text">Loading your connected apps...</div>';
             
             try {
+                console.log('Checking session...');
                 const { data: { session } } = await SupabaseClient.auth.getSession();
                 
                 if (!session) {
+                    console.log('No session found');
                     connectedAppsContent.innerHTML = '<div class="no-apps">Please sign in to view your connected apps.</div>';
                     return;
                 }
+                
+                console.log('Session found, user ID:', session.user.id);
+                console.log('Querying apps table...');
                 
                 const { data: apps, error } = await SupabaseClient
                     .from('apps')
@@ -546,9 +551,11 @@
                 
                 if (error) {
                     console.error('Error loading apps:', error);
-                    connectedAppsContent.innerHTML = '<div class="no-apps">Failed to load connected apps.</div>';
+                    connectedAppsContent.innerHTML = `<div class="no-apps">Error: ${error.message || 'Unexpected Failure'}</div>`;
                     return;
                 }
+                
+                console.log('Apps loaded:', apps);
                 
                 if (!apps || apps.length === 0) {
                     connectedAppsContent.innerHTML = '<div class="no-apps">You have no connected apps.</div>';
@@ -578,7 +585,7 @@
                 
             } catch (error) {
                 console.error('Error loading connected apps:', error);
-                connectedAppsContent.innerHTML = '<div class="no-apps">Failed to load connected apps.</div>';
+                connectedAppsContent.innerHTML = `<div class="no-apps">Error: ${error.message || 'Unexpected Failure'}</div>`;
             }
         }
         
