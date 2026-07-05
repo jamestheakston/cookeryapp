@@ -1040,14 +1040,20 @@
         }
 
         async function checkOnboarding(user) {
-            if (!user.user_metadata?.display_name) {
+            // Check if user has display_name or if they've already been onboarded
+            const hasDisplayName = user.user_metadata?.display_name;
+            const hasUserName = user.user_metadata?.user_name;
+            const hasEmail = user.email;
+            
+            // If user has any identifying info, skip onboarding
+            if (hasDisplayName || hasUserName || hasEmail) {
+                showContent(user);
+            } else {
                 onboardingModal.classList.remove('hidden');
                 portalContainer.classList.add('hidden');
                 loginSection.classList.add('hidden');
                 loginSection.style.display = 'none';
                 nameInput.focus();
-            } else {
-                showContent(user);
             }
         }
 
