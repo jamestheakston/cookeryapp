@@ -989,6 +989,19 @@
             
             if (redirectParam) {
                 console.log('Custom OAuth redirect detected:', redirectParam);
+                // Check if we've already attempted this redirect to prevent loops
+                const hasRedirected = sessionStorage.getItem('oauth_consent_redirected');
+                if (hasRedirected) {
+                    console.log('Already redirected to consent page, clearing to prevent loop');
+                    sessionStorage.removeItem('oauth_consent_redirected');
+                    showAlert('Authentication Failed', 'There was an issue with the OAuth flow. Please try again or use GitHub sign-in.');
+                    const newUrl = window.location.pathname + window.location.hash;
+                    window.history.replaceState({}, '', newUrl);
+                    return;
+                }
+                
+                // Mark that we're redirecting to prevent loops
+                sessionStorage.setItem('oauth_consent_redirected', 'true');
                 // Redirect to the consent URL provided by the custom OAuth provider
                 window.location.href = redirectParam;
                 return;
@@ -999,6 +1012,8 @@
             
             if (hasOAuthParams) {
                 console.log('OAuth callback detected with params:', Object.fromEntries(urlParams));
+                // Clear any redirect flags
+                sessionStorage.removeItem('oauth_consent_redirected');
                 // Let Supabase handle the OAuth callback
                 // Clear the parameters from URL after a short delay
                 setTimeout(() => {
