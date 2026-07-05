@@ -376,6 +376,8 @@
                 // Get authorization details
                 const { data: authData, error } = await SupabaseClient.auth.oauth.getAuthorizationDetails(authorizationId);
                 
+                console.log('Authorization data:', authData);
+                
                 if (error) {
                     showError(error.message);
                     return;
@@ -394,14 +396,20 @@
                 
                 // Display authorization details
                 hideError();
-                title.textContent = `Authorize ${authData.client.name}`;
-                description.textContent = `${authData.client.name} is requesting access to your Cookery account.`;
                 
-                clientName.textContent = authData.client.name;
-                redirectUri.textContent = authData.redirect_uri;
+                // Handle different possible structures of the response
+                const appName = authData.client?.name || authData.app_name || authData.name || 'Unknown Application';
+                const redirect = authData.redirect_uri || authData.redirectUrl || authData.redirect || 'Unknown';
+                const scope = authData.scope || authData.scopes || '';
                 
-                if (authData.scope && authData.scope.trim()) {
-                    const scopes = authData.scope.split(' ').filter(s => s);
+                title.textContent = `Authorize ${appName}`;
+                description.textContent = `${appName} is requesting access to your Cookery account.`;
+                
+                clientName.textContent = appName;
+                redirectUri.textContent = redirect;
+                
+                if (scope && scope.trim()) {
+                    const scopes = typeof scope === 'string' ? scope.split(' ').filter(s => s) : (Array.isArray(scope) ? scope : []);
                     if (scopes.length > 0) {
                         scopesContainer.classList.remove('hidden');
                         scopesList.innerHTML = scopes.map(scope => `<li>${scope}</li>`).join('');
