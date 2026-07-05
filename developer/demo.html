@@ -180,7 +180,7 @@
 
         async function signInWithCookery() {
             const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                provider: 'cookery',
+                provider: 'custom:cookery',
                 options: {
                     redirectTo: window.location.href,
                     scopes: 'openid email profile'
