@@ -335,6 +335,7 @@
                         <input type="text" id="new-scope-input" placeholder="e.g., read:recipes" style="flex: 1; padding: 8px 12px; border: 1px solid #e7e5e4; border-radius: 6px; font-size: 14px; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; box-sizing: border-box;">
                         <button id="add-scope-btn" style="background-color: #1c1917; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; border: none; cursor: pointer; transition: background-color 0.2s;">Add</button>
                     </div>
+                    <p style="margin: 12px 0 0 0; font-size: 13px; color: #78716c;">Read our <a href="/developer.html?jumpto=docs" id="api-docs-link" style="color: #3b82f6; text-decoration: underline;">API Docs</a> for detailed integration guides.</p>
                 </div>
                 
                 <div style="margin-bottom: 24px;">
@@ -419,7 +420,11 @@
         const appLogoPreview = document.getElementById('app-logo-preview');
         const appLogoUpload = document.getElementById('app-logo-upload');
         const uploadLogoBtn = document.getElementById('upload-logo-btn');
-        const scopesContainer = document.getElementById('scopes-container');
+        const oauthClientIdEl = document.getElementById('oauth-client-id');
+        const oauthClientSecretEl = document.getElementById('oauth-client-secret');
+        const clientSecretContainer = document.getElementById('client-secret-container');
+        const copyClientIdBtn = document.getElementById('copy-client-id-btn');
+        const copyClientSecretBtn = document.getElementById('copy-client-secret-btn');
         const newScopeInput = document.getElementById('new-scope-input');
         const addScopeBtn = document.getElementById('add-scope-btn');
         const saveAppSettingsBtn = document.getElementById('save-app-settings');
@@ -527,6 +532,20 @@
             currentAppScopes = currentApp.scopes || [];
             renderScopes();
             
+            // Display OAuth credentials
+            if (currentApp.oauth_client_id) {
+                oauthClientIdEl.textContent = currentApp.oauth_client_id;
+            } else {
+                oauthClientIdEl.textContent = 'Not registered';
+            }
+            
+            if (currentApp.oauth_client_secret) {
+                oauthClientSecretEl.textContent = currentApp.oauth_client_secret;
+                clientSecretContainer.style.display = 'block';
+            } else {
+                clientSecretContainer.style.display = 'none';
+            }
+            
             if (currentApp.logo) {
                 appLogoPreview.innerHTML = `<img src="${currentApp.logo}" width="64" height="64" style="width: 100%; height: 100%; object-fit: cover;">`;
             }
@@ -577,6 +596,26 @@
                 window.location.href = 'developer.html';
             }
         }
+        
+        // Copy OAuth credentials
+        copyClientIdBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(oauthClientIdEl.textContent);
+            copyClientIdBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyClientIdBtn.textContent = 'Copy';
+            }, 2000);
+        });
+        
+        copyClientSecretBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(oauthClientSecretEl.textContent);
+            copyClientSecretBtn.textContent = 'Copied!';
+            setTimeout(() => {
+                copyClientSecretBtn.textContent = 'Copy';
+            }, 2000);
+        });
+        
+        // API Docs link - now navigates to developer.html
+        // No need for event listener, it's a direct link
         
         // Tab switching
         appTabs.forEach(tab => {
