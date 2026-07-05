@@ -450,6 +450,16 @@
                 <h2>Connected Apps</h2>
                 <button class="modal-close" id="close-connected-apps">&times;</button>
             </div>
+            <div id="auth-controls" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e7e5e4; display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span id="user-email" style="font-size: 13px; color: #78716c;"></span>
+                    <button id="sign-out-btn" style="background-color: #faf8f5; color: #1c1917; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; border: 1px solid #e7e5e4; cursor: pointer;">Sign Out</button>
+                </div>
+            </div>
+            <div id="sign-in-prompt" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #e7e5e4; display: none;">
+                <p style="margin: 0 0 12px 0; font-size: 13px; color: #78716c;">Sign in to manage your connected apps.</p>
+                <a href="developer.html" style="display: inline-block; background-color: #1c1917; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; text-decoration: none;">Sign In</a>
+            </div>
             <div id="connected-apps-content" class="connected-apps-list">
                 <div class="loading-text">Loading your connected apps...</div>
             </div>
@@ -471,6 +481,10 @@
         const connectedAppsModal = document.getElementById('connected-apps-modal');
         const closeConnectedAppsBtn = document.getElementById('close-connected-apps');
         const connectedAppsContent = document.getElementById('connected-apps-content');
+        const authControls = document.getElementById('auth-controls');
+        const userEmail = document.getElementById('user-email');
+        const signInPrompt = document.getElementById('sign-in-prompt');
+        const signOutBtn = document.getElementById('sign-out-btn');
         
         const SupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -536,11 +550,17 @@
                 
                 if (!session) {
                     console.log('No session found');
+                    authControls.style.display = 'none';
+                    signInPrompt.style.display = 'block';
                     connectedAppsContent.innerHTML = '<div class="no-apps">Please sign in to view your connected apps.</div>';
                     return;
                 }
                 
                 console.log('Session found, user ID:', session.user.id);
+                authControls.style.display = 'block';
+                signInPrompt.style.display = 'none';
+                userEmail.textContent = session.user.email;
+                
                 console.log('Querying apps table...');
                 
                 const { data: apps, error } = await SupabaseClient
@@ -588,6 +608,18 @@
                 connectedAppsContent.innerHTML = `<div class="no-apps">Error: ${error.message || 'Unexpected Failure'}</div>`;
             }
         }
+        
+        signOutBtn.addEventListener('click', async () => {
+            try {
+                await SupabaseClient.auth.signOut();
+                authControls.style.display = 'none';
+                signInPrompt.style.display = 'block';
+                connectedAppsContent.innerHTML = '<div class="no-apps">Please sign in to view your connected apps.</div>';
+            } catch (error) {
+                console.error('Error signing out:', error);
+                alert('Failed to sign out.');
+            }
+        });
         
         window.revokeApp = async function(appId) {
             if (!confirm('Are you sure you want to revoke access for this app?')) {
