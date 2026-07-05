@@ -167,7 +167,7 @@
         const SUPABASE_URL = 'https://mfjtdrqvmuwtoarkiezi.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_SPhsUI31nYbrrLjPBAaRBw_OkWQ2_Xn';
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const signInBtn = document.getElementById('signInBtn');
         const signOutBtn = document.getElementById('signOutBtn');
@@ -179,7 +179,7 @@
         const userId = document.getElementById('userId');
 
         async function signInWithCookery() {
-            const { data, error } = await supabase.auth.signInWithOAuth({
+            const { data, error } = await supabaseClient.auth.signInWithOAuth({
                 provider: 'cookery',
                 options: {
                     redirectTo: window.location.href,
@@ -194,7 +194,7 @@
         }
 
         async function signOut() {
-            const { error } = await supabase.auth.signOut();
+            const { error } = await supabaseClient.auth.signOut();
             if (error) {
                 console.error('Error signing out:', error);
             } else {
@@ -223,12 +223,12 @@
 
         // Check for existing session
         async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             updateUI(session);
         }
 
         // Listen for auth state changes
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             console.log('Auth state change:', event, session);
             updateUI(session);
         });
