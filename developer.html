@@ -904,6 +904,7 @@
         
         if (cookeryLoginBtn) {
             cookeryLoginBtn.addEventListener('click', async () => {
+                showLoading();
                 const { data, error } = await SupabaseClient.auth.signInWithOAuth({
                     provider: 'custom:cookerydev',
                     options: {
@@ -912,8 +913,9 @@
                 });
                 
                 if (error) {
+                    hideLoading();
                     console.error('Error signing in with Cookery:', error);
-                    alert('Error signing in with Cookery: ' + error.message);
+                    showAlert('Error', 'Error signing in with Cookery: ' + error.message);
                 }
             });
         }
@@ -981,8 +983,21 @@
 
         // Load initial section from hash or jumpto parameter
         function loadInitialSection() {
-            // Check for jumpto parameter first
+            // Check for OAuth callback parameters
             const urlParams = new URLSearchParams(window.location.search);
+            const hasOAuthParams = urlParams.has('code') || urlParams.has('error') || urlParams.has('access_token');
+            
+            if (hasOAuthParams) {
+                // Let Supabase handle the OAuth callback
+                // Clear the parameters from URL after a short delay
+                setTimeout(() => {
+                    const newUrl = window.location.pathname + window.location.hash;
+                    window.history.replaceState({}, '', newUrl);
+                }, 1000);
+                return;
+            }
+            
+            // Check for jumpto parameter first
             const jumpTo = urlParams.get('jumpto');
             
             if (jumpTo === 'docs') {
