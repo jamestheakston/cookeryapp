@@ -277,7 +277,7 @@
                 Start cooking early.
             </h1>
             <p class="text-xl text-white/90 max-w-2xl mx-auto mb-10 font-light leading-relaxed hero-description">
-                AI-powered recipe generation across multiple platforms. Get personalized recipes tailored to your preferences, dietary requirements, and available ingredients. Hero image by <a href="https://www.foodandwine.com" target="_blank" class="underline hover:text-white">Food & Wine</a>.
+                AI-powered recipe generation across multiple platforms. Get personalized recipes tailored to your preferences, dietary requirements, and available ingredients.
             </p>
             <div class="flex items-center justify-center gap-4 flex-wrap">
                 <a href="#platforms" class="bg-[#1c1917] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#292524] transition-colors">
@@ -323,7 +323,7 @@
                         </div>
                     </div>
                     <p class="text-stone-600 mb-6">Full-featured mobile app with recipe history, cooking timers, and grocery integration. Currently in public beta.</p>
-                    <button onclick="document.getElementById('download-modal').classList.remove('hidden')" class="text-[#ca9627] font-semibold hover:underline">Download Beta →</button>
+                    <button id="download-beta-btn" class="text-[#ca9627] font-semibold hover:underline">Download Beta →</button>
                 </div>
                 
                 <!-- Coming Soon -->
@@ -382,95 +382,65 @@
                         <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">auto_awesome</span>
                     </div>
                     <h3 class="font-semibold text-stone-900 text-lg mb-3">AI-Powered Generation</h3>
-                    <p class="text-stone-600">Advanced AI creates personalized recipes based on your preferences, dietary needs, and available ingredients using Google AI Studio.</p>
+                    <p class="text-stone-600 mb-4">Advanced AI creates personalized recipes based on your preferences, dietary needs, and available ingredients using Google AI Studio.</p>
+                    <ul class="text-stone-600 text-sm space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Multiple cooking styles</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Dietary requirement filtering</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Ingredient-based suggestions</span>
+                        </li>
+                    </ul>
                 </div>
                 
                 <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
                     <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">tune</span>
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">devices</span>
                     </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Customizable Styles</h3>
-                    <p class="text-stone-600">Choose from Quick & Easy, Gourmet, Traditional, Experimental, Italian, Mexican, Asian, and Mediterranean cooking styles.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">health_and_safety</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Dietary Requirements</h3>
-                    <p class="text-stone-600">Filter recipes by dietary restrictions including vegetarian, vegan, gluten-free, and custom dietary preferences.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">restaurant</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Ingredient-Based Creation</h3>
-                    <p class="text-stone-600">Enter your available ingredients and get recipe suggestions tailored to what you have in your kitchen.</p>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Multi-Platform Integration</h3>
+                    <p class="text-stone-600 mb-4">Access Cookery across your favorite productivity tools and devices. Seamlessly generate recipes wherever you work.</p>
+                    <ul class="text-stone-600 text-sm space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Raycast (macOS & Windows)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>iOS (iPhone)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>More platforms coming soon</span>
+                        </li>
+                    </ul>
                 </div>
                 
                 <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
                     <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
                         <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">history</span>
                     </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Recipe History</h3>
-                    <p class="text-stone-600">Access your previously generated recipes, edit them, and revisit your favorites anytime.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">notifications</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Smart Notifications</h3>
-                    <p class="text-stone-600">Get notified when your AI-generated recipe is ready, even if you leave the app during generation.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">edit</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Manual Recipe Creation</h3>
-                    <p class="text-stone-600">Create your own recipes manually with full control over ingredients, instructions, and cooking times.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">crown</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Chef Upgrade</h3>
-                    <p class="text-stone-600">Upgrade to Chef for unlimited recipe creation with premium features via StoreKit integration.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">fingerprint</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Passkey Authentication</h3>
-                    <p class="text-stone-600">Secure sign-in with Apple ID passkeys using AuthenticationServices for seamless access.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">image</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Beautiful Food Images</h3>
-                    <p class="text-stone-600">High-quality food photography from Unsplash API to make your recipes look appetizing.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">timer</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Cooking Timer</h3>
-                    <p class="text-stone-600">Built-in cooking timer to help you track preparation and cooking times for perfect results.</p>
-                </div>
-                
-                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
-                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
-                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">shopping_cart</span>
-                    </div>
-                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Grocery Integration</h3>
-                    <p class="text-stone-600">UK grocery delivery integration coming soon to order ingredients with one click.</p>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Recipe Management</h3>
+                    <p class="text-stone-600 mb-4">Save, edit, and revisit your favorite recipes anytime. Track your cooking journey with smart notifications and beautiful food images.</p>
+                    <ul class="text-stone-600 text-sm space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Recipe history & editing</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Smart notifications</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>High-quality food images</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -509,6 +479,7 @@
             </div>
             <div class="mt-8 pt-8 border-t border-stone-200 text-center text-sm text-stone-500">
                 <p>&copy; 2026 Cookery App. All ingredients curated thoughtfully.</p>
+                <p class="mt-2">Hero image by <a href="https://www.foodandwine.com" target="_blank" class="underline hover:text-stone-700">Food & Wine</a></p>
             </div>
         </div>
     </footer>
@@ -605,7 +576,9 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                const href = this.getAttribute('href');
+                if (href === '#' || href === '') return;
+                const target = document.querySelector(href);
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
@@ -624,6 +597,7 @@
         const confirmTermsBtn = document.getElementById('confirm-terms');
         const showInstallationGuideBtn = document.getElementById('show-installation-guide');
         const downloadIpaBtn = document.getElementById('download-ipa');
+        const downloadBetaBtn = document.getElementById('download-beta-btn');
         const eulaCheckbox = document.getElementById('eula-checkbox');
         const DOWNLOAD_URL = 'https://github.com/jamestheakston/cookeryios/releases/latest/download/Cookery.ipa';
         
@@ -632,7 +606,13 @@
         const modalThankyouState = document.getElementById('modal-thankyou-state');
         const modalInstallationState = document.getElementById('modal-installation-state');
 
-        // Open modal when iOS beta button is clicked
+        // Open modal when download beta button is clicked
+        downloadBetaBtn.addEventListener('click', function() {
+            downloadModal.classList.remove('hidden');
+            resetModalState();
+        });
+
+        // Open modal when iOS beta button is clicked (for any other buttons with onclick)
         document.querySelectorAll('button[onclick*="download-modal"]').forEach(button => {
             button.addEventListener('click', function() {
                 downloadModal.classList.remove('hidden');
