@@ -198,9 +198,95 @@
         .ideas-button:hover {
             background-color: #292524;
         }
+
+        @media (max-width: 768px) {
+            aside {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 50;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                width: 280px;
+            }
+            aside.open {
+                transform: translateX(0);
+            }
+            main {
+                padding: 16px;
+            }
+            .card {
+                padding: 20px;
+            }
+            .card img {
+                max-width: 100%;
+            }
+            .tab-buttons {
+                flex-wrap: wrap;
+            }
+            .tab-button {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+            }
+            .email-options {
+                flex-direction: column;
+            }
+            .mobile-menu-btn {
+                display: block;
+                position: fixed;
+                top: 16px;
+                left: 16px;
+                z-index: 40;
+                background: #faf8f5;
+                border: 1px solid #e7e5e4;
+                border-radius: 8px;
+                padding: 8px;
+                cursor: pointer;
+            }
+            .mobile-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 45;
+            }
+            .mobile-overlay.active {
+                display: block;
+            }
+            #help-center {
+                flex-direction: column;
+            }
+            .modal {
+                padding: 24px;
+                max-width: 90%;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+            .mobile-overlay {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobile-menu-toggle">
+        <span class="material-symbols-outlined" style="font-size: 24px;">menu</span>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
 
     <!-- Coming Soon Page -->
     <div id="coming-soon-page" class="hidden w-full flex-col items-center justify-center min-h-screen text-center p-6">
@@ -548,6 +634,29 @@
             if (e.target === emailModal) {
                 emailModal.classList.remove('active');
             }
+        });
+
+        // Mobile menu functionality
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const aside = document.querySelector('aside');
+        const mobileOverlay = document.getElementById('mobile-overlay');
+
+        mobileMenuToggle.addEventListener('click', function() {
+            aside.classList.toggle('open');
+            mobileOverlay.classList.toggle('active');
+        });
+
+        mobileOverlay.addEventListener('click', function() {
+            aside.classList.remove('open');
+            mobileOverlay.classList.remove('active');
+        });
+
+        // Close mobile menu when clicking a nav link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function() {
+                aside.classList.remove('open');
+                mobileOverlay.classList.remove('active');
+            });
         });
     </script>
 </body>
