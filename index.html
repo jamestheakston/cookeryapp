@@ -608,14 +608,14 @@
 
         // Open modal when download beta button is clicked
         downloadBetaBtn.addEventListener('click', function() {
-            downloadModal.classList.remove('hidden');
+            downloadModal.classList.add('active');
             resetModalState();
         });
 
         // Open modal when iOS beta button is clicked (for any other buttons with onclick)
         document.querySelectorAll('button[onclick*="download-modal"]').forEach(button => {
             button.addEventListener('click', function() {
-                downloadModal.classList.remove('hidden');
+                downloadModal.classList.add('active');
                 resetModalState();
             });
         });
@@ -631,7 +631,7 @@
 
         // Close modal functions
         function closeDownloadModalFunc() {
-            downloadModal.classList.add('hidden');
+            downloadModal.classList.remove('active');
             resetModalState();
         }
 
