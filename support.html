@@ -58,9 +58,11 @@
         }
         
         .card img {
-            width: 100%;
+            max-width: 80%;
+            height: auto;
             border-radius: 12px;
-            margin: 16px 0;
+            margin: 16px auto;
+            display: block;
             border: 1px solid #e7e5e4;
         }
         
@@ -139,6 +141,7 @@
         </svg>
         <h1>Support Documentation</h1>
         <p>We're currently finishing our comprehensive support documentation. Check back soon for detailed guides, tutorials, and troubleshooting resources.</p>
+        <a href="#" id="raycast-user-link" style="margin-top: 24px; color: #ca9627; text-decoration: none; font-weight: 600; font-size: 16px; transition: color 0.2s;">Are you a Raycast user?</a>
     </div>
 
     <!-- Help Center (shown when ?type=raycast) -->
@@ -148,7 +151,7 @@
                 <img 
                     src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" 
                     alt="Cookery Logo" 
-                    class="w-8 h-8 rounded-lg object-cover"
+                    class="w-6 h-6 rounded-lg object-cover"
                 >
                 <span class="font-serif text-xl font-bold tracking-tight text-stone-900">Cookery</span>
             </div>
@@ -182,42 +185,36 @@
 
                 <div class="card">
                     <h3>Step 1: Install Cookery</h3>
-                    <p>Download and install the Cookery extension from the Raycast Store. Once installed, you'll need to configure it with your API key.</p>
-                    <img src="/assets/support/raycast/onboarding.png" alt="Cookery onboarding screen">
-                </div>
-
-                <div class="card">
-                    <h3>Step 2: Enter Your API Key</h3>
-                    <p>To use Cookery, you'll need an API key. You can get one from the Cookery website. Enter your API key in the settings to activate the extension.</p>
-                    <img src="/assets/support/raycast/enter api key.png" alt="Enter API key screen">
-                </div>
-
-                <div class="card">
-                    <h3>Step 3: Select Your Provider</h3>
-                    <p>Choose your preferred AI provider from the dropdown menu. Cookery supports multiple providers for generating recipes.</p>
+                    <p>Download and install the Cookery extension from the Raycast Store. Once installed, you'll need to configure it with your API key. Cookery supports multiple providers, so pick your preferred provider from the dropdown menu.</p>
                     <img src="/assets/support/raycast/providerdropdown.png" alt="Provider dropdown">
                 </div>
 
                 <div class="card">
-                    <h3>Step 4: Select Cooking Style</h3>
+                    <h3>Step 2: Enter Your API Key</h3>
+                    <p>To use Cookery, you'll need an API key. You can get one from your AI provider's website. Enter your API key in the settings to activate the extension.</p>
+                    <img src="/assets/support/raycast/enter api key.png" alt="Enter API key screen">
+                </div>
+
+                <div class="card">
+                    <h3>Step 3: Select Cooking Style</h3>
                     <p>Choose your preferred cooking style from the available options. This helps tailor the recipes to your preferences.</p>
                     <img src="/assets/support/raycast/cookingdropdown.png" alt="Cooking style dropdown">
                 </div>
 
                 <div class="card">
-                    <h3>Step 5: Enter Your Prompt</h3>
+                    <h3>Step 4: Enter Your Prompt</h3>
                     <p>Type what you'd like to cook or the ingredients you have. Be as specific or as general as you like!</p>
                     <img src="/assets/support/raycast/promptblank.png" alt="Blank prompt screen">
                 </div>
 
                 <div class="card">
-                    <h3>Step 6: Generate Your Recipe</h3>
+                    <h3>Step 5: Generate Your Recipe</h3>
                     <p>Press Enter or click the generate button to create your recipe. Cookery will use AI to generate a detailed recipe based on your prompt.</p>
                     <img src="/assets/support/raycast/promptdone.png" alt="Generated recipe">
                 </div>
 
                 <div class="card">
-                    <h3>Step 7: Raycast Integration</h3>
+                    <h3>Step 6: Raycast Integration</h3>
                     <p>Cookery integrates seamlessly with Raycast. You can also access it directly from Raycast for quick recipe generation.</p>
                     <img src="/assets/support/raycast/raycastoption.png" alt="Raycast integration">
                 </div>
@@ -239,6 +236,12 @@
             document.getElementById('coming-soon-page').style.display = 'flex';
             document.getElementById('help-center').style.display = 'none';
         }
+
+        // Add click handler for Raycast user link
+        document.getElementById('raycast-user-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = window.location.pathname + '?type=raycast';
+        });
     </script>
 
 </body>
