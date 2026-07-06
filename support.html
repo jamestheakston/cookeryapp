@@ -24,6 +24,23 @@
         .card img { max-width: 60%; height: auto; border-radius: 12px; margin: 16px auto; display: block; border: 1px solid #e7e5e4; }
         .portal-section { display: none; }
         .portal-section.active { display: block; }
+        .tab-container { margin-bottom: 24px; }
+        .tab-buttons { display: flex; gap: 8px; margin-bottom: 16px; border-bottom: 1px solid #e7e5e4; }
+        .tab-button { 
+            padding: 12px 20px; 
+            background: none; 
+            border: none; 
+            border-bottom: 2px solid transparent; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 500; 
+            color: #78716c; 
+            transition: all 0.2s;
+        }
+        .tab-button:hover { color: #1c1917; }
+        .tab-button.active { color: #1c1917; border-bottom-color: #1c1917; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
@@ -41,9 +58,11 @@
     <!-- Help Center -->
     <div id="help-center" class="hidden w-full flex h-screen">
         <aside class="w-64 border-r border-stone-200 p-6 flex flex-col gap-6 bg-[#faf8f5]">
-            <div class="flex items-center gap-3 mb-8">
+            <div class="flex flex-col items-center gap-3 mb-8">
                 <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" class="rounded-lg">
                 <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery</span>
+                <span class="font-serif text-lg font-semibold text-stone-900">Help Centre</span>
+                <span class="text-sm text-stone-500">For Raycast</span>
             </div>
             <nav class="flex flex-col gap-2">
                 <a href="#" class="nav-link active" data-section="getting-started"><span class="material-symbols-outlined">rocket_launch</span> Getting Started</a>
@@ -52,7 +71,7 @@
                 <a href="#" class="nav-link" data-section="settings"><span class="material-symbols-outlined">settings</span> Settings</a>
             </nav>
         </aside>
-        <main class="flex-1 p-12 overflow-y-auto bg-white">
+        <main class="flex-1 p-12 overflow-y-auto bg-[#faf8f5]">
             <div class="max-w-4xl mx-auto">
                 <!-- Getting Started Section -->
                 <div id="section-getting-started" class="portal-section active">
@@ -60,13 +79,19 @@
                     <p class="text-stone-600 text-lg mb-8">Search for Cookery in the Raycast Store and install it.</p>
                     
                     <div class="card">
-                        <h3>Step 1: Configure Your API Key</h3>
+                        <h3>Step 1: Find Cookery in Raycast</h3>
+                        <p>Once installed, search for Cookery in the search bar and click "Generate Recipes" to start using the extension.</p>
+                        <img src="/assets/support/raycast/raycastoption.png" alt="Raycast search for Cookery">
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Step 2: Configure Your API Key</h3>
                         <p>Once you've selected the command to Generate Recipes, you'll be prompted to configure the extension with your API key. Cookery supports multiple providers, so pick your preferred provider from the dropdown menu.</p>
                         <img src="/assets/support/raycast/providerdropdown.png" alt="Provider dropdown">
                     </div>
                     
                     <div class="card">
-                        <h3>Step 2: Enter Your API Key</h3>
+                        <h3>Step 3: Enter Your API Key</h3>
                         <p>To use Cookery, you'll need an API key. You can get one from your AI provider's website. Enter your API key in the settings to activate the extension, then click continue.</p>
                         <img src="/assets/support/raycast/enter api key.png" alt="Enter API key screen">
                     </div>
@@ -78,19 +103,25 @@
                     <p class="text-stone-600 text-lg mb-8">Once configured, you can start generating delicious recipes with Cookery.</p>
                     
                     <div class="card">
-                        <h3>Step 1: Enter Your Prompt</h3>
+                        <h3>Step 1: Find Cookery in Raycast</h3>
+                        <p>Search for Cookery in the search bar and click "Generate Recipes" to start generating recipes.</p>
+                        <img src="/assets/support/raycast/raycastoption.png" alt="Raycast search for Cookery">
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Step 2: Enter Your Prompt</h3>
                         <p>Type what you'd like to cook or the ingredients you have. Be as specific or as general as you like!</p>
                         <img src="/assets/support/raycast/promptblank.png" alt="Blank prompt screen">
                     </div>
 
                     <div class="card">
-                        <h3>Step 2: Select Cooking Style & Dietary Requirements</h3>
+                        <h3>Step 3: Select Cooking Style & Dietary Requirements</h3>
                         <p>Choose your preferred cooking style from the available options. This helps tailor the recipes to your preferences. You can also specify any dietary requirements you have - select them from the dropdown to ensure the recipes meet your needs.</p>
                         <img src="/assets/support/raycast/cookingdropdown.png" alt="Cooking style dropdown">
                     </div>
 
                     <div class="card">
-                        <h3>Step 3: Generate Your Recipe</h3>
+                        <h3>Step 4: Generate Your Recipe</h3>
                         <p>Press Enter or click the generate button to create your recipe. Cookery will use AI to generate a detailed recipe based on your prompt.</p>
                         <img src="/assets/support/raycast/promptdone.png" alt="Generated recipe">
                     </div>
@@ -99,20 +130,74 @@
                 <!-- Troubleshooting Section -->
                 <div id="section-troubleshooting" class="portal-section">
                     <h1 class="font-serif text-4xl text-stone-900 mb-6">Troubleshooting</h1>
-                    <p class="text-stone-600 text-lg mb-8">Common issues and solutions for using Cookery.</p>
-                    <div class="card">
-                        <h3>Coming Soon</h3>
-                        <p>Troubleshooting documentation is currently being developed.</p>
+                    <p class="text-stone-600 text-lg mb-8">Common issues and solutions for using Cookery with different AI providers.</p>
+                    
+                    <div class="tab-container">
+                        <div class="tab-buttons">
+                            <button class="tab-button active" data-tab="gemini">Gemini</button>
+                            <button class="tab-button" data-tab="claude">Claude</button>
+                        </div>
+                        
+                        <div id="tab-gemini" class="tab-content active">
+                            <div class="card">
+                                <h3>API Key Prompt</h3>
+                                <p>If you see this prompt, it means a provider is configured but no API key has been entered yet.</p>
+                                <img src="/assets/support/raycast/api key prompt.png" alt="API key prompt">
+                                <p><strong>Solution:</strong> Enter your API key in the settings to activate the provider.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>Bad Request - Invalid API Key</h3>
+                                <p>If you receive a "Bad Request" error when using Gemini, this typically means your API key is invalid or has been entered incorrectly.</p>
+                                <img src="/assets/support/raycast/gemini bad req invalid api key.png" alt="Gemini bad request error">
+                                <p><strong>Solution:</strong> Double-check your API key in settings and ensure it matches the key from your Google AI Studio account.</p>
+                            </div>
+                        </div>
+                        
+                        <div id="tab-claude" class="tab-content">
+                            <div class="card">
+                                <h3>API Key Prompt</h3>
+                                <p>If you see this prompt, it means a provider is configured but no API key has been entered yet.</p>
+                                <img src="/assets/support/raycast/api key prompt.png" alt="API key prompt">
+                                <p><strong>Solution:</strong> Enter your API key in the settings to activate the provider.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>Bad Request - Quota Expired</h3>
+                                <p>If you receive a "Bad Request" error with Claude indicating quota issues, your API usage has exceeded your current plan limits.</p>
+                                <img src="/assets/support/raycast/claude bad request (no quota).png" alt="Claude quota expired error">
+                                <p><strong>Solution:</strong> Check your Anthropic account billing and upgrade your plan or wait for your quota to reset.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>Unauthorized - Invalid API Key</h3>
+                                <p>If you receive an "Unauthorized" error code, this means an invalid API key has been provided for Claude.</p>
+                                <img src="/assets/support/raycast/claude invalid key.png" alt="Claude invalid key error">
+                                <p><strong>Solution:</strong> Verify your API key in settings and ensure it's the correct key from your Anthropic account.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Settings Section -->
                 <div id="section-settings" class="portal-section">
                     <h1 class="font-serif text-4xl text-stone-900 mb-6">Settings</h1>
-                    <p class="text-stone-600 text-lg mb-8">Configure your Cookery extension settings.</p>
+                    <p class="text-stone-600 text-lg mb-8">Configure your Cookery extension settings to personalize your experience.</p>
+                    
                     <div class="card">
-                        <h3>Coming Soon</h3>
-                        <p>Settings documentation is currently being developed.</p>
+                        <h3>Default Cooking Style</h3>
+                        <p>Set your preferred cooking style that will be used as the default when generating recipes. You can choose from options like Italian, Mexican, Asian, Mediterranean, and more.</p>
+                        <img src="/assets/support/raycast/settings.png" alt="Cookery settings interface">
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Dietary Requirements</h3>
+                        <p>Configure your dietary preferences and restrictions. Cookery will automatically filter recipes to match your requirements, such as vegetarian, vegan, gluten-free, dairy-free, or nut-free options.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>API Provider Settings</h3>
+                        <p>Manage your AI provider settings. You can switch between different providers (OpenAI, Anthropic, etc.) and update your API keys. Each provider may offer different capabilities and pricing.</p>
                     </div>
                 </div>
             </div>
@@ -170,6 +255,39 @@
                 e.preventDefault();
                 const section = this.dataset.section;
                 switchSection(section);
+            });
+        });
+
+        // Tab switching for troubleshooting
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        function switchTab(tab) {
+            // Update tab button active state
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Hide all tab contents first
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show corresponding tab content
+            const targetTab = document.getElementById(`tab-${tab}`);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+        }
+
+        // Add click handlers for tab buttons
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const tab = this.dataset.tab;
+                switchTab(tab);
             });
         });
     </script>
