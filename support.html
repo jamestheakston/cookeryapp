@@ -66,6 +66,42 @@
             max-width: 500px;
             width: 90%;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: scale(1);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .modal-close:hover {
+            background-color: #f5f3ef;
+        }
+        
+        .modal-close span {
+            font-size: 24px;
+            color: #78716c;
         }
         
         .modal h2 {
@@ -384,7 +420,12 @@
     <!-- Email Modal -->
     <div id="email-modal" class="modal-overlay">
         <div class="modal">
-            <h2>How would you like to email us?</h2>
+            <div class="modal-header">
+                <h2>How would you like to email us?</h2>
+                <button id="modal-close" class="modal-close">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
             <p>Choose your preferred email provider to compose your message.</p>
             <div class="email-options">
                 <a href="https://mail.google.com/mail/?view=cm&fs=1&to=jamesttheakston2@gmail.com" target="_blank" class="email-option">
@@ -493,9 +534,14 @@
         // Email modal functionality
         const emailButton = document.getElementById('email-button');
         const emailModal = document.getElementById('email-modal');
+        const modalClose = document.getElementById('modal-close');
 
         emailButton.addEventListener('click', function() {
             emailModal.classList.add('active');
+        });
+
+        modalClose.addEventListener('click', function() {
+            emailModal.classList.remove('active');
         });
 
         emailModal.addEventListener('click', function(e) {
