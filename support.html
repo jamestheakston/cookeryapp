@@ -384,6 +384,7 @@
                         <div class="tab-buttons">
                             <button class="tab-button active" data-tab="gemini">Gemini</button>
                             <button class="tab-button" data-tab="claude">Claude</button>
+                            <button class="tab-button" data-tab="openai">OpenAI</button>
                         </div>
                         
                         <div id="tab-gemini" class="tab-content active">
@@ -399,6 +400,13 @@
                                 <p>If you receive a "Bad Request" error when using Gemini, this typically means your API key is invalid or has been entered incorrectly.</p>
                                 <img src="/assets/support/raycast/gemini bad req invalid api key.png" alt="Gemini bad request error">
                                 <p><strong>Solution:</strong> Double-check your API key in settings and ensure it matches the key from your Google AI Studio account.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>Service Unavailable - High Demand</h3>
+                                <p>If you receive a "Service Unavailable" error, this typically means there is high demand for the Gemini model at the moment.</p>
+                                <img src="/assets/support/raycast/high demand.png" alt="High demand error">
+                                <p><strong>Solution:</strong> Wait a few minutes and try again. The service should become available once demand decreases.</p>
                             </div>
                         </div>
                         
@@ -422,6 +430,21 @@
                                 <p>If you receive an "Unauthorized" error code, this means an invalid API key has been provided for Claude.</p>
                                 <img src="/assets/support/raycast/claude invalid key.png" alt="Claude invalid key error">
                                 <p><strong>Solution:</strong> Verify your API key in settings and ensure it's the correct key from your Anthropic account.</p>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>Service Unavailable - High Demand</h3>
+                                <p>If you receive a "Service Unavailable" error, this typically means there is high demand for the model at the moment. This error is primarily associated with Gemini but may also occur with Claude during peak usage times.</p>
+                                <img src="/assets/support/raycast/high demand.png" alt="High demand error">
+                                <p><strong>Solution:</strong> Wait a few minutes and try again. The service should become available once demand decreases.</p>
+                            </div>
+                        </div>
+                        
+                        <div id="tab-openai" class="tab-content">
+                            <div class="card text-center py-12">
+                                <span class="material-symbols-outlined text-6xl text-[#ca9627] mb-4" style="font-size: 64px;">construction</span>
+                                <h3 class="font-serif text-2xl text-stone-900 mb-4">Coming Soon</h3>
+                                <p class="text-stone-600">Troubleshooting guidance for OpenAI is coming soon. Check back later for detailed guides and solutions.</p>
                             </div>
                         </div>
                     </div>
