@@ -22,6 +22,8 @@
         .card h3 { font-family: 'Playfair Display', serif; font-size: 24px; color: #1c1917; margin-bottom: 16px; }
         .card p { font-size: 14px; color: #78716c; line-height: 1.6; margin-bottom: 16px; }
         .card img { max-width: 60%; height: auto; border-radius: 12px; margin: 16px auto; display: block; border: 1px solid #e7e5e4; }
+        .portal-section { display: none; }
+        .portal-section.active { display: block; }
     </style>
 </head>
 <body class="h-screen flex overflow-hidden">
@@ -44,27 +46,74 @@
                 <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery</span>
             </div>
             <nav class="flex flex-col gap-2">
-                <a href="#" class="nav-link active"><span class="material-symbols-outlined">rocket_launch</span> Getting Started</a>
-                <a href="#" class="nav-link"><span class="material-symbols-outlined">auto_awesome</span> Generating Recipes</a>
-                <a href="#" class="nav-link"><span class="material-symbols-outlined">error_outline</span> Troubleshooting</a>
-                <a href="#" class="nav-link"><span class="material-symbols-outlined">settings</span> Settings</a>
+                <a href="#" class="nav-link active" data-section="getting-started"><span class="material-symbols-outlined">rocket_launch</span> Getting Started</a>
+                <a href="#" class="nav-link" data-section="generating-recipes"><span class="material-symbols-outlined">auto_awesome</span> Generating Recipes</a>
+                <a href="#" class="nav-link" data-section="troubleshooting"><span class="material-symbols-outlined">error_outline</span> Troubleshooting</a>
+                <a href="#" class="nav-link" data-section="settings"><span class="material-symbols-outlined">settings</span> Settings</a>
             </nav>
         </aside>
         <main class="flex-1 p-12 overflow-y-auto bg-white">
             <div class="max-w-4xl mx-auto">
-                <h1 class="font-serif text-4xl text-stone-900 mb-6">Getting Started with Cookery</h1>
-                <p class="text-stone-600 text-lg mb-8">Search for Cookery in the Raycast Store and install it.</p>
-                
-                <div class="card">
-                    <h3>Step 1: Configure Your API Key</h3>
-                    <p>Once you've selected the command to Generate Recipes, you'll be prompted to configure the extension with your API key. Cookery supports multiple providers, so pick your preferred provider from the dropdown menu.</p>
-                    <img src="/assets/support/raycast/providerdropdown.png" alt="Provider dropdown">
+                <!-- Getting Started Section -->
+                <div id="section-getting-started" class="portal-section active">
+                    <h1 class="font-serif text-4xl text-stone-900 mb-6">Getting Started with Cookery</h1>
+                    <p class="text-stone-600 text-lg mb-8">Search for Cookery in the Raycast Store and install it.</p>
+                    
+                    <div class="card">
+                        <h3>Step 1: Configure Your API Key</h3>
+                        <p>Once you've selected the command to Generate Recipes, you'll be prompted to configure the extension with your API key. Cookery supports multiple providers, so pick your preferred provider from the dropdown menu.</p>
+                        <img src="/assets/support/raycast/providerdropdown.png" alt="Provider dropdown">
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Step 2: Enter Your API Key</h3>
+                        <p>To use Cookery, you'll need an API key. You can get one from your AI provider's website. Enter your API key in the settings to activate the extension, then click continue.</p>
+                        <img src="/assets/support/raycast/enter api key.png" alt="Enter API key screen">
+                    </div>
                 </div>
-                
-                <div class="card">
-                    <h3>Step 2: Enter Your API Key</h3>
-                    <p>To use Cookery, you'll need an API key. You can get one from your AI provider's website. Enter your API key in the settings to activate the extension, then click continue.</p>
-                    <img src="/assets/support/raycast/enter api key.png" alt="Enter API key screen">
+
+                <!-- Generating Recipes Section -->
+                <div id="section-generating-recipes" class="portal-section">
+                    <h1 class="font-serif text-4xl text-stone-900 mb-6">Generating Recipes</h1>
+                    <p class="text-stone-600 text-lg mb-8">Once configured, you can start generating delicious recipes with Cookery.</p>
+                    
+                    <div class="card">
+                        <h3>Step 1: Enter Your Prompt</h3>
+                        <p>Type what you'd like to cook or the ingredients you have. Be as specific or as general as you like!</p>
+                        <img src="/assets/support/raycast/promptblank.png" alt="Blank prompt screen">
+                    </div>
+
+                    <div class="card">
+                        <h3>Step 2: Select Cooking Style & Dietary Requirements</h3>
+                        <p>Choose your preferred cooking style from the available options. This helps tailor the recipes to your preferences. You can also specify any dietary requirements you have - select them from the dropdown to ensure the recipes meet your needs.</p>
+                        <img src="/assets/support/raycast/cookingdropdown.png" alt="Cooking style dropdown">
+                    </div>
+
+                    <div class="card">
+                        <h3>Step 3: Generate Your Recipe</h3>
+                        <p>Press Enter or click the generate button to create your recipe. Cookery will use AI to generate a detailed recipe based on your prompt.</p>
+                        <img src="/assets/support/raycast/promptdone.png" alt="Generated recipe">
+                    </div>
+                </div>
+
+                <!-- Troubleshooting Section -->
+                <div id="section-troubleshooting" class="portal-section">
+                    <h1 class="font-serif text-4xl text-stone-900 mb-6">Troubleshooting</h1>
+                    <p class="text-stone-600 text-lg mb-8">Common issues and solutions for using Cookery.</p>
+                    <div class="card">
+                        <h3>Coming Soon</h3>
+                        <p>Troubleshooting documentation is currently being developed.</p>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="section-settings" class="portal-section">
+                    <h1 class="font-serif text-4xl text-stone-900 mb-6">Settings</h1>
+                    <p class="text-stone-600 text-lg mb-8">Configure your Cookery extension settings.</p>
+                    <div class="card">
+                        <h3>Coming Soon</h3>
+                        <p>Settings documentation is currently being developed.</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -88,6 +137,40 @@
         document.getElementById('raycast-user-link').addEventListener('click', (e) => {
             e.preventDefault();
             window.location.search = '?type=raycast';
+        });
+
+        // Navigation for help center sections
+        const navLinks = document.querySelectorAll('.nav-link[data-section]');
+        const portalSections = document.querySelectorAll('.portal-section');
+
+        function switchSection(section) {
+            // Update nav active state
+            navLinks.forEach(nav => {
+                nav.classList.remove('active');
+                if (nav.dataset.section === section) {
+                    nav.classList.add('active');
+                }
+            });
+
+            // Hide all sections first
+            portalSections.forEach(sec => {
+                sec.classList.remove('active');
+            });
+
+            // Show corresponding section
+            const targetSection = document.getElementById(`section-${section}`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+        }
+
+        // Add click handlers for navigation
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.dataset.section;
+                switchSection(section);
+            });
         });
     </script>
 </body>
