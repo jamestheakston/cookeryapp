@@ -1516,7 +1516,8 @@
                     throw new Error(errorData.error || 'Failed to register OAuth client');
                 }
 
-                const oauthData = await oauthResponse.json();
+                const oauthText = await oauthResponse.text();
+                const oauthData = oauthText ? JSON.parse(oauthText) : {};
                 console.log('OAuth registration success:', oauthData);
 
                 // Create app in database with OAuth credentials
