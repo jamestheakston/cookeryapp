@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery Support</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
+        .material-symbols-outlined {
+            font-size: 20px;
+        }
+        
+        .sidebar { border-right: 1px solid #e7e5e4; }
+        .nav-link { 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px; 
+            color: #78716c; 
+            text-decoration: none; 
+            font-weight: 500; 
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover { background-color: #f5f3ef; color: #1c1917; }
+        .nav-link.active { background-color: #1c1917; color: #ffffff; }
+        
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        
+        .card h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        
+        .card p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0 0 16px 0;
+        }
+        
+        .card img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 16px 0;
+            border: 1px solid #e7e5e4;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #1c1917;
+            color: #ffffff;
+            border-radius: 50%;
+            font-size: 14px;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+        
+        .step-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 0 0 8px 0;
+        }
+        
+        .step-content p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .coming-soon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+        }
+        
+        .coming-soon svg {
+            width: 80px;
+            height: 80px;
+            color: #ca9627;
+            margin-bottom: 24px;
+        }
+        
+        .coming-soon h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 48px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        
+        .coming-soon p {
+            font-size: 18px;
+            color: #78716c;
+            max-width: 500px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body class="h-screen flex">
+
+    <!-- Coming Soon Page (shown when no URL parameters) -->
+    <div id="coming-soon-page" class="coming-soon" style="display: none;">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        <h1>Support Documentation</h1>
+        <p>We're currently finishing our comprehensive support documentation. Check back soon for detailed guides, tutorials, and troubleshooting resources.</p>
+    </div>
+
+    <!-- Help Center (shown when ?type=raycast) -->
+    <div id="help-center" class="h-screen flex" style="display: none;">
+        <aside class="sidebar w-64 bg-[#faf8f5] p-6 flex flex-col gap-6">
+            <div class="flex items-center gap-3 mb-8">
+                <img 
+                    src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" 
+                    alt="Cookery Logo" 
+                    class="w-8 h-8 rounded-lg object-cover"
+                >
+                <span class="font-serif text-xl font-bold tracking-tight text-stone-900">Cookery</span>
+            </div>
+            
+            <nav class="flex flex-col gap-2">
+                <a href="#" class="nav-link active">
+                    <span class="material-symbols-outlined">rocket_launch</span>
+                    Getting Started
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-outlined">auto_awesome</span>
+                    Generating Recipes
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-outlined">error_outline</span>
+                    Troubleshooting
+                </a>
+                <a href="#" class="nav-link">
+                    <span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 p-12 overflow-y-auto">
+            <div class="max-w-4xl">
+                <h1 class="font-serif text-4xl text-stone-900 mb-6">Getting Started with Cookery</h1>
+                <p class="text-stone-600 text-lg font-light leading-relaxed mb-8">
+                    Welcome to Cookery! This guide will help you set up and start using the Cookery extension to generate delicious recipes.
+                </p>
+
+                <div class="card">
+                    <h3>Step 1: Install Cookery</h3>
+                    <p>Download and install the Cookery extension from the Raycast Store. Once installed, you'll need to configure it with your API key.</p>
+                    <img src="/assets/support/raycast/onboarding.png" alt="Cookery onboarding screen">
+                </div>
+
+                <div class="card">
+                    <h3>Step 2: Enter Your API Key</h3>
+                    <p>To use Cookery, you'll need an API key. You can get one from the Cookery website. Enter your API key in the settings to activate the extension.</p>
+                    <img src="/assets/support/raycast/enter api key.png" alt="Enter API key screen">
+                </div>
+
+                <div class="card">
+                    <h3>Step 3: Select Your Provider</h3>
+                    <p>Choose your preferred AI provider from the dropdown menu. Cookery supports multiple providers for generating recipes.</p>
+                    <img src="/assets/support/raycast/providerdropdown.png" alt="Provider dropdown">
+                </div>
+
+                <div class="card">
+                    <h3>Step 4: Select Cooking Style</h3>
+                    <p>Choose your preferred cooking style from the available options. This helps tailor the recipes to your preferences.</p>
+                    <img src="/assets/support/raycast/cookingdropdown.png" alt="Cooking style dropdown">
+                </div>
+
+                <div class="card">
+                    <h3>Step 5: Enter Your Prompt</h3>
+                    <p>Type what you'd like to cook or the ingredients you have. Be as specific or as general as you like!</p>
+                    <img src="/assets/support/raycast/promptblank.png" alt="Blank prompt screen">
+                </div>
+
+                <div class="card">
+                    <h3>Step 6: Generate Your Recipe</h3>
+                    <p>Press Enter or click the generate button to create your recipe. Cookery will use AI to generate a detailed recipe based on your prompt.</p>
+                    <img src="/assets/support/raycast/promptdone.png" alt="Generated recipe">
+                </div>
+
+                <div class="card">
+                    <h3>Step 7: Raycast Integration</h3>
+                    <p>Cookery integrates seamlessly with Raycast. You can also access it directly from Raycast for quick recipe generation.</p>
+                    <img src="/assets/support/raycast/raycastoption.png" alt="Raycast integration">
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Check URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const type = urlParams.get('type');
+
+        if (type === 'raycast') {
+            // Show help center
+            document.getElementById('coming-soon-page').style.display = 'none';
+            document.getElementById('help-center').style.display = 'flex';
+        } else {
+            // Show coming soon page
+            document.getElementById('coming-soon-page').style.display = 'flex';
+            document.getElementById('help-center').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
