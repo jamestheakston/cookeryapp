@@ -235,7 +235,27 @@
         }
         @media (min-width: 769px) {
             .mobile-menu-btn {
+                display: none !important;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
                 display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #faf8f5;
+                border-bottom: 1px solid #e7e5e4;
+                padding: 16px;
+                flex-direction: column;
+                gap: 16px;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
             }
         }
     </style>
