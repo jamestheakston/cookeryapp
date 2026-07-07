@@ -316,6 +316,7 @@
                 <a href="#" class="nav-link" data-section="generating-recipes"><span class="material-symbols-outlined">auto_awesome</span> Generating Recipes</a>
                 <a href="#" class="nav-link" data-section="troubleshooting"><span class="material-symbols-outlined">error_outline</span> Troubleshooting</a>
                 <a href="#" class="nav-link" data-section="settings"><span class="material-symbols-outlined">settings</span> Settings</a>
+                <a href="#" class="nav-link" data-section="custom-providers"><span class="material-symbols-outlined">extension</span> Custom Providers</a>
                 <a href="#" class="nav-link" data-section="coming-soon"><span class="material-symbols-outlined">upcoming</span> Coming Soon</a>
             </nav>
         </aside>
@@ -472,15 +473,58 @@
                     </div>
                 </div>
 
+                <!-- Custom Providers Section -->
+                <div id="section-custom-providers" class="portal-section">
+                    <h1 class="font-serif text-4xl text-stone-900 mb-6">Custom Providers</h1>
+                    <p class="text-stone-600 text-lg mb-8">Use any compatible AI provider by configuring your own custom endpoint and API key.</p>
+                    
+                    <div class="card">
+                        <h3>What are Custom Providers?</h3>
+                        <p>Custom providers allow you to connect Cookery to any AI service that follows standard API patterns. This gives you complete flexibility in choosing which AI service powers your recipe generation.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>API-Compatible Providers</h3>
+                        <p>The following providers are known to be compatible with Cookery's custom provider feature:</p>
+                        <ul class="list-disc list-inside mt-4 space-y-2 text-stone-600">
+                            <li><strong>OpenAI-compatible APIs</strong> - Any service that follows the OpenAI API format</li>
+                            <li><strong>Anthropic-compatible APIs</strong> - Services that follow the Claude API format</li>
+                            <li><strong>Local LLMs</strong> - Ollama, LocalAI, and other local inference servers</li>
+                            <li><strong>Self-hosted solutions</strong> - Text Generation WebUI, vLLM, and similar</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Non-Compatible Providers</h3>
+                        <p>The following providers are <strong>not</strong> currently compatible with the custom provider feature:</p>
+                        <ul class="list-disc list-inside mt-4 space-y-2 text-stone-600">
+                            <li><strong>Google Gemini</strong> - Requires specific authentication and API structure</li>
+                            <li><strong>Cohere</strong> - Uses different API format and response structure</li>
+                            <li><strong>Hugging Face Inference API</strong> - Different request/response format</li>
+                            <li><strong>Amazon Bedrock</strong> - Requires AWS-specific authentication</li>
+                            <li><strong>Azure OpenAI</strong> - Uses Azure-specific endpoint format</li>
+                        </ul>
+                        <p class="mt-4 text-sm text-stone-500">Note: Some of these providers may be added as native options in future updates.</p>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Setting Up a Custom Provider</h3>
+                        <p>To configure a custom provider:</p>
+                        <ol class="list-decimal list-inside mt-4 space-y-2 text-stone-600">
+                            <li>Go to Settings in Cookery</li>
+                            <li>Select "Custom Provider" from the provider dropdown</li>
+                            <li>Enter your custom endpoint URL</li>
+                            <li>Enter your API key</li>
+                            <li>Specify the API format (OpenAI or Anthropic compatible)</li>
+                            <li>Save your settings</li>
+                        </ol>
+                    </div>
+                </div>
+
                 <!-- Coming Soon Section -->
                 <div id="section-coming-soon" class="portal-section">
                     <h1 class="font-serif text-4xl text-stone-900 mb-6">Coming Soon</h1>
                     <p class="text-stone-600 text-lg mb-8">Exciting new features we're working on to enhance your Cookery experience.</p>
-                    
-                    <div class="card">
-                        <h3>Custom Providers</h3>
-                        <p>Provide your own custom endpoint and API key to use with any compatible AI provider, giving you complete flexibility in your recipe generation.</p>
-                    </div>
                     
                     <div class="card">
                         <h3>Recipe History</h3>
@@ -555,23 +599,29 @@
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const type = urlParams.get('type');
+        const jump = urlParams.get('jump');
         const comingSoon = document.getElementById('coming-soon-page');
         const helpCenter = document.getElementById('help-center');
 
-        if (type === 'raycast') {
-            comingSoon.classList.add('hidden');
-            helpCenter.classList.remove('hidden');
-        } else {
-            comingSoon.classList.remove('hidden');
-            comingSoon.classList.add('flex');
-            helpCenter.classList.add('hidden');
-        }
+        // Always show help center (Raycast)
+        comingSoon.classList.add('hidden');
+        helpCenter.classList.remove('hidden');
 
-        document.getElementById('raycast-user-link').addEventListener('click', (e) => {
-            e.preventDefault();
-            window.location.search = '?type=raycast';
-        });
+        // Handle jump parameter to navigate to specific section
+        if (jump) {
+            const targetSection = document.getElementById(`section-${jump}`);
+            if (targetSection) {
+                // Switch to the target section
+                switchSection(jump);
+                // Update nav link active state
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.section === jump) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
 
         // Navigation for help center sections
         const navLinks = document.querySelectorAll('.nav-link[data-section]');

@@ -237,24 +237,47 @@
             .mobile-menu-btn {
                 display: none !important;
             }
+            .mobile-menu-overlay {
+                display: none !important;
+            }
         }
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
-                position: absolute;
-                top: 100%;
+                position: fixed;
+                top: 0;
                 left: 0;
                 right: 0;
+                bottom: 0;
                 background: #faf8f5;
-                border-bottom: 1px solid #e7e5e4;
-                padding: 16px;
+                padding: 80px 24px 24px;
                 flex-direction: column;
-                gap: 16px;
+                gap: 24px;
+                z-index: 100;
+                overflow-y: auto;
             }
             .nav-links.active {
                 display: flex;
             }
+            .nav-links a {
+                font-size: 18px;
+                padding: 16px;
+            }
             .mobile-menu-btn {
+                display: block;
+                z-index: 101;
+            }
+            .mobile-menu-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 99;
+            }
+            .mobile-menu-overlay.active {
                 display: block;
             }
         }
@@ -280,6 +303,9 @@
             </div>
         </div>
     </nav>
+    
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
 
     <!-- Hero Section -->
     <section class="hero-gradient py-24 px-6 relative overflow-hidden">
@@ -458,15 +484,24 @@
         // Mobile menu toggle
         const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
         const navLinks = document.querySelector('.nav-links');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
         
         mobileMenuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
+            mobileMenuOverlay.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking overlay
+        mobileMenuOverlay.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
         });
 
         // Close mobile menu when clicking a link
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
+                mobileMenuOverlay.classList.remove('active');
             });
         });
     </script>
