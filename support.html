@@ -312,18 +312,59 @@
                 </div>
             </div>
             <nav class="flex flex-col gap-2">
-                <a href="#" class="nav-link active" data-section="getting-started"><span class="material-symbols-outlined">rocket_launch</span> Getting Started</a>
+                <a href="#" class="nav-link active" data-section="home"><span class="material-symbols-outlined">home</span> Home</a>
+                <a href="#" class="nav-link" data-section="getting-started"><span class="material-symbols-outlined">rocket_launch</span> Getting Started</a>
                 <a href="#" class="nav-link" data-section="generating-recipes"><span class="material-symbols-outlined">auto_awesome</span> Generating Recipes</a>
                 <a href="#" class="nav-link" data-section="troubleshooting"><span class="material-symbols-outlined">error_outline</span> Troubleshooting</a>
                 <a href="#" class="nav-link" data-section="settings"><span class="material-symbols-outlined">settings</span> Settings</a>
+                <a href="#" class="nav-link" data-section="api-keys"><span class="material-symbols-outlined">vpn_key</span> API Keys</a>
                 <a href="#" class="nav-link" data-section="custom-providers"><span class="material-symbols-outlined">extension</span> Custom Providers</a>
                 <a href="#" class="nav-link" data-section="coming-soon"><span class="material-symbols-outlined">upcoming</span> Coming Soon</a>
             </nav>
         </aside>
         <main class="flex-1 p-12 overflow-y-auto bg-[#faf8f5]">
             <div class="max-w-4xl mx-auto">
+                <!-- Home Section -->
+                <div id="section-home" class="portal-section active">
+                    <div class="text-center mb-12">
+                        <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="80" height="80" class="rounded-lg mx-auto mb-6">
+                        <h1 class="font-serif text-5xl text-stone-900 mb-4">Need a hand?</h1>
+                        <p class="text-2xl text-stone-600 font-light">We're ready to whisk away your problems.</p>
+                    </div>
+                    
+                    <div class="max-w-2xl mx-auto mb-12">
+                        <div class="relative">
+                            <input type="text" id="search-input" placeholder="Search for help articles..." class="w-full px-6 py-4 pl-14 bg-white border border-stone-300 rounded-2xl text-lg focus:outline-none focus:ring-2 focus:ring-[#ca9627] focus:border-transparent shadow-sm">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-stone-400" style="font-size: 24px;">search</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="getting-started">
+                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">rocket_launch</span>
+                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Getting Started</h3>
+                            <p class="text-stone-600">Learn how to install and configure Cookery for Raycast.</p>
+                        </a>
+                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="generating-recipes">
+                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">auto_awesome</span>
+                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Generating Recipes</h3>
+                            <p class="text-stone-600">Master the art of AI-powered recipe generation.</p>
+                        </a>
+                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="troubleshooting">
+                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">error_outline</span>
+                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Troubleshooting</h3>
+                            <p class="text-stone-600">Solve common issues with different AI providers.</p>
+                        </a>
+                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="api-keys">
+                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">vpn_key</span>
+                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">API Keys</h3>
+                            <p class="text-stone-600">Get API keys for OpenAI, Anthropic, Google Gemini, and more.</p>
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Getting Started Section -->
-                <div id="section-getting-started" class="portal-section active">
+                <div id="section-getting-started" class="portal-section">
                     <h1 class="font-serif text-4xl text-stone-900 mb-6">Getting Started with Cookery</h1>
                     <p class="text-stone-600 text-lg mb-8">Search for Cookery in the Raycast Store and install it.</p>
                     
@@ -473,6 +514,94 @@
                     </div>
                 </div>
 
+                <!-- API Keys Section -->
+                <div id="section-api-keys" class="portal-section">
+                    <h1 class="font-serif text-4xl text-stone-900 mb-6">How to Get API Keys</h1>
+                    <p class="text-stone-600 text-lg mb-8">Select your provider to get step-by-step instructions for obtaining an API key.</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mb-8">
+                        <button onclick="showApiSection('openai')" class="setup-card bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-400 transition-colors text-left">
+                            <span class="block font-bold mb-1">OpenAI</span>
+                            <span class="text-xs text-stone-500">Free tier: No</span>
+                        </button>
+                        <button onclick="showApiSection('claude')" class="setup-card bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-400 transition-colors text-left">
+                            <span class="block font-bold mb-1">Anthropic</span>
+                            <span class="text-xs text-stone-500">Free tier: No</span>
+                        </button>
+                        <button onclick="showApiSection('gemini')" class="setup-card bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-400 transition-colors text-left border-[#ca9627]">
+                            <div class="flex flex-col items-start mb-1">
+                                <span class="font-bold">Google</span>
+                                <span class="text-xs bg-[#fef3c7] text-[#92400e] font-bold px-2 py-0.5 rounded-full mt-1">Recommended</span>
+                            </div>
+                            <span class="text-xs text-stone-500">Free tier: Yes</span>
+                        </button>
+                        <button onclick="showApiSection('custom')" class="setup-card bg-white border border-stone-200 rounded-xl p-6 hover:border-stone-400 transition-colors text-left">
+                            <span class="block font-bold mb-1">Custom</span>
+                            <span class="text-xs text-stone-500">Free tier: Yes</span>
+                        </button>
+                    </div>
+                    
+                    <div id="api-content-area" class="hidden">
+                        <button onclick="resetApiView()" class="text-sm text-stone-500 mb-6 underline">← Back to selection</button>
+                        
+                        <div id="api-gemini" class="api-section hidden">
+                            <div class="card">
+                                <h3>Google Gemini</h3>
+                                <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg text-sm font-semibold mb-4">
+                                    <span>✨</span> Free tier available (Generous limits)
+                                </div>
+                                <ul class="space-y-3 text-stone-700">
+                                    <li><strong class="text-stone-900">1. Access:</strong> Visit <a href="https://aistudio.google.com/" target="_blank" class="text-[#ca9627] hover:underline">Google AI Studio</a>.</li>
+                                    <li><strong class="text-stone-900">2. Generate:</strong> Select "Get API key" from the sidebar.</li>
+                                    <li><strong class="text-stone-900">3. Secure:</strong> Create and copy your key. This is the fastest and easiest setup.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div id="api-claude" class="api-section hidden">
+                            <div class="card">
+                                <h3>Anthropic Claude</h3>
+                                <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1 rounded-lg text-sm font-semibold mb-4">
+                                    <span>💳</span> Requires payment setup to start
+                                </div>
+                                <ul class="space-y-3 text-stone-700">
+                                    <li><strong class="text-stone-900">1. Console:</strong> Go to the <a href="https://console.anthropic.com/" target="_blank" class="text-[#ca9627] hover:underline">Anthropic Console</a>.</li>
+                                    <li><strong class="text-stone-900">2. Keys:</strong> Select "API Keys" and click "+ Create Key".</li>
+                                    <li><strong class="text-stone-900">3. Finalize:</strong> You must add billing credits to begin using the API.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div id="api-openai" class="api-section hidden">
+                            <div class="card">
+                                <h3>OpenAI</h3>
+                                <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1 rounded-lg text-sm font-semibold mb-4">
+                                    <span>💳</span> Requires payment method
+                                </div>
+                                <ul class="space-y-3 text-stone-700">
+                                    <li><strong class="text-stone-900">1. Platform:</strong> Login at <a href="https://platform.openai.com/" target="_blank" class="text-[#ca9627] hover:underline">OpenAI Platform</a>.</li>
+                                    <li><strong class="text-stone-900">2. Secret:</strong> Go to "API Keys" and create a new secret key.</li>
+                                    <li><strong class="text-stone-900">3. Billing:</strong> You must have a valid payment method on file to enable the key.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div id="api-custom" class="api-section hidden">
+                            <div class="card">
+                                <h3>Custom / Router</h3>
+                                <div class="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg text-sm font-semibold mb-4">
+                                    <span>✨</span> Free tier models available
+                                </div>
+                                <ul class="space-y-3 text-stone-700">
+                                    <li><strong class="text-stone-900">1. Portal:</strong> Access your router/provider dashboard.</li>
+                                    <li><strong class="text-stone-900">2. Generate:</strong> Create a new API token in settings.</li>
+                                    <li><strong class="text-stone-900">3. Validate:</strong> Verify your account has sufficient credits for your desired model.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Custom Providers Section -->
                 <div id="section-custom-providers" class="portal-section">
                     <h1 class="font-serif text-4xl text-stone-900 mb-6">Custom Providers</h1>
@@ -498,7 +627,7 @@
                         <h3>Non-Compatible Providers</h3>
                         <p>The following providers are <strong>not</strong> currently compatible with the custom provider feature:</p>
                         <ul class="list-disc list-inside mt-4 space-y-2 text-stone-600">
-                            <li><strong>Google Gemini</strong> - Requires specific authentication and API structure</li>
+                            <li><strong>Google Gemini</strong> - Requires specific authentication and API structure <span class="text-[#ca9627] font-semibold">(Supported by default in Cookery)</span></li>
                             <li><strong>Cohere</strong> - Uses different API format and response structure</li>
                             <li><strong>Hugging Face Inference API</strong> - Different request/response format</li>
                             <li><strong>Amazon Bedrock</strong> - Requires AWS-specific authentication</li>
@@ -731,6 +860,49 @@
                 mobileOverlay.classList.remove('active');
             });
         });
+
+        // API keys section switching
+        function showApiSection(id) {
+            document.querySelector('.grid.grid-cols-2').style.display = 'none';
+            document.getElementById('api-content-area').classList.remove('hidden');
+            document.querySelectorAll('.api-section').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`api-${id}`).classList.remove('hidden');
+        }
+
+        function resetApiView() {
+            document.querySelector('.grid.grid-cols-2').style.display = 'grid';
+            document.getElementById('api-content-area').classList.add('hidden');
+            document.querySelectorAll('.api-section').forEach(s => s.classList.add('hidden'));
+        }
+
+        // Home page card navigation
+        document.querySelectorAll('.nav-link-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.dataset.section;
+                switchSection(section);
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                // Search through all sections and highlight matches
+                // This is a simple implementation - can be enhanced
+                if (query.length > 2) {
+                    // Find matching section
+                    const sections = document.querySelectorAll('.portal-section');
+                    sections.forEach(section => {
+                        const text = section.textContent.toLowerCase();
+                        if (text.includes(query) && section.id !== 'section-home') {
+                            switchSection(section.id.replace('section-', ''));
+                        }
+                    });
+                }
+            });
+        }
     </script>
 </body>
 </html>
