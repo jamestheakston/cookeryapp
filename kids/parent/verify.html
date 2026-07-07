@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Account | Cookery Kids</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #faf8f5;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 480px;
+            width: 90%;
+            padding: 40px;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+        .logo img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+        }
+        .logo span {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid rgba(231, 229, 228, 0.6);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 32px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+            text-align: center;
+        }
+        p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1c1917;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            box-sizing: border-box;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #1c1917;
+        }
+        button {
+            width: 100%;
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 14px 32px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            border: none;
+        }
+        button:hover {
+            background-color: #2c2a28;
+        }
+        button:disabled {
+            background-color: #a8a29e;
+            cursor: not-allowed;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 24px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading.active {
+            display: block;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e7e5e4;
+            border-top-color: #1c1917;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .error {
+            background-color: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #dc2626;
+            display: none;
+        }
+        .error.active {
+            display: block;
+        }
+        .success {
+            background-color: #dcfce7;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #16a34a;
+            display: none;
+        }
+        .success.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo">
+            <span>Cookery Kids</span>
+        </div>
+        
+        <div class="card">
+            <h1>Verify Your Account</h1>
+            <p>To ensure the safety of our community, we need to verify your email address before you can add children to your account.</p>
+            <p style="margin: 0 0 16px 0; font-size: 14px; color: #78716c;">Verification code will be sent to: <strong id="user-email" style="color: #1c1917;">Loading...</strong></p>
+            
+            <div id="error" class="error"></div>
+            <div id="success" class="success"></div>
+            
+            <div id="send-otp-section">
+                <p style="margin: 0 0 16px 0; font-size: 14px; color: #78716c;">Click the button below to send a verification code to your registered email address.</p>
+                <button id="send-otp-btn" onclick="sendOTP()">Send Verification Code</button>
+            </div>
+            
+            <div id="verify-otp-section" style="display: none;">
+                <div class="input-group">
+                    <label for="otp-code">Verification Code</label>
+                    <input type="text" id="otp-code" placeholder="Enter 8-digit code" maxlength="8" style="letter-spacing: 4px; font-size: 20px; text-align: center; font-weight: 600;">
+                </div>
+                <button id="verify-otp-btn" onclick="verifyOTP()">Verify Code</button>
+                <p style="margin: 16px 0 0 0; font-size: 13px; color: #78716c;">
+                    <span id="resend-container">
+                        <a href="#" id="resend-link" onclick="sendOTP(); return false;" style="color: #3b82f6; text-decoration: underline;">Resend</a>
+                        <span id="resend-timer" style="display: none; color: #78716c;">Resend available in <span id="countdown">60</span>s</span>
+                    </span>
+                </p>
+            </div>
+            
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                <p id="loading-text">Sending verification code...</p>
+            </div>
+            
+            <a href="/kids/parentdashboard.html" class="back-link">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let resendCooldown = false;
+        let countdownInterval = null;
+
+        async function sendOTP() {
+            if (resendCooldown) return;
+
+            const errorEl = document.getElementById('error');
+            const successEl = document.getElementById('success');
+            const sendOtpSection = document.getElementById('send-otp-section');
+            const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loading-text');
+
+            // Show loading
+            sendOtpSection.style.display = 'none';
+            loading.classList.add('active');
+            errorEl.classList.remove('active');
+            successEl.classList.remove('active');
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                
+                if (!user) {
+                    throw new Error('Please sign in first');
+                }
+
+                // Send OTP code via email
+                const { error } = await supabaseClient.auth.signInWithOtp({
+                    email: user.email,
+                });
+
+                if (error) throw error;
+
+                // Show OTP input section
+                loading.classList.remove('active');
+                document.getElementById('verify-otp-section').style.display = 'block';
+                successEl.textContent = 'Verification code sent! Please check your email and enter the 6-digit code below.';
+                successEl.classList.add('active');
+
+                // Start 60-second cooldown
+                startCooldown();
+
+            } catch (error) {
+                loading.classList.remove('active');
+                sendOtpSection.style.display = 'block';
+                errorEl.textContent = error.message || 'Failed to send verification code. Please try again.';
+                errorEl.classList.add('active');
+            }
+        }
+
+        function startCooldown() {
+            resendCooldown = true;
+            let secondsLeft = 60;
+            
+            const resendLink = document.getElementById('resend-link');
+            const resendTimer = document.getElementById('resend-timer');
+            const countdown = document.getElementById('countdown');
+            
+            resendLink.style.display = 'none';
+            resendTimer.style.display = 'inline';
+            countdown.textContent = secondsLeft;
+            
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                countdown.textContent = secondsLeft;
+                
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    resendCooldown = false;
+                    resendLink.style.display = 'inline';
+                    resendTimer.style.display = 'none';
+                }
+            }, 1000);
+        }
+
+        async function verifyOTP() {
+            const errorEl = document.getElementById('error');
+            const successEl = document.getElementById('success');
+            const verifyOtpSection = document.getElementById('verify-otp-section');
+            const loading = document.getElementById('loading');
+            const loadingText = document.getElementById('loading-text');
+            const otpCode = document.getElementById('otp-code').value.trim();
+
+            if (!otpCode || otpCode.length !== 8) {
+                errorEl.textContent = 'Please enter the 8-digit verification code';
+                errorEl.classList.add('active');
+                return;
+            }
+
+            // Show loading
+            verifyOtpSection.style.display = 'none';
+            loading.classList.add('active');
+            loadingText.textContent = 'Verifying code...';
+            errorEl.classList.remove('active');
+            successEl.classList.remove('active');
+
+            try {
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                
+                if (!user) {
+                    throw new Error('Please sign in first');
+                }
+
+                console.log('Verifying OTP for email:', user.email, 'with token:', otpCode);
+
+                // Verify OTP code
+                const { data, error } = await supabaseClient.auth.verifyOtp({
+                    email: user.email,
+                    token: otpCode,
+                    type: 'email',
+                });
+
+                console.log('OTP verification result:', data, error);
+
+                if (error) throw error;
+
+                // Refresh session to get updated email_confirmed status
+                await supabaseClient.auth.refreshSession();
+                console.log('Session refreshed');
+
+                // Clear countdown if running
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                }
+
+                // Show success and redirect
+                loading.classList.remove('active');
+                successEl.textContent = 'Account verified successfully! Redirecting to dashboard...';
+                successEl.classList.add('active');
+
+                setTimeout(() => {
+                    window.location.href = '/kids/parentdashboard.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error('OTP verification error:', error);
+                loading.classList.remove('active');
+                verifyOtpSection.style.display = 'block';
+                errorEl.textContent = error.message || 'Invalid verification code. Please try again.';
+                errorEl.classList.add('active');
+            }
+        }
+
+        // Check if user is logged in and verified
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (!session) {
+                window.location.href = '/kids/parentdashboard.html';
+                return;
+            }
+
+            // Display user's email
+            const userEmailEl = document.getElementById('user-email');
+            if (userEmailEl && session.user?.email) {
+                userEmailEl.textContent = session.user.email;
+            }
+
+            const isVerified = session.user?.email_confirmed;
+            
+            if (isVerified) {
+                const card = document.querySelector('.card');
+                card.innerHTML = `
+                    <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h1 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 400; color: #1c1917; text-align: center;">Account Already Verified</h1>
+                    <p style="margin: 0 0 32px 0; font-size: 14px; color: #78716c; text-align: center;">Your account has already been verified. You can now add children and access all features.</p>
+                    <a href="/kids/parentdashboard.html" style="display: block; background-color: #3b82f6; color: #ffffff; padding: 14px 32px; border-radius: 16px; font-size: 15px; font-weight: 600; text-decoration: none; text-align: center;">Go to Dashboard</a>
+                `;
+            }
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>

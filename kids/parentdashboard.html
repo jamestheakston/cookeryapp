@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery Kids - Parent Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
+    <style>
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; box-sizing: border-box; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; box-sizing: border-box; }
+        img { -ms-interpolation-mode: bicubic; border: 0; height: auto; line-height: 100%; outline: none; text-decoration: none; }
+        table { border-collapse: collapse !important; }
+        body { height: 100% !important; margin: 0 !important; padding: 0 !important; width: 100% !important; background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        *, *::before, *::after { box-sizing: border-box; }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            min-width: 250px;
+            background-color: #ffffff;
+            border-right: 1px solid #e7e5e4;
+            padding: 24px;
+            height: 100vh;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 40px;
+            overflow-x: hidden;
+        }
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        .sidebar-logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+        }
+        .sidebar-logo span {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c1917;
+        }
+        .nav-item {
+            display: block;
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #78716c;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-item:hover {
+            background-color: #faf8f5;
+            color: #1c1917;
+        }
+        .nav-item.active {
+            background-color: #1c1917;
+            color: #ffffff;
+        }
+        .nav-section {
+            font-size: 11px;
+            font-weight: 600;
+            color: #a8a29e;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin: 24px 0 12px 16px;
+        }
+        .portal-section {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            position: absolute !important;
+            left: -9999px !important;
+        }
+        .portal-section.active {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            position: relative !important;
+            left: auto !important;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid rgba(231, 229, 228, 0.6);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 24px;
+        }
+        .card h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 22px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 12px 0;
+        }
+        .card p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+        @media screen and (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -250px;
+                z-index: 100;
+                transition: left 0.3s;
+            }
+            .sidebar.open {
+                left: 0;
+            }
+            .main-content {
+                padding: 20px;
+            }
+        }
+        .hidden {
+            display: none !important;
+        }
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        .info-icon {
+            position: relative;
+            display: inline-block;
+        }
+        .info-icon::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #1c1917;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+            z-index: 100;
+            margin-bottom: 8px;
+        }
+        .info-icon:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        .modal h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        .modal p {
+            font-size: 14px;
+            color: #78716c;
+            line-height: 1.6;
+            margin: 0 0 24px 0;
+        }
+        .modal-message {
+            font-size: 14px;
+            color: #78716c;
+            margin: 0 0 24px 0;
+            line-height: 1.6;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+        .modal-btn-primary {
+            background-color: #1c1917;
+            color: #ffffff;
+        }
+        .modal-btn-secondary {
+            background-color: #e7e5e4;
+            color: #1c1917;
+        }
+        .modal-btn:hover {
+            opacity: 0.9;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .notification-badge {
+            background-color: #ef4444;
+            color: #ffffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1c1917;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #1c1917;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            border: none;
+        }
+        .btn-primary {
+            background-color: #1c1917;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background-color: #2c2a28;
+        }
+        .kid-card {
+            background-color: #faf8f5;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kid-info h3 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1917;
+        }
+        .kid-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #78716c;
+        }
+        .kid-email {
+            font-size: 12px;
+            color: #a8a29e;
+            margin-top: 4px;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(250, 248, 245, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .loading-overlay.hidden {
+            display: none;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        .modal h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0 0 24px 0;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .modal-buttons .btn-cancel {
+            background-color: transparent;
+            border: 1px solid #1c1917;
+            color: #1c1917;
+        }
+        .modal-buttons .btn-confirm {
+            background-color: #1c1917;
+            border: none;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #faf8f5; -webkit-font-smoothing: antialiased;">
+    
+    <!-- Login Section -->
+    <div id="login-section" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+        <div class="card" style="max-width: 400px; width: 100%;">
+            <div id="login-form">
+                <div style="text-align: center; margin-bottom: 32px;">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="48" height="48" style="display: block; width: 48px; height: 48px; border-radius: 10px; margin: 0 auto 16px;">
+                    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Cookery Kids</h1>
+                    <p style="font-size: 14px; color: #78716c; margin: 0;">Parent Dashboard</p>
+                </div>
+                
+                <div>
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="login-email" placeholder="Enter your email">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password">
+                    </div>
+                    
+                    <button id="login-btn" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                </div>
+                
+                <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #78716c;">
+                    Don't have an account? <a href="#" id="show-signup" style="color: #1c1917; text-decoration: underline;">Sign Up</a>
+                </p>
+                
+                <p style="text-align: center; margin-top: 16px; font-size: 12px;">
+                    <a href="../kids.html" style="color: #78716c; text-decoration: underline;">Back to Cookery Kids</a>
+                </p>
+            </div>
+            
+            <div id="login-loading" class="hidden" style="text-align: center; padding: 40px 20px;">
+                <svg style="width: 64px; height: 64px; color: #1c1917; animation: spin 1s linear infinite; margin: 0 auto 24px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="8"></circle>
+                </svg>
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Please wait</h3>
+                <p style="margin: 0; font-size: 14px; color: #78716c;">Signing you in...</p>
+            </div>
+            
+            <div id="login-error" class="hidden" style="text-align: center; padding: 40px 20px;">
+                <svg style="width: 64px; height: 64px; margin: 0 auto 24px; color: #ef4444;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Error</h3>
+                <p id="login-error-message" style="margin: 0 0 24px 0; font-size: 14px; color: #78716c;">An error occurred</p>
+                <button id="retry-login-btn" class="btn btn-primary">Try Again</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sign Up Section -->
+    <div id="signup-section" class="hidden" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;">
+        <div class="card" style="max-width: 400px; width: 100%;">
+            <div style="text-align: center; margin-bottom: 32px;">
+                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 28px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Create Account</h1>
+                <p style="font-size: 14px; color: #78716c; margin: 0;">Join Cookery Kids</p>
+            </div>
+            
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="signup-name" placeholder="Enter your name">
+            </div>
+            
+            <div class="input-group">
+                <label>Email</label>
+                <input type="email" id="signup-email" placeholder="Enter your email">
+            </div>
+            
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="signup-password" placeholder="Create a password">
+            </div>
+            
+            <button id="signup-btn" class="btn btn-primary" style="width: 100%;">Create Account</button>
+            
+            <p style="text-align: center; margin-top: 24px; font-size: 14px; color: #78716c;">
+                Already have an account? <a href="#" id="show-login" style="color: #1c1917; text-decoration: underline;">Sign In</a>
+            </p>
+            
+            <p style="text-align: center; margin-top: 16px; font-size: 12px;">
+                <a href="../kids.html" style="color: #78716c; text-decoration: underline;">Back to Cookery Kids</a>
+            </p>
+        </div>
+    </div>
+    
+    <!-- Portal Container -->
+    <div id="portal-container" class="container hidden">
+        <div class="sidebar">
+            <div class="sidebar-logo">
+                <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo">
+                <span>Cookery Kids</span>
+            </div>
+            
+            <div class="nav-section">Main</div>
+            <a class="nav-item active" data-section="dashboard" href="#">Dashboard</a>
+            <a class="nav-item" data-section="kids" href="#">My Kids</a>
+            
+            <div class="nav-section">Account</div>
+            <a class="nav-item" data-section="notifications" href="#" style="display: flex; align-items: center; justify-content: space-between;">
+                Notifications
+                <span id="notifications-badge" class="notification-badge hidden">1</span>
+            </a>
+            <a class="nav-item" data-section="settings" href="#">Settings</a>
+            
+            <div style="margin-top: 32px;">
+                <a class="nav-item" id="sidebar-logout">Sign Out</a>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Dashboard Section -->
+            <div id="section-dashboard" class="portal-section active">
+                <h1 id="dashboard-greeting" style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Good morning!</h1>
+                <p style="font-size: 16px; color: #78716c; margin: 0 0 32px 0;">Manage your children's cooking journey and track their progress.</p>
+                
+                <div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 12px; padding: 16px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                    <svg style="width: 20px; height: 20px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span style="font-size: 14px; font-weight: 500; color: #92400e;">Cookery Kids is currently in development. Full launch expected in 2028.</span>
+                </div>
+                
+                <div class="card">
+                    <h2>Quick Stats</h2>
+                    <p>Overview of your family's cooking journey.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;" id="kids-count">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Kids Registered</p>
+                        </div>
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Recipes Made</p>
+                        </div>
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Badges Earned</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Kids Section -->
+            <div id="section-kids" class="portal-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px;">
+                    <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0;">My Kids</h1>
+                    <button id="add-kid-btn" class="btn btn-primary hidden">Add Kid</button>
+                </div>
+                
+                <div id="kids-container">
+                    <div id="no-kids-message" style="text-align: center; padding: 60px 20px;">
+                        <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #a8a29e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">No kids added yet</h3>
+                        <p style="margin: 0; font-size: 14px; color: #78716c;">Add your first kid to get started with Cookery Kids.</p>
+                    </div>
+                    <div id="verification-required-message" style="text-align: center; padding: 60px 20px; display: none;">
+                        <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Verify your account</h3>
+                        <p style="margin: 0 0 16px 0; font-size: 14px; color: #78716c;">You need to verify your account before adding children. This confirms you are an adult and helps keep our community safe.</p>
+                        <a href="/kids/parent/verify" style="display: inline-flex; align-items: center; gap: 8px; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
+                            Verify account
+                            <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Section -->
+            <div id="section-settings" class="portal-section">
+                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 32px 0;">Settings</h1>
+                
+                <div class="card">
+                    <h2>Account Settings</h2>
+                    <p>Manage your parent account settings.</p>
+                    
+                    <div class="input-group">
+                        <label>Name</label>
+                        <input type="text" id="settings-name">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Email</label>
+                        <input type="email" id="settings-email" disabled>
+                    </div>
+                    
+                    <button id="save-settings-btn" class="btn btn-primary">Save Changes</button>
+                </div>
+                
+                <div class="card">
+                    <h2>Verification Status</h2>
+                    <div id="verification-status-message"></div>
+                    <div id="verification-action-container"></div>
+                </div>
+            </div>
+            
+            <!-- Notifications Section -->
+            <div id="section-notifications" class="portal-section">
+                <h1 style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 32px 0;">Notifications</h1>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #1c1917; cursor: pointer;">
+                        <input type="checkbox" id="select-all-notifications" style="width: 16px; height: 16px; cursor: pointer;">
+                        Select All
+                    </label>
+                    <button id="delete-selected-notifications" class="btn" style="background-color: #ef4444; color: #ffffff; padding: 8px 16px; font-size: 14px; display: none;">Delete Selected</button>
+                </div>
+                
+                <div class="card">
+                    <div style="display: flex; align-items: flex-start; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #e7e5e4; margin-bottom: 20px;">
+                        <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <span style="font-size: 16px; font-weight: 600; color: #1c1917;">Cookery Team</span>
+                                <div class="info-icon" data-tooltip="Official Account">
+                                    <svg style="width: 16px; height: 16px; color: #3b82f6;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                        <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.78 4.78 4 4 0 0 1-6.74 0 4 4 0 0 1-4.78-4.78 4 4 0 0 1 0-6.74Z"></path>
+                                        <path d="m9 12 2 2 4-4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 600; color: #1c1917;">Welcome to Cookery Kids</h3>
+                            <p style="margin: 0 0 8px 0; font-size: 14px; color: #78716c; line-height: 1.6;">Prepare your kids for life. Teach them how to cook amazing recipes safely.</p>
+                            <span style="font-size: 12px; color: #a8a29e;">Just now</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Child Management Section -->
+            <div id="section-child-manage" class="portal-section">
+                <button onclick="switchSection('kids')" style="background: none; border: none; color: #78716c; cursor: pointer; font-size: 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 4px;">
+                    <svg style="width: 16px; height: 16px;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Back to My Kids
+                </button>
+                
+                <div id="child-manage-action-required" style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <svg style="width: 20px; height: 20px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <div>
+                        <span style="font-size: 14px; font-weight: 600; color: #d97706; display: block;">Action required</span>
+                        <span style="font-size: 13px; color: #92400e;">You haven't set a password for this child yet.</span>
+                    </div>
+                </div>
+                
+                <h1 id="child-manage-name" style="font-family: 'Playfair Display', Georgia, serif; font-size: 36px; font-weight: 400; color: #1c1917; margin: 0 0 8px 0;">Child Name</h1>
+                <p id="child-manage-email" style="font-size: 16px; color: #78716c; margin: 0 0 32px 0;">child@email.com</p>
+                
+                <div class="card">
+                    <h2>Child Stats</h2>
+                    <p>Overview of your child's cooking progress.</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Recipes Made</p>
+                        </div>
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Badges Earned</p>
+                        </div>
+                        <div style="background-color: #faf8f5; padding: 20px; border-radius: 12px;">
+                            <h3 style="margin: 0 0 8px 0; font-size: 32px; font-weight: 700; color: #1c1917;">0</h3>
+                            <p style="margin: 0; font-size: 14px; color: #78716c;">Cooking Sessions</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>Edit Child</h2>
+                    <p>Update your child's information.</p>
+                    
+                    <div class="input-group">
+                        <label>Name</label>
+                        <input type="text" id="manage-kid-name">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Age</label>
+                        <input type="number" id="manage-kid-age" min="1" max="18">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="manage-kid-password" placeholder="Set a password for your child">
+                    </div>
+                    
+                    <button id="save-manage-kid-btn" class="btn btn-primary">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Kid Modal -->
+    <div id="add-kid-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Add Child</h2>
+            
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="kid-name" placeholder="Enter kid's name" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin-bottom: 16px; box-sizing: border-box;">
+            </div>
+            
+            <div class="input-group">
+                <label>Age</label>
+                <input type="number" id="kid-age" placeholder="Enter age" min="1" max="18" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin-bottom: 16px; box-sizing: border-box;">
+            </div>
+            
+            <div style="display: flex; gap: 12px;">
+                <button id="cancel-add-kid" style="flex: 1; background-color: #e7e5e4; color: #1c1917; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Cancel</button>
+                <button id="confirm-add-kid" style="flex: 1; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Add Child</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+        <svg style="width: 64px; height: 64px; color: #1c1917; animation: spin 1s linear infinite;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="8"></circle>
+        </svg>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="alert-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2 id="alert-modal-title">Alert</h2>
+            <p id="alert-modal-message">Message goes here</p>
+            <button id="alert-modal-ok" style="width: 100%; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">OK</button>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirm-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2 id="confirm-modal-title">Confirm</h2>
+            <p id="confirm-modal-message">Are you sure?</p>
+            <div style="display: flex; gap: 12px;">
+                <button id="confirm-modal-cancel" style="flex: 1; background-color: #e7e5e4; color: #1c1917; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Cancel</button>
+                <button id="confirm-modal-confirm" style="flex: 1; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Kid Modal -->
+    <div id="edit-kid-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <h2>Edit Child</h2>
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="edit-kid-name" placeholder="Enter name" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin-bottom: 16px; box-sizing: border-box;">
+            </div>
+            <div class="input-group">
+                <label>Age</label>
+                <input type="number" id="edit-kid-age" placeholder="Enter age" min="1" max="18" style="width: 100%; padding: 12px 16px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 14px; color: #1c1917; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin-bottom: 16px; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button id="edit-kid-cancel" style="flex: 1; background-color: #e7e5e4; color: #1c1917; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Cancel</button>
+                <button id="edit-kid-save" style="flex: 1; background-color: #1c1917; color: #ffffff; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background-color 0.2s;">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+
+        const SupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const loginSection = document.getElementById('login-section');
+        const signupSection = document.getElementById('signup-section');
+        const portalContainer = document.getElementById('portal-container');
+        const userName = document.getElementById('user-name');
+        const loginForm = document.getElementById('login-form');
+        const loginLoading = document.getElementById('login-loading');
+        const loginError = document.getElementById('login-error');
+        const loginErrorMessage = document.getElementById('login-error-message');
+        const retryLoginBtn = document.getElementById('retry-login-btn');
+        const loginEmail = document.getElementById('login-email');
+        const loginPassword = document.getElementById('login-password');
+        const loginBtn = document.getElementById('login-btn');
+        const signupName = document.getElementById('signup-name');
+        const signupEmail = document.getElementById('signup-email');
+        const signupPassword = document.getElementById('signup-password');
+        const signupBtn = document.getElementById('signup-btn');
+        const showSignupBtn = document.getElementById('show-signup');
+        const showLoginLink = document.getElementById('show-login');
+        const navItems = document.querySelectorAll('.nav-item[data-section]');
+        const portalSections = document.querySelectorAll('.portal-section');
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const addKidBtn = document.getElementById('add-kid-btn');
+        const addKidModal = document.getElementById('add-kid-modal');
+        const cancelAddKid = document.getElementById('cancel-add-kid');
+        const confirmAddKid = document.getElementById('confirm-add-kid');
+        const kidName = document.getElementById('kid-name');
+        const kidAge = document.getElementById('kid-age');
+        const kidsContainer = document.getElementById('kids-container');
+        const kidsCount = document.getElementById('kids-count');
+        const sidebarLogout = document.getElementById('sidebar-logout');
+        const settingsName = document.getElementById('settings-name');
+        const settingsEmail = document.getElementById('settings-email');
+        const saveSettingsBtn = document.getElementById('save-settings-btn');
+        const alertModal = document.getElementById('alert-modal');
+        const alertModalTitle = document.getElementById('alert-modal-title');
+        const alertModalMessage = document.getElementById('alert-modal-message');
+        const alertModalOk = document.getElementById('alert-modal-ok');
+        const confirmModal = document.getElementById('confirm-modal');
+        const confirmModalTitle = document.getElementById('confirm-modal-title');
+        const confirmModalMessage = document.getElementById('confirm-modal-message');
+        const confirmModalCancel = document.getElementById('confirm-modal-cancel');
+        const confirmModalConfirm = document.getElementById('confirm-modal-confirm');
+        const editKidModal = document.getElementById('edit-kid-modal');
+        const editKidName = document.getElementById('edit-kid-name');
+        const editKidAge = document.getElementById('edit-kid-age');
+        const editKidCancel = document.getElementById('edit-kid-cancel');
+        const editKidSave = document.getElementById('edit-kid-save');
+
+        let currentUser = null;
+        let confirmCallback = null;
+        let currentEditingKidId = null;
+
+        function showLoading() {
+            loadingOverlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            loadingOverlay.classList.add('hidden');
+        }
+
+        function showAlert(title, message) {
+            alertModalTitle.textContent = title;
+            alertModalMessage.textContent = message;
+            alertModal.classList.remove('hidden');
+        }
+
+        function showConfirm(title, message, callback) {
+            confirmModalTitle.textContent = title;
+            confirmModalMessage.textContent = message;
+            confirmCallback = callback;
+            confirmModal.classList.remove('hidden');
+        }
+
+        function showLogin() {
+            loginSection.classList.remove('hidden');
+            signupSection.classList.add('hidden');
+            portalContainer.classList.add('hidden');
+            loginSection.style.display = 'flex';
+            signupSection.style.display = 'none';
+            loginForm.classList.remove('hidden');
+            loginLoading.classList.add('hidden');
+            loginError.classList.add('hidden');
+        }
+
+        function showSignup() {
+            loginSection.classList.add('hidden');
+            signupSection.classList.remove('hidden');
+            portalContainer.classList.add('hidden');
+            loginSection.style.display = 'none';
+            signupSection.style.display = 'flex';
+        }
+
+        async function showContent(user) {
+            loginSection.classList.add('hidden');
+            signupSection.classList.add('hidden');
+            portalContainer.classList.remove('hidden');
+            loginSection.style.display = 'none';
+            signupSection.style.display = 'none';
+            
+            currentUser = user;
+            
+            const hour = new Date().getHours();
+            let greeting;
+            if (hour < 12) {
+                greeting = 'Good morning';
+            } else if (hour < 18) {
+                greeting = 'Good afternoon';
+            } else {
+                greeting = 'Good evening';
+            }
+            
+            const displayName = user.user_metadata?.display_name || user.user_metadata?.user_name || user.email?.split('@')[0] || 'Parent';
+            const dashboardGreeting = document.getElementById('dashboard-greeting');
+            if (dashboardGreeting) {
+                dashboardGreeting.textContent = `${greeting}, ${displayName}!`;
+            }
+            
+            loadKids();
+            await loadSettings();
+            loadNotifications();
+        }
+
+        async function signIn() {
+            const email = loginEmail.value.trim();
+            const password = loginPassword.value.trim();
+
+            if (!email || !password) {
+                showAlert('Required', 'Please enter email and password');
+                return;
+            }
+
+            loginForm.classList.add('hidden');
+            loginLoading.classList.remove('hidden');
+            loginError.classList.add('hidden');
+            
+            // Show loading for at least 3 seconds
+            const minLoadingTime = new Promise(resolve => setTimeout(resolve, 3000));
+            
+            const authPromise = SupabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            const [authResult] = await Promise.all([authPromise, minLoadingTime]);
+            const { data, error } = authResult;
+
+            if (error) {
+                loginLoading.classList.add('hidden');
+                loginError.classList.remove('hidden');
+                loginErrorMessage.textContent = error.message;
+                return;
+            }
+
+            showContent(data.user);
+        }
+
+        async function signUp() {
+            const name = signupName.value.trim();
+            const email = signupEmail.value.trim();
+            const password = signupPassword.value.trim();
+
+            if (!name || !email || !password) {
+                showAlert('Required', 'Please fill in all fields');
+                return;
+            }
+
+            showLoading();
+            const { data, error } = await SupabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        display_name: name
+                    }
+                }
+            });
+
+            hideLoading();
+
+            if (error) {
+                showAlert('Error', 'Error creating account: ' + error.message);
+                return;
+            }
+
+            if (data.user) {
+                // Add welcome notification
+                currentUser = data.user;
+                await addNotification('Welcome to Cookery Kids', 'Prepare your kids for life. Teach them how to cook amazing recipes safely.');
+                await addNotification('Verify your account', 'Please verify your email address to confirm your account. This is required to add children and access all features.');
+                currentUser = null;
+                
+                showAlert('Success', 'Account created successfully! Please sign in.');
+                showLogin();
+            }
+        }
+
+        function switchSection(section) {
+            navItems.forEach(nav => {
+                nav.classList.remove('active');
+                if (nav.dataset.section === section) {
+                    nav.classList.add('active');
+                }
+            });
+
+            portalSections.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            document.getElementById(`section-${section}`).classList.add('active');
+        }
+
+        function generateRandomCode(length = 8) {
+            const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        async function addNotification(title, message) {
+            if (!currentUser) return;
+            
+            const { error } = await SupabaseClient
+                .from('notifications')
+                .insert({
+                    id: Date.now(),
+                    user_id: currentUser.id,
+                    title,
+                    message,
+                    read: false,
+                    created_at: new Date().toISOString()
+                });
+            
+            if (error) {
+                console.error('Error adding notification:', error);
+            }
+            
+            await loadNotifications();
+        }
+
+        async function loadNotifications() {
+            if (!currentUser) return;
+            
+            const notificationsSection = document.getElementById('section-notifications');
+            const card = notificationsSection.querySelector('.card');
+            
+            const { data: notifications, error } = await SupabaseClient
+                .from('notifications')
+                .select('*')
+                .eq('user_id', currentUser.id)
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                console.error('Error loading notifications:', error);
+                return;
+            }
+            
+            if (!notifications || notifications.length === 0) {
+                card.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <svg style="width: 64px; height: 64px; margin: 0 auto 16px; color: #a8a29e;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600; color: #1c1917;">No notifications</h3>
+                        <p style="margin: 0; font-size: 14px; color: #78716c;">You're all caught up!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            card.innerHTML = notifications.map(notification => {
+                const timeString = getTimeAgo(notification.created_at);
+                const isVerification = notification.title === 'Verify your account';
+                return `
+                    <div style="display: flex; align-items: flex-start; gap: 16px; padding-bottom: 20px; border-bottom: 1px solid #e7e5e4; margin-bottom: 20px; ${!notification.read ? 'background: linear-gradient(135deg, #eff6ff 0%, #f0f9ff 100%); padding: 16px; border-radius: 12px; border-left: 4px solid #3b82f6;' : ''}" data-notification-id="${notification.id}">
+                        <input type="checkbox" class="notification-checkbox" data-id="${notification.id}" style="width: 16px; height: 16px; margin-top: 4px; cursor: pointer;">
+                        <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" style="width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                                <span style="font-size: 16px; font-weight: 600; color: #1c1917;">Cookery Team</span>
+                                <div class="info-icon" data-tooltip="Official Account">
+                                    <svg style="width: 16px; height: 16px; color: #3b82f6;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                        <path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.78 4.78 4 4 0 0 1-6.74 0 4 4 0 0 1-4.78-4.78 4 4 0 0 1 0-6.74Z"></path>
+                                        <path d="m9 12 2 2 4-4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 600; color: #1c1917;">${notification.title}</h3>
+                            <p style="margin: 0 0 8px 0; font-size: 14px; color: #78716c; line-height: 1.6;">${notification.message}</p>
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                ${isVerification ? `
+                                    <a href="/kids/parent/verify" style="display: inline-flex; align-items: center; gap: 6px; background-color: #3b82f6; color: #ffffff; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 600; text-decoration: none; transition: background-color 0.2s; align-self: flex-start;">
+                                        Verify account
+                                        <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                        </svg>
+                                    </a>
+                                ` : ''}
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <span style="font-size: 12px; color: #a8a29e;">${timeString}</span>
+                                    ${!notification.read ? `<button onclick="markAsRead(${notification.id})" style="background: none; border: none; color: #3b82f6; cursor: pointer; font-size: 12px; font-weight: 600;">Mark as read</button>` : ''}
+                                    <button onclick="deleteNotification(${notification.id})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 4px;">
+                                        <svg style="width: 14px; height: 14px;" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Update notifications badge
+            const unreadCount = notifications.filter(n => !n.read).length;
+            const notificationsBadge = document.getElementById('notifications-badge');
+            if (notificationsBadge) {
+                if (unreadCount > 0) {
+                    notificationsBadge.textContent = unreadCount;
+                    notificationsBadge.classList.remove('hidden');
+                } else {
+                    notificationsBadge.classList.add('hidden');
+                }
+            }
+        }
+
+        async function markAsRead(notificationId) {
+            const { error } = await SupabaseClient
+                .from('notifications')
+                .update({ read: true })
+                .eq('id', notificationId);
+            
+            if (error) {
+                console.error('Error marking notification as read:', error);
+                return;
+            }
+            
+            await loadNotifications();
+        }
+
+        function getTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        function generateKidEmail(kidName) {
+            const sanitizedName = kidName.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const code = generateRandomCode();
+            return `${sanitizedName}.${code}@cookerykids.com`;
+        }
+
+        async function loadKids() {
+            if (!currentUser) return;
+            
+            const { data: { user } } = await SupabaseClient.auth.getUser();
+            const isVerified = user?.email_confirmed;
+            
+            const addKidBtn = document.getElementById('add-kid-btn');
+            const noKidsMessage = document.getElementById('no-kids-message');
+            const verificationMessage = document.getElementById('verification-required-message');
+            
+            if (isVerified) {
+                addKidBtn.classList.remove('hidden');
+            } else {
+                addKidBtn.classList.add('hidden');
+            }
+            
+            const { data: kids, error } = await SupabaseClient
+                .from('kids')
+                .select('*')
+                .eq('parent_id', currentUser.id)
+                .order('created_at', { ascending: false });
+            
+            if (error) {
+                console.error('Error loading kids:', error);
+                return;
+            }
+            
+            kidsCount.textContent = kids ? kids.length : 0;
+            
+            if (kids && kids.length > 0) {
+                kidsContainer.innerHTML = kids.map(kid => `
+                    <div class="kid-card">
+                        <div class="kid-info">
+                            ${!kid.password ? `
+                            <div style="background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 6px; padding: 6px 10px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px;">
+                                <svg style="width: 14px; height: 14px; color: #d97706; flex-shrink: 0;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                </svg>
+                                <span style="font-size: 12px; font-weight: 600; color: #d97706;">Action required</span>
+                            </div>
+                            ` : ''}
+                            <h3>${kid.name}</h3>
+                            <p>Age: ${kid.age}</p>
+                            <div style="display: flex; align-items: center; gap: 4px;">
+                                <p class="kid-email">${kid.email}</p>
+                                <div class="info-icon" data-tooltip="This is your child's custom email address. They can use this to login.">
+                                    <svg style="width: 16px; height: 16px; color: #78716c; cursor: pointer;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button onclick="manageKid('${kid.id}')" style="background: none; border: 1px solid #e7e5e4; color: #1c1917; cursor: pointer; font-size: 14px; padding: 6px 12px; border-radius: 6px;">Manage</button>
+                            <button onclick="deleteKid('${kid.id}')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px; padding: 6px 12px;">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                if (isVerified) {
+                    noKidsMessage.style.display = 'block';
+                    verificationMessage.style.display = 'none';
+                } else {
+                    noKidsMessage.style.display = 'none';
+                    verificationMessage.style.display = 'block';
+                }
+            }
+        }
+
+        async function addKid() {
+            const name = kidName.value.trim();
+            const age = parseInt(kidAge.value);
+
+            if (!name || !age) {
+                showAlert('Required', 'Please enter kid\'s name and age');
+                return;
+            }
+
+            if (age < 1 || age > 18) {
+                showAlert('Invalid Age', 'Age must be between 1 and 18');
+                return;
+            }
+
+            // Check if user is verified
+            const { data: { user } } = await SupabaseClient.auth.getUser();
+            if (!user?.email_confirmed) {
+                showAlert('Verification Required', 'Please verify your account before adding children. Check your notifications for the verification link.');
+                return;
+            }
+
+            const email = generateKidEmail(name);
+
+            const { data, error } = await SupabaseClient
+                .from('kids')
+                .insert({
+                    id: Date.now(),
+                    parent_id: currentUser.id,
+                    name,
+                    age,
+                    email
+                })
+                .select()
+                .single();
+
+            if (error) {
+                showAlert('Error', 'Error adding kid: ' + error.message);
+                return;
+            }
+
+            addKidModal.classList.add('hidden');
+            kidName.value = '';
+            kidAge.value = '';
+            loadKids();
+            addNotification(`${name} added`, `You've successfully added ${name} to your family. Don't forget to set a password for them!`);
+        }
+
+        async function deleteKid(kidId) {
+            showConfirm('Delete Child', 'Are you sure you want to delete this child? This action cannot be undone.', async () => {
+                const { error } = await SupabaseClient
+                    .from('kids')
+                    .delete()
+                    .eq('id', kidId);
+
+                if (error) {
+                    showAlert('Error', 'Error deleting kid: ' + error.message);
+                    return;
+                }
+
+                loadKids();
+            });
+        }
+
+        async function manageKid(kidId) {
+            const { data: kid, error } = await SupabaseClient
+                .from('kids')
+                .select('*')
+                .eq('id', kidId)
+                .single();
+
+            if (error) {
+                showAlert('Error', 'Error loading kid data: ' + error.message);
+                return;
+            }
+
+            currentEditingKidId = kidId;
+            document.getElementById('child-manage-name').textContent = kid.name;
+            document.getElementById('child-manage-email').textContent = kid.email;
+            document.getElementById('manage-kid-name').value = kid.name;
+            document.getElementById('manage-kid-age').value = kid.age;
+            
+            const actionRequiredBanner = document.getElementById('child-manage-action-required');
+            if (actionRequiredBanner) {
+                if (kid.password) {
+                    actionRequiredBanner.classList.add('hidden');
+                } else {
+                    actionRequiredBanner.classList.remove('hidden');
+                }
+            }
+            
+            switchSection('child-manage');
+        }
+
+        async function saveKidEdit() {
+            const name = document.getElementById('manage-kid-name').value.trim();
+            const age = parseInt(document.getElementById('manage-kid-age').value);
+            const password = document.getElementById('manage-kid-password').value.trim();
+
+            if (!name || !age) {
+                showAlert('Required', 'Please enter name and age');
+                return;
+            }
+
+            if (age < 1 || age > 18) {
+                showAlert('Invalid Age', 'Age must be between 1 and 18');
+                return;
+            }
+
+            const updateData = { name, age };
+            if (password) {
+                updateData.password = password;
+            }
+
+            const { error } = await SupabaseClient
+                .from('kids')
+                .update(updateData)
+                .eq('id', currentEditingKidId);
+
+            if (error) {
+                showAlert('Error', 'Error updating kid: ' + error.message);
+                return;
+            }
+
+            document.getElementById('child-manage-name').textContent = name;
+            document.getElementById('manage-kid-password').value = '';
+            
+            if (password) {
+                const actionRequiredBanner = document.getElementById('child-manage-action-required');
+                if (actionRequiredBanner) {
+                    actionRequiredBanner.classList.add('hidden');
+                }
+            }
+            
+            showAlert('Success', 'Child updated successfully!');
+            loadKids();
+        }
+
+        async function loadSettings() {
+            if (!currentUser) return;
+            
+            settingsName.value = currentUser.user_metadata?.display_name || '';
+            settingsEmail.value = currentUser.email || '';
+            
+            // Update verification status message
+            const { data: { user } } = await SupabaseClient.auth.getUser();
+            const isVerified = user?.email_confirmed;
+            const verificationStatusMessage = document.getElementById('verification-status-message');
+            const verificationActionContainer = document.getElementById('verification-action-container');
+            
+            if (isVerified) {
+                verificationStatusMessage.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; background-color: #dcfce7; border: 1px solid #bbf7d0; border-radius: 8px; margin-bottom: 16px;">
+                        <svg style="width: 20px; height: 20px; color: #16a34a;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span style="font-size: 14px; font-weight: 500; color: #16a34a;">Your account is verified. You can add children and access all features.</span>
+                    </div>
+                `;
+                verificationActionContainer.innerHTML = `
+                    <p style="margin: 0 0 16px 0; font-size: 14px; color: #78716c;">Reset your verification status if you need to verify your account again.</p>
+                    <button id="reset-verification-btn" class="btn" style="background-color: #ef4444; color: #ffffff;">Reset Verification</button>
+                `;
+                document.getElementById('reset-verification-btn').addEventListener('click', resetVerification);
+            } else {
+                verificationStatusMessage.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; padding: 12px 16px; background-color: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; margin-bottom: 16px;">
+                        <svg style="width: 20px; height: 20px; color: #d97706;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <span style="font-size: 14px; font-weight: 500; color: #92400e;">You need to verify your account to add children and access all features.</span>
+                    </div>
+                `;
+                verificationActionContainer.innerHTML = `
+                    <a href="/kids/parent/verify" class="btn" style="display: inline-block; background-color: #3b82f6; color: #ffffff; padding: 12px 24px; border-radius: 16px; font-size: 15px; font-weight: 600; text-decoration: none;">Verify Now</a>
+                `;
+            }
+        }
+
+        async function saveSettings() {
+            const name = settingsName.value.trim();
+            
+            if (!name) {
+                showAlert('Required', 'Please enter your name');
+                return;
+            }
+
+            const { error } = await SupabaseClient.auth.updateUser({
+                data: { display_name: name }
+            });
+
+            if (error) {
+                showAlert('Error', 'Error saving settings: ' + error.message);
+                return;
+            }
+
+            currentUser.user_metadata.display_name = name;
+            const hour = new Date().getHours();
+            let greeting;
+            if (hour < 12) {
+                greeting = 'Good morning';
+            } else if (hour < 18) {
+                greeting = 'Good afternoon';
+            } else {
+                greeting = 'Good evening';
+            }
+            const dashboardGreeting = document.getElementById('dashboard-greeting');
+            if (dashboardGreeting) {
+                dashboardGreeting.textContent = `${greeting}, ${name}!`;
+            }
+            showAlert('Success', 'Settings saved successfully!');
+        }
+
+        async function resetVerification() {
+            showConfirm('Reset Verification', 'Are you sure you want to reset your verification status? You will need to verify your account again before you can add children.', async () => {
+                // Redirect to verify page to go through verification process again
+                window.location.href = '/kids/parent/verify';
+            });
+        }
+
+        async function deleteNotifications() {
+            showConfirm('Delete All Notifications', 'Are you sure you want to delete all your notifications? This action cannot be undone.', async () => {
+                const { error } = await SupabaseClient
+                    .from('notifications')
+                    .delete()
+                    .eq('user_id', currentUser.id);
+
+                if (error) {
+                    showAlert('Error', 'Error deleting notifications: ' + error.message);
+                    return;
+                }
+
+                showAlert('Success', 'All notifications have been deleted.');
+                loadNotifications();
+            });
+        }
+
+        async function deleteNotification(notificationId) {
+            console.log('Deleting notification:', notificationId);
+            showConfirm('Delete Notification', 'Are you sure you want to delete this notification?', async () => {
+                console.log('Confirmed delete for:', notificationId);
+                const { error } = await SupabaseClient
+                    .from('notifications')
+                    .delete()
+                    .eq('id', notificationId);
+
+                if (error) {
+                    console.error('Delete error:', error);
+                    showAlert('Error', 'Error deleting notification: ' + error.message);
+                    return;
+                }
+
+                console.log('Delete successful');
+                loadNotifications();
+            });
+        }
+
+        function updateDeleteSelectedButton() {
+            const checkboxes = document.querySelectorAll('.notification-checkbox');
+            const deleteSelectedBtn = document.getElementById('delete-selected-notifications');
+            const selectedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+            
+            if (selectedCount > 0) {
+                deleteSelectedBtn.style.display = 'block';
+                deleteSelectedBtn.textContent = `Delete Selected (${selectedCount})`;
+            } else {
+                deleteSelectedBtn.style.display = 'none';
+            }
+        }
+
+        async function deleteSelectedNotifications() {
+            const checkboxes = document.querySelectorAll('.notification-checkbox:checked');
+            const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.dataset.id));
+            
+            if (selectedIds.length === 0) return;
+            
+            showConfirm(`Delete ${selectedIds.length} Notifications`, `Are you sure you want to delete ${selectedIds.length} notification${selectedIds.length > 1 ? 's' : ''}?`, async () => {
+                const { error } = await SupabaseClient
+                    .from('notifications')
+                    .delete()
+                    .in('id', selectedIds);
+
+                if (error) {
+                    showAlert('Error', 'Error deleting notifications: ' + error.message);
+                    return;
+                }
+
+                showAlert('Success', 'Selected notifications have been deleted.');
+                loadNotifications();
+            });
+        }
+
+        // Event Listeners
+        loginBtn.addEventListener('click', signIn);
+        signupBtn.addEventListener('click', signUp);
+        retryLoginBtn.addEventListener('click', () => {
+            loginError.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+        showSignupBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showSignup();
+        });
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showLogin();
+        });
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = item.dataset.section;
+                switchSection(section);
+            });
+        });
+
+        addKidBtn.addEventListener('click', () => {
+            addKidModal.classList.remove('hidden');
+        });
+
+        cancelAddKid.addEventListener('click', () => {
+            addKidModal.classList.add('hidden');
+            kidName.value = '';
+            kidAge.value = '';
+        });
+
+        confirmAddKid.addEventListener('click', addKid);
+
+        document.getElementById('select-all-notifications').addEventListener('change', (e) => {
+            const checkboxes = document.querySelectorAll('.notification-checkbox');
+            checkboxes.forEach(cb => cb.checked = e.target.checked);
+            updateDeleteSelectedButton();
+        });
+
+        document.getElementById('delete-selected-notifications').addEventListener('click', deleteSelectedNotifications);
+
+        // Event delegation for notification checkboxes
+        document.addEventListener('change', (e) => {
+            if (e.target.classList.contains('notification-checkbox')) {
+                updateDeleteSelectedButton();
+            }
+        });
+
+        sidebarLogout.addEventListener('click', () => {
+            showConfirm('Sign Out', 'Are you sure you want to sign out?', async () => {
+                await SupabaseClient.auth.signOut();
+                showLogin();
+            });
+        });
+
+        saveSettingsBtn.addEventListener('click', saveSettings);
+        alertModalOk.addEventListener('click', () => {
+            alertModal.classList.add('hidden');
+        });
+        confirmModalCancel.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+            confirmCallback = null;
+        });
+        confirmModalConfirm.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+            if (confirmCallback) {
+                confirmCallback();
+                confirmCallback = null;
+            }
+        });
+        editKidCancel.addEventListener('click', () => {
+            editKidModal.classList.add('hidden');
+            editKidName.value = '';
+            editKidAge.value = '';
+            currentEditingKidId = null;
+        });
+        editKidSave.addEventListener('click', saveKidEdit);
+        document.getElementById('save-manage-kid-btn').addEventListener('click', saveKidEdit);
+
+        // Check for existing session
+        async function checkSession() {
+            const { data: { session } } = await SupabaseClient.auth.getSession();
+            if (session?.user) {
+                showContent(session.user);
+            }
+        }
+
+        // Check for email verification updates
+        SupabaseClient.auth.onAuthStateChange(async (event, session) => {
+            console.log('Auth state change:', event, session);
+            
+            if (event === 'SIGNED_IN' && session) {
+                showContent(session.user);
+            } else if (event === 'SIGNED_OUT') {
+                showLogin();
+            } else if (event === 'USER_UPDATED' && session) {
+                // Handle email verification confirmation
+                console.log('User updated, refreshing session...');
+                const { data: { session: refreshedSession } } = await SupabaseClient.auth.getSession();
+                if (refreshedSession) {
+                    showContent(refreshedSession.user);
+                }
+            }
+        });
+
+        checkSession();
+    </script>
+</body>
+</html>
