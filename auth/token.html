@@ -110,11 +110,12 @@
         const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Use a different variable name to avoid redeclaration
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Check if user is already logged in
         async function checkAuth() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 showTokenForm();
             }
@@ -148,7 +149,7 @@
             setLoading('Signing in...');
 
             try {
-                const { data, error } = await supabase.auth.signInWithPassword({
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
                     email,
                     password
                 });
@@ -175,7 +176,7 @@
             setLoading('Creating account...');
 
             try {
-                const { data, error } = await supabase.auth.signUp({
+                const { data, error } = await supabaseClient.auth.signUp({
                     email,
                     password
                 });
@@ -191,7 +192,7 @@
         }
 
         async function signOut() {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             document.getElementById('tokenForm').style.display = 'none';
             document.getElementById('loginForm').style.display = 'block';
             document.getElementById('success').style.display = 'none';
@@ -209,7 +210,7 @@
 
             try {
                 // Validate token against Supabase
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('tokens')
                     .select('*')
                     .eq('token', token)
