@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download Cookery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #faf8f5;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #1c1917;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 24px;
+        }
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .logo-text {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 28px;
+            font-weight: 400;
+            line-height: 1.3;
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
+        }
+        p {
+            font-size: 15px;
+            color: #78716c;
+            line-height: 1.6;
+            font-weight: 300;
+            margin-bottom: 32px;
+        }
+        .status-badge {
+            display: inline-block;
+            background-color: #f5f5f4;
+            border: 1px solid #e7e5e4;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #78716c;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 16px;
+            letter-spacing: -0.01em;
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background-color: #1c1917;
+            color: #ffffff;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid #1c1917;
+            color: #1c1917;
+        }
+        .qr-code {
+            display: block;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+            border-radius: 12px;
+            border: 1px solid #e7e5e4;
+            padding: 8px;
+            background-color: #ffffff;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-container">
+            <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" class="logo-img">
+            <span class="logo-text">Cookery</span>
+        </div>
+
+        <div id="confirm-state" class="hidden">
+            <h1>You’re on iOS, right?</h1>
+            <p>Cookery is currently custom-built for iPhone and iPad devices. Please confirm your operating system to continue.</p>
+            <div class="btn-group">
+                <button onclick="handleConfirm(true)" class="btn btn-primary">Yes, I'm on iOS</button>
+                <button onclick="handleConfirm(false)" class="btn btn-secondary">No</button>
+            </div>
+        </div>
+
+        <div id="tablet-state" class="hidden">
+            <div class="status-badge">Not Supported</div>
+            <h1>We don’t support iPad.</h1>
+            <p>Cookery is currently optimized for mobile display viewports. Scan the code below with your iPhone to install the app build directly.</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://cookeryapp.pages.dev/download&color=1c1917" alt="Download QR Code" class="qr-code">
+        </div>
+
+        <div id="desktop-state" class="hidden">
+            <h1>Try out the web version</h1>
+            <p>Access your collection, recipes, and preferences directly from your desktop browser setup.</p>
+            <div style="margin-bottom: 40px;">
+                <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                    <tr>
+                        <td align="center" style="background-color: #1c1917; border-radius: 16px;">
+                            <a href="https://cookeryai.pages.dev" style="display: inline-block; padding: 14px 32px; font-size: 15px; font-weight: 600; color: #ffffff; text-decoration: none; letter-spacing: -0.01em;">
+                                Open Web App
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <p style="margin-bottom: 16px; font-size: 14px;">Want to download the iOS version instead? Scan below:</p>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://cookeryapp.pages.dev/download&color=1c1917" alt="Download QR Code" class="qr-code">
+        </div>
+
+        <div id="android-state" class="hidden">
+            <div class="status-badge">Not Available</div>
+            <h1>Cookery is not currently available on Android.</h1>
+            <p>We are currently focused on tailoring the experience perfectly for iOS devices. Check back later as we expand our kitchen ecosystem.</p>
+        </div>
+    </div>
+
+    <script>
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        var isIPad = /iPad/.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        var isAndroidTablet = /android/i.test(userAgent) && !/mobile/i.test(userAgent);
+
+        if (isIPad || isAndroidTablet) {
+            showState('tablet-state');
+        } else if (/android/i.test(userAgent)) {
+            showState('android-state');
+        } else if (/iPhone|iPod/.test(userAgent) && !window.MSStream) {
+            showState('confirm-state');
+        } else {
+            showState('desktop-state');
+        }
+
+        function handleConfirm(isIOS) {
+            if (isIOS) {
+                window.location.href = "index.html";
+            } else {
+                showState('android-state');
+            }
+        }
+
+        function showState(id) {
+            document.getElementById('confirm-state').classList.add('hidden');
+            document.getElementById('tablet-state').classList.add('hidden');
+            document.getElementById('desktop-state').classList.add('hidden');
+            document.getElementById('android-state').classList.add('hidden');
+            document.getElementById(id).classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

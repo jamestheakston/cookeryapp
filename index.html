@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery - AI-Powered Recipe Generation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body { background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        .hero-gradient {
+            background: linear-gradient(135deg, #faf8f5 0%, #f5f3ef 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+        .platform-card {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 32px;
+            transition: all 0.3s ease;
+        }
+        .platform-card:hover {
+            border-color: #ca9627;
+            box-shadow: 0 8px 24px rgba(202, 150, 39, 0.15);
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .modal-header h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #78716c;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #1c1917;
+        }
+        .eula-content {
+            background-color: #faf8f5;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            padding: 24px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 24px;
+            font-size: 12px;
+            color: #78716c;
+            line-height: 1.6;
+        }
+        .eula-content h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 0 0 16px 0;
+        }
+        .eula-content h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 16px 0 8px 0;
+        }
+        .eula-content p {
+            margin: 0 0 12px 0;
+        }
+        .eula-content strong {
+            color: #1c1917;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        .checkbox-container label {
+            font-size: 14px;
+            color: #1c1917;
+            cursor: pointer;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+        .modal-buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .modal-buttons .btn-cancel {
+            background-color: transparent;
+            border: 1px solid #1c1917;
+            color: #1c1917;
+        }
+        .modal-buttons .btn-cancel:hover:not(:disabled) {
+            background-color: #faf8f5;
+        }
+        .modal-buttons .btn-download {
+            background-color: #1c1917;
+            border: none;
+            color: #ffffff;
+        }
+        .modal-buttons .btn-download:hover:not(:disabled) {
+            background-color: #2c2a28;
+        }
+        .hidden {
+            display: none !important;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: #faf8f5;
+                border-bottom: 1px solid #e7e5e4;
+                padding: 16px;
+                gap: 12px;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .hero-title {
+                font-size: 2.5rem !important;
+            }
+            .hero-description {
+                font-size: 1rem !important;
+            }
+            .platform-card {
+                padding: 24px;
+            }
+            .modal {
+                padding: 24px;
+                max-height: 95vh;
+                overflow-y: auto;
+            }
+            .eula-content {
+                max-height: 200px;
+            }
+            .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .py-24 {
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+            .px-6 {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            .max-w-6xl {
+                max-width: 100%;
+            }
+            .max-w-4xl {
+                max-width: 100%;
+            }
+            .max-w-2xl {
+                max-width: 100%;
+            }
+            .text-4xl {
+                font-size: 2rem;
+            }
+            .text-6xl {
+                font-size: 2.5rem;
+            }
+        }
+        @media (min-width: 769px) {
+            .mobile-menu-btn {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-[#faf8f5] border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" class="rounded-lg">
+                    <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery</span>
+                </div>
+                <div class="nav-links flex items-center gap-6">
+                    <a href="#platforms" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Platforms</a>
+                    <a href="#features" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Features</a>
+                    <a href="support.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Support</a>
+                </div>
+                <button class="mobile-menu-btn text-stone-600" id="mobile-menu-toggle">
+                    <span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient py-24 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://www.foodandwine.com/thmb/qAtnHoXWIt1G-juVAPP8Rw0uh1I=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Cooking-Competition-Confessional-FT-BLOG0607-668196333dc640c7b3db70d26a785361.jpg" alt="Cooking" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#faf8f5]"></div>
+        </div>
+        <div class="max-w-6xl mx-auto text-center relative z-10">
+            <div class="inline-flex items-center gap-2 bg-[#fdfbeb] border border-[#fbf5c4] px-4 py-2 rounded-full mb-8">
+                <span class="text-[#ca9627] text-xs font-semibold uppercase tracking-wider">Public Beta Access</span>
+            </div>
+            <h1 class="font-serif text-6xl font-bold text-white mb-6 leading-tight hero-title">
+                Start cooking early.
+            </h1>
+            <p class="text-xl text-white/90 max-w-2xl mx-auto mb-10 font-light leading-relaxed hero-description">
+                AI-powered recipe generation across multiple platforms. Get personalized recipes tailored to your preferences, dietary requirements, and available ingredients.
+            </p>
+            <div class="flex items-center justify-center gap-4 flex-wrap">
+                <a href="#platforms" class="bg-[#1c1917] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#292524] transition-colors">
+                    Get Started
+                </a>
+                <a href="support.html" class="border border-white/50 text-white px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-colors">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Platforms Section -->
+    <section id="platforms" class="py-24 px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">Available on Multiple Platforms</h2>
+                <p class="text-lg text-stone-600 max-w-2xl mx-auto">Cookery integrates seamlessly with your favorite productivity tools and platforms.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Raycast -->
+                <div class="platform-card card-hover">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img src="https://manual.raycast.com/favicons/favicon-production.png" alt="Raycast" width="48" height="48" class="rounded-lg">
+                        <div>
+                            <h3 class="font-semibold text-stone-900 text-lg">Raycast</h3>
+                            <p class="text-stone-500 text-sm">macOS & Windows</p>
+                        </div>
+                    </div>
+                    <p class="text-stone-600 mb-6">Generate recipes directly from your Raycast search bar. Perfect for quick meal planning and ingredient-based recipe suggestions.</p>
+                    <a href="support.html?type=raycast" class="text-[#ca9627] font-semibold hover:underline">View Setup Guide →</a>
+                </div>
+                
+                <!-- iOS -->
+                <div class="platform-card card-hover">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-stone-100 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-stone-600" style="font-size: 28px;">phone_iphone</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-stone-900 text-lg">iOS</h3>
+                            <p class="text-stone-500 text-sm">iPhone</p>
+                        </div>
+                    </div>
+                    <p class="text-stone-600 mb-6">Full-featured mobile app with recipe history, cooking timers, and grocery integration. Currently in public beta.</p>
+                    <a href="ios.html" class="text-[#ca9627] font-semibold hover:underline">Download Beta →</a>
+                </div>
+                
+                <!-- Coming Soon -->
+                <div class="platform-card card-hover opacity-60">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-stone-100 rounded-lg flex items-center justify-center">
+                            <span class="material-symbols-outlined text-stone-600" style="font-size: 28px;">more_horiz</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-stone-900 text-lg">More Platforms</h3>
+                            <p class="text-stone-500 text-sm">Coming Soon</p>
+                        </div>
+                    </div>
+                    <p class="text-stone-600 mb-6">We're actively developing integrations for more platforms. Stay tuned for announcements.</p>
+                    <span class="text-stone-400 font-medium">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Steps Section -->
+    <section class="py-24 px-6 bg-white">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-[#faf8f5] border border-stone-200 rounded-3xl p-12">
+                <h2 class="font-serif text-3xl font-bold text-stone-900 mb-4">iOS Installation Steps</h2>
+                <p class="text-stone-600 mb-8">Since our platform is in early development, you'll need to install the package using your computer:</p>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="font-semibold text-stone-900 text-lg mb-3">1. Get Sideloadly</h3>
+                        <p class="text-stone-600 mb-4">Download and install the companion program Sideloadly onto your Mac or Windows PC.</p>
+                        <a href="https://sideloadly.io/SideloadlySetup.dmg" target="_blank" class="inline-block bg-transparent border border-stone-900 text-stone-900 px-5 py-2 rounded-lg font-medium hover:bg-stone-100 transition-colors">
+                            Download Sideloadly
+                        </a>
+                    </div>
+                    
+                    <div>
+                        <h3 class="font-semibold text-stone-900 text-lg mb-3">2. Connect iPhone</h3>
+                        <p class="text-stone-600">Plug your iPhone into your computer using your connection cable, open Sideloadly, and drop the downloaded IPA file. Enter your Apple ID email and click start. Then when prompted, enter your Apple ID password. If prompted, tap 'Trust this computer' and enter your passcode.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 px-6 bg-[#faf8f5]">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">Powerful Features</h2>
+                <p class="text-lg text-stone-600 max-w-2xl mx-auto">Everything you need to create perfect meals every time.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
+                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">auto_awesome</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">AI-Powered Generation</h3>
+                    <p class="text-stone-600 mb-4">Advanced AI creates personalized recipes based on your preferences, dietary needs, and available ingredients using Google AI Studio.</p>
+                    <ul class="text-stone-600 text-sm space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Multiple cooking styles</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Dietary requirement filtering</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Ingredient-based suggestions</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
+                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">devices</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Multi-Platform Integration</h3>
+                    <p class="text-stone-600 mb-4">Access Cookery across your favorite productivity tools and devices. Seamlessly generate recipes wherever you work.</p>
+                    <ul class="text-stone-600 text-sm space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Raycast (macOS & Windows)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>iOS (iPhone)</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>More platforms coming soon</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
+                    <div class="w-12 h-12 bg-[#fdfbeb] rounded-xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 28px;">history</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Recipe Management</h3>
+                    <p class="text-stone-600 mb-4">Save, edit, and revisit your favorite recipes anytime. Track your cooking journey with smart notifications and beautiful food images.</p>
+                    <ul class="text-stone-600 text-sm space-y-2">
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Recipe history & editing</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>Smart notifications</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-[#ca9627]">✓</span>
+                            <span>High-quality food images</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 px-6 bg-[#1c1917]">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="font-serif text-4xl font-bold text-white mb-6">Ready to start cooking?</h2>
+            <p class="text-xl text-stone-300 mb-10 font-light">Join the private beta and experience the future of recipe generation.</p>
+            <div class="flex items-center justify-center gap-4">
+                <a href="#platforms" class="bg-white text-[#1c1917] px-8 py-4 rounded-full font-semibold hover:bg-stone-100 transition-colors">
+                    Choose Your Platform
+                </a>
+                <a href="support.html" class="border border-stone-500 text-white px-8 py-4 rounded-full font-semibold hover:bg-stone-800 transition-colors">
+                    Get Support
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#faf8f5] border-t border-stone-200 py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
+                    <span class="font-serif text-lg font-bold text-stone-900">Cookery</span>
+                </div>
+                <div class="flex items-center gap-6 text-sm text-stone-600">
+                    <a href="support.html" class="hover:text-stone-900 transition-colors">Support</a>
+                    <a href="#" class="hover:text-stone-900 transition-colors">Privacy Policy</a>
+                    <a href="https://github.com/jamestheakston/cookeryios" target="_blank" class="hover:text-stone-900 transition-colors">GitHub</a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-stone-200 text-center text-sm text-stone-500">
+                <p>&copy; 2026 Cookery App. All ingredients curated thoughtfully.</p>
+                <p class="mt-2">Hero image by <a href="https://www.foodandwine.com" target="_blank" class="underline hover:text-stone-700">Food & Wine</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Download Modal -->
+    <div id="download-modal" class="modal-overlay hidden">
+        <div class="modal">
+            <!-- Terms State -->
+            <div id="modal-terms-state">
+                <div class="modal-header">
+                    <h2>Terms & Conditions</h2>
+                    <button class="modal-close" id="close-download-modal">&times;</button>
+                </div>
+                <div class="eula-content">
+                    <h3>LICENSE & END USER AGREEMENT</h3>
+                    <p>Copyright (c) 2026 James Theakston & PIXEL CANVAS LABS APP DEVELOPMENT STUDIO</p>
+                    
+                    <h4>1. PERMITTED USES & COPIES</h4>
+                    <p>Permission is hereby granted to any person obtaining a copy of this software and associated documentation files from this repository to view, download, fork, and copy the code for personal or educational use, subject to the following conditions:</p>
+                    <p><strong>Mandatory Attribution:</strong> The original copyright notice, author credits, and this permission notice must be included intact in all copies, forks, or substantial portions of the software.</p>
+                    <p><strong>Credit Requirement:</strong> Clear, visible acknowledgment must be given to James Theakston & PIXEL CANVAS LABS APP DEVELOPMENT STUDIO in the documentation or repository description of any derivative works.</p>
+                    
+                    <h4>2. RESTRICTIONS</h4>
+                    <p>You may not repackage, sublicense, or sell this software, its code, or its AI recipe assets for commercial profit without explicit, written permission from the original authors.</p>
+                    
+                    <h4>3. BETA SOFTWARE NOTICE</h4>
+                    <p>This software is in a beta testing phase. It is provided strictly on an "as-is" and "as-available" basis. It is expected to contain software bugs, glitches, and operational defects. The primary purpose of public hosting is to obtain development feedback, track performance, and identify errors. Do not rely on the correct functioning or performance of this software.</p>
+                    
+                    <h4>4. AI-GENERATED CONTENT & FOOD SAFETY WARNING</h4>
+                    <p>All recipes, ingredient lists, measurements, substitution suggestions, cooking times, and temperatures generated or displayed by this software are handled by Artificial Intelligence (AI). AI models can make errors, hallucinate incorrect data, or provide inaccurate and potentially hazardous instructions.</p>
+                    <p><strong>Verify Before Cooking:</strong> You must use your own judgment and culinary common sense. Always verify that cooking temperatures, preparation methods, and raw ingredient handling align with standard public food safety guidelines.</p>
+                    <p><strong>Allergies & Dietary Restrictions:</strong> The AI may fail to recognize cross-contamination risks or incorrect ingredients for specific dietary restrictions. Always inspect ingredients against your personal health and allergy profile before consuming.</p>
+                    <p><strong>Assumption of Risk:</strong> By using or testing this app, you acknowledge that cooking involves inherent risks (including burns, cuts, and foodborne illness) and agree to assume full responsibility for those risks.</p>
+                    
+                    <h4>5. DISCLAIMER OF WARRANTY & LIABILITY</h4>
+                    <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.</p>
+                    <p>IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS (JAMES THEAKSTON & PIXEL CANVAS LABS) BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+                    <p>THIS INCLUDES, WITHOUT LIMITATION, ANY DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES FOR: RUINED MEALS, DAMAGED KITCHEN APPLIANCES, FOOD POISONING, ALLERGIC REACTIONS, OR PHYSICAL INJURIES RESULTING FROM RELIANCE ON AI-GENERATED CONTENT OR SOFTWARE MALFUNCTIONS.</p>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="eula-checkbox">
+                    <label for="eula-checkbox">I agree to the EULA & Beta Statement</label>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-cancel" id="cancel-download">Cancel</button>
+                    <button class="btn-download" id="confirm-terms" disabled>Continue</button>
+                </div>
+            </div>
+            
+            <!-- Thank You State -->
+            <div id="modal-thankyou-state" class="hidden">
+                <div class="modal-header">
+                    <h2>Thank You!</h2>
+                    <button class="modal-close" id="close-download-modal-thankyou">&times;</button>
+                </div>
+                <div class="text-center py-8">
+                    <div class="w-20 h-20 bg-[#fdfbeb] rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 48px;">check_circle</span>
+                    </div>
+                    <p class="text-stone-600 mb-2">You've agreed to the terms and conditions.</p>
+                    <p class="text-stone-600">Here's your installation guide for Cookery iOS.</p>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-download" id="show-installation-guide">View Installation Guide</button>
+                </div>
+            </div>
+            
+            <!-- Installation Guide State -->
+            <div id="modal-installation-state" class="hidden">
+                <div class="modal-header">
+                    <h2>iOS Installation Guide</h2>
+                    <button class="modal-close" id="close-download-modal-installation">&times;</button>
+                </div>
+                <div class="eula-content" style="max-height: 400px;">
+                    <h3>Installation Steps</h3>
+                    <p>Since our platform is in early development, you'll need to install the package using your computer:</p>
+                    
+                    <h4>1. Get Sideloadly</h4>
+                    <p>Download and install the companion program Sideloadly onto your Mac or Windows PC.</p>
+                    
+                    <h4>2. Connect iPhone</h4>
+                    <p>Plug your iPhone into your computer using your connection cable, open Sideloadly, and drop the downloaded IPA file. Enter your Apple ID email and click start. Then when prompted, enter your Apple ID password. If prompted, tap 'Trust this computer' and enter your passcode.</p>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn-download" id="download-ipa">Download IPA</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                if (href === '#' || href === '') return;
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Download Modal functionality
+        const downloadModal = document.getElementById('download-modal');
+        const closeDownloadModal = document.getElementById('close-download-modal');
+        const closeDownloadModalThankyou = document.getElementById('close-download-modal-thankyou');
+        const closeDownloadModalInstallation = document.getElementById('close-download-modal-installation');
+        const cancelDownloadBtn = document.getElementById('cancel-download');
+        const confirmTermsBtn = document.getElementById('confirm-terms');
+        const showInstallationGuideBtn = document.getElementById('show-installation-guide');
+        const downloadIpaBtn = document.getElementById('download-ipa');
+        const downloadBetaBtn = document.getElementById('download-beta-btn');
+        const eulaCheckbox = document.getElementById('eula-checkbox');
+        const DOWNLOAD_URL = 'https://github.com/jamestheakston/cookeryios/releases/latest/download/Cookery.ipa';
+        
+        // Modal states
+        const modalTermsState = document.getElementById('modal-terms-state');
+        const modalThankyouState = document.getElementById('modal-thankyou-state');
+        const modalInstallationState = document.getElementById('modal-installation-state');
+
+        // Open modal when download beta button is clicked
+        downloadBetaBtn.addEventListener('click', function() {
+            downloadModal.classList.add('active');
+            resetModalState();
+        });
+
+        // Open modal when iOS beta button is clicked (for any other buttons with onclick)
+        document.querySelectorAll('button[onclick*="download-modal"]').forEach(button => {
+            button.addEventListener('click', function() {
+                downloadModal.classList.add('active');
+                resetModalState();
+            });
+        });
+
+        // Reset modal to initial state
+        function resetModalState() {
+            modalTermsState.classList.remove('hidden');
+            modalThankyouState.classList.add('hidden');
+            modalInstallationState.classList.add('hidden');
+            eulaCheckbox.checked = false;
+            confirmTermsBtn.disabled = true;
+        }
+
+        // Close modal functions
+        function closeDownloadModalFunc() {
+            downloadModal.classList.remove('active');
+            resetModalState();
+        }
+
+        closeDownloadModal.addEventListener('click', closeDownloadModalFunc);
+        closeDownloadModalThankyou.addEventListener('click', closeDownloadModalFunc);
+        closeDownloadModalInstallation.addEventListener('click', closeDownloadModalFunc);
+        cancelDownloadBtn.addEventListener('click', closeDownloadModalFunc);
+
+        // Close modal when clicking outside
+        downloadModal.addEventListener('click', function(e) {
+            if (e.target === downloadModal) {
+                closeDownloadModalFunc();
+            }
+        });
+
+        // Enable/disable continue button based on checkbox
+        eulaCheckbox.addEventListener('change', () => {
+            confirmTermsBtn.disabled = !eulaCheckbox.checked;
+        });
+
+        // Continue to thank you state
+        confirmTermsBtn.addEventListener('click', () => {
+            if (eulaCheckbox.checked) {
+                modalTermsState.classList.add('hidden');
+                modalThankyouState.classList.remove('hidden');
+            }
+        });
+
+        // Show installation guide
+        showInstallationGuideBtn.addEventListener('click', () => {
+            modalThankyouState.classList.add('hidden');
+            modalInstallationState.classList.remove('hidden');
+        });
+
+        // Download IPA
+        downloadIpaBtn.addEventListener('click', () => {
+            window.location.href = DOWNLOAD_URL;
+        });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+    </script>
+</body>
+</html>
