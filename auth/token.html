@@ -94,7 +94,7 @@
                     <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 48px;">check_circle</span>
                 </div>
                 <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Authentication Successful!</h2>
-                <p class="text-stone-600">You can now return to Raycast and generate recipes.</p>
+                <p class="text-stone-600">Your token has been validated. Return to Raycast to continue.</p>
             </div>
 
             <div id="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-center" style="display: none;"></div>
@@ -200,7 +200,7 @@
 
         async function validateToken() {
             const token = document.getElementById('token').value.trim();
-            
+
             if (!token || token.length !== 8) {
                 showError('Please enter a valid 8-character token');
                 return;
@@ -209,7 +209,13 @@
             setLoading('Validating token...');
 
             try {
-                // Validate token against Supabase
+                // Get current user
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (!user) {
+                    throw new Error('Please sign in first');
+                }
+
+                // Validate token against Supabase and link to user
                 const { data, error } = await supabaseClient
                     .from('tokens')
                     .select('*')
@@ -222,6 +228,13 @@
                 }
 
                 if (data) {
+                    // Link token to user (update user_id if not already set)
+                    if (!data.user_id) {
+                        await supabaseClient
+                            .from('tokens')
+                            .update({ user_id: user.id })
+                            .eq('token', token);
+                    }
                     hideLoading();
                     document.getElementById('tokenForm').style.display = 'none';
                     document.getElementById('success').style.display = 'block';
@@ -232,7 +245,7 @@
             } catch (error) {
                 console.error('Validation error:', error);
                 hideLoading();
-                showError('Invalid token. Please check and try again.');
+                showError(error.message || 'Invalid token. Please check and try again.');
             }
         }
 
