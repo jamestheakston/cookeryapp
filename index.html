@@ -243,7 +243,7 @@
         }
         @media (max-width: 768px) {
             .nav-links {
-                display: none;
+                display: none !important;
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -259,7 +259,7 @@
                 text-align: center;
             }
             .nav-links.active {
-                display: flex;
+                display: flex !important;
             }
             .nav-links a {
                 font-size: 24px;
@@ -285,7 +285,7 @@
                 border-color: #d6d3d1;
             }
             .mobile-menu-overlay {
-                display: none;
+                display: none !important;
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -295,7 +295,7 @@
                 z-index: 999;
             }
             .mobile-menu-overlay.active {
-                display: block;
+                display: block !important;
             }
         }
     </style>
@@ -502,6 +502,10 @@
         const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
         const navLinks = document.querySelector('.nav-links');
         const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        
+        // Ensure menu is closed on page load
+        navLinks.classList.remove('active');
+        mobileMenuOverlay.classList.remove('active');
         
         mobileMenuToggle.addEventListener('click', () => {
             navLinks.classList.toggle('active');
