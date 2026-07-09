@@ -1,0 +1,40 @@
+name: Cookerybot Auto Respond
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  auto-respond:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.COOKERYBOT_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const title = issue.title;
+            const body = issue.body;
+            
+            // Create a personalized response
+            const response = `🤖 **Cookery Bot** here!
+
+Thanks for opening an issue! I've received your report and will help triage it.
+
+**Issue Details:**
+- **Title:** ${title}
+- **Number:** #${context.issue.number}
+
+I'll review this issue and provide assistance shortly. If this is urgent, please add the \`urgent\` label.
+
+---
+*This is an automated response from Cookery Bot. For human assistance, please mention @jamestheakston.*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: response
+            });
