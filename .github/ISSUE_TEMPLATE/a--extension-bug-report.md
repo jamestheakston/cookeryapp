@@ -1,5 +1,5 @@
 ---
-name: Extension Bug Report
+name: a) Extension Bug Report
 about: "\U0001FAB2 Report a bug, issue or something else that's wrong with the Raycast
   extension."
 title: ''

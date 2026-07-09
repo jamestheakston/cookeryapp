@@ -1,5 +1,5 @@
 ---
-name: Website Bug Report
+name: b) Website Bug Report
 about: "\U0001FAB2 Report a bug, issue or something else that's wrong with the website."
 title: ''
 labels: ''
