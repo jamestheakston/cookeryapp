@@ -19,18 +19,7 @@ jobs:
             const body = issue.body;
             
             // Create a personalized response
-            const response = `🤖 **Cookery Bot** here!
-
-Thanks for opening an issue! I've received your report and will help triage it.
-
-**Issue Details:**
-- **Title:** ${title}
-- **Number:** #${context.issue.number}
-
-I'll review this issue and provide assistance shortly. If this is urgent, please add the \`urgent\` label.
-
----
-*This is an automated response from Cookery Bot. For human assistance, please mention @jamestheakston.*`;
+            const response = '🤖 **Cookery Bot** here!\n\nThanks for opening an issue! I\\'ve received your report and will help triage it.\n\n**Issue Details:**\n- **Title:** ' + title + '\n- **Number:** #' + context.issue.number + '\n\nI\\'ll review this issue and provide assistance shortly. If this is urgent, please add the "urgent" label.\n\n---\n*This is an automated response from Cookery Bot. For human assistance, please mention @jamestheakston.*';
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
