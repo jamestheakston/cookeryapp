@@ -3,6 +3,8 @@ name: Cookerybot Auto Respond
 on:
   issues:
     types: [opened]
+  issue_comment:
+    types: [created]
 
 jobs:
   auto-respond:
@@ -14,16 +16,55 @@ jobs:
         with:
           github-token: ${{ secrets.COOKERYBOT_TOKEN }}
           script: |
-            const issue = context.payload.issue;
-            const title = issue.title;
-            const body = issue.body;
+            const event = context.eventName;
             
-            // Create a personalized response
-            const response = '🤖 **Cookery Bot** here!\n\nThanks for opening an issue! I have received your report and will help triage it.\n\n**Issue Details:**\n- **Title:** ' + title + '\n- **Number:** #' + context.issue.number + '\n\nI will review this issue and provide assistance shortly. If this is urgent, please add the "urgent" label by commenting `/label urgent` or click here to add it: https://github.com/jamestheakston/cookeryapp/issues/' + context.issue.number + '\n\nNeed to open a new issue? Click here: https://github.com/jamestheakston/cookeryapp/issues/new/choose\n\n---\n*This is an automated response from Cookery Bot. For human assistance, please mention @jamestheakston.*';
+            if (event === 'issues') {
+              // Handle new issue
+              const issue = context.payload.issue;
+              const title = issue.title;
+              
+              const response = '🤖 **Cookery Bot** here!\n\nThanks for opening an issue! I have received your report and will help triage it.\n\n**Issue Details:**\n- **Title:** ' + title + '\n- **Number:** #' + context.issue.number + '\n\nI will review this issue and provide assistance shortly. If this is urgent, please add the "urgent" label by commenting `/label urgent` or click here to add it: https://github.com/jamestheakston/cookeryapp/issues/' + context.issue.number + '\n\nNeed to open a new issue? Click here: https://github.com/jamestheakston/cookeryapp/issues/new/choose\n\n---\n*This is an automated response from Cookery Bot. For human assistance, please mention @jamestheakston.*';
 
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: response
-            });
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: response
+              });
+            } else if (event === 'issue_comment') {
+              // Handle comment commands
+              const comment = context.payload.comment.body;
+              const issueNumber = context.issue.number;
+              
+              // Check for /label command
+              if (comment.includes('/label')) {
+                const labelMatch = comment.match(/\/label\s+(\w+)/);
+                if (labelMatch) {
+                  const label = labelMatch[1];
+                  
+                  try {
+                    await github.rest.issues.addLabels({
+                      issue_number: issueNumber,
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      labels: [label]
+                    });
+                    
+                    // Confirm label was added
+                    await github.rest.issues.createComment({
+                      issue_number: issueNumber,
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      body: '✅ Label "' + label + '" has been added to this issue.'
+                    });
+                  } catch (error) {
+                    await github.rest.issues.createComment({
+                      issue_number: issueNumber,
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      body: '❌ Failed to add label "' + label + '". The label may not exist or I may not have permission to add it.'
+                    });
+                  }
+                }
+              }
+            }
