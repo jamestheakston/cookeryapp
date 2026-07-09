@@ -243,7 +243,7 @@
         }
         @media (max-width: 768px) {
             .nav-links {
-                display: none;
+                display: none !important;
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -257,7 +257,7 @@
                 overflow-y: auto;
             }
             .nav-links.active {
-                display: flex;
+                display: flex !important;
             }
             .nav-links a {
                 font-size: 18px;
@@ -268,7 +268,7 @@
                 z-index: 101;
             }
             .mobile-menu-overlay {
-                display: none;
+                display: none !important;
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -278,7 +278,7 @@
                 z-index: 99;
             }
             .mobile-menu-overlay.active {
-                display: block;
+                display: block !important;
             }
         }
     </style>
