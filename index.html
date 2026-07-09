@@ -233,75 +233,6 @@
                 font-size: 2.5rem;
             }
         }
-        @media (min-width: 769px) {
-            .mobile-menu-btn {
-                display: none !important;
-            }
-            .mobile-menu-overlay {
-                display: none !important;
-            }
-        }
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none !important;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: white !important;
-                padding: 100px 24px 24px;
-                flex-direction: column;
-                gap: 24px;
-                z-index: 1000;
-                overflow-y: auto;
-                align-items: center;
-                text-align: center;
-            }
-            .nav-links.active {
-                display: flex !important;
-            }
-            .nav-links a {
-                font-size: 24px;
-                padding: 20px;
-                width: 100%;
-                text-align: center;
-                border-bottom: 1px solid #e7e5e4;
-                color: #1c1917;
-            }
-            .nav-links a:hover {
-                color: #000;
-            }
-            .mobile-menu-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                width: 44px;
-                height: 44px;
-                border-radius: 8px;
-                background: white;
-                border: 1px solid #e7e5e4;
-                cursor: pointer;
-                transition: all 0.2s;
-            }
-            .mobile-menu-btn:hover {
-                background: #f5f5f4;
-                border-color: #d6d3d1;
-            }
-            .mobile-menu-overlay {
-                display: none !important;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 999;
-            }
-            .mobile-menu-overlay.active {
-                display: block !important;
-            }
-        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -318,15 +249,9 @@
                     <a href="#features" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Features</a>
                     <a href="support.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Support</a>
                 </div>
-                <button class="mobile-menu-btn text-stone-600" id="mobile-menu-toggle">
-                    <span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
-                </button>
             </div>
         </div>
     </nav>
-    
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu-overlay" id="mobile-menu-overlay"></div>
 
     <!-- Hero Section -->
     <section class="hero-gradient py-24 px-6 relative overflow-hidden">
@@ -501,41 +426,6 @@
                 }
             });
         });
-
-        // Mobile menu toggle
-        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
-        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
-        
-        if (mobileMenuToggle && navLinks && mobileMenuOverlay) {
-            // Ensure menu is closed on page load
-            navLinks.classList.remove('active');
-            mobileMenuOverlay.classList.remove('active');
-            
-            mobileMenuToggle.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                navLinks.classList.toggle('active');
-                mobileMenuOverlay.classList.toggle('active');
-            });
-
-            // Close mobile menu when clicking overlay
-            mobileMenuOverlay.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                navLinks.classList.remove('active');
-                mobileMenuOverlay.classList.remove('active');
-            });
-
-            // Close mobile menu when clicking a link
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    navLinks.classList.remove('active');
-                    mobileMenuOverlay.classList.remove('active');
-                });
-            });
-        }
     </script>
 </body>
 </html>
