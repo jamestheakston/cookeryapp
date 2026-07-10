@@ -54,10 +54,13 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         .modal-overlay.active {
             display: flex;
+            opacity: 1;
         }
         
         .modal {
@@ -301,7 +304,7 @@
 
     <!-- Help Center -->
     <div id="help-center" class="hidden w-full flex h-screen">
-        <aside class="w-64 border-r border-stone-200 p-6 flex flex-col gap-6 bg-[#faf8f5]">
+        <aside class="w-64 border-r border-stone-200 p-6 flex flex-col gap-6 bg-[#faf8f5] overflow-y-auto">
             <div class="flex flex-col items-start gap-3 mb-8">
                 <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" class="rounded-lg">
                 <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery</span>
@@ -319,8 +322,9 @@
                 <a href="#" class="nav-link" data-section="configuration"><span class="material-symbols-outlined">settings</span> Configuration</a>
                 <a href="#" class="nav-link" data-section="troubleshooting"><span class="material-symbols-outlined">error_outline</span> Troubleshooting</a>
                 <a href="#" class="nav-link" data-section="coming-soon"><span class="material-symbols-outlined">upcoming</span> Coming Soon</a>
-                <a href="safety.html" class="nav-link" target="_blank"><span class="material-symbols-outlined">health_and_safety</span> Safety Guidelines</a>
-                <a href="https://github.com/jamestheakston/cookeryapp/issues/new/choose" class="nav-link" target="_blank"><span class="material-symbols-outlined">bug_report</span> Report Issue</a>
+                <div class="w-full h-px bg-stone-200 my-2"></div>
+                <a href="safety.html" class="nav-link external-link" target="_blank" data-url="safety.html"><span class="material-symbols-outlined">health_and_safety</span> Safety Guidelines</a>
+                <a href="https://github.com/jamestheakston/cookeryapp/issues/new/choose" class="nav-link external-link" target="_blank" data-url="https://github.com/jamestheakston/cookeryapp/issues/new/choose"><span class="material-symbols-outlined">bug_report</span> Report Issue</a>
             </nav>
         </aside>
         <main class="flex-1 p-12 overflow-y-auto bg-[#faf8f5]">
@@ -354,20 +358,20 @@
                             <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Getting Started</h3>
                             <p class="text-stone-600">Learn how to install and configure Cookery for Raycast.</p>
                         </a>
-                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="generating-recipes">
-                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">auto_awesome</span>
-                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Generating Recipes</h3>
-                            <p class="text-stone-600">Master the art of AI-powered recipe generation.</p>
+                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="authentication">
+                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">login</span>
+                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Authentication</h3>
+                            <p class="text-stone-600">Learn about signing in and using Cookery without an account.</p>
+                        </a>
+                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="configuration">
+                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">settings</span>
+                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Configuration</h3>
+                            <p class="text-stone-600">Configure your Cookery extension settings, API keys, and custom providers.</p>
                         </a>
                         <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="troubleshooting">
                             <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">error_outline</span>
                             <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">Troubleshooting</h3>
                             <p class="text-stone-600">Solve common issues with different AI providers.</p>
-                        </a>
-                        <a href="#" class="nav-link-card block bg-white border border-stone-200 rounded-2xl p-6 hover:border-[#ca9627] transition-colors cursor-pointer" data-section="api-keys">
-                            <span class="material-symbols-outlined text-[#ca9627] mb-3" style="font-size: 32px;">vpn_key</span>
-                            <h3 class="font-serif text-xl font-bold text-stone-900 mb-2">API Keys</h3>
-                            <p class="text-stone-600">Get API keys for OpenAI, Anthropic, Google Gemini, and more.</p>
                         </a>
                     </div>
                 </div>
@@ -767,6 +771,24 @@
         </div>
     </div>
 
+    <!-- External Link Confirmation Modal -->
+    <div id="external-link-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Open External Link</h2>
+                <button id="external-modal-close" class="modal-close">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <p>You are about to open an external link. Do you want to continue?</p>
+            <p id="external-link-url" class="text-sm text-stone-500 mt-2 break-all"></p>
+            <div class="flex gap-3 mt-6">
+                <button id="external-link-cancel" class="px-4 py-2 bg-stone-200 text-stone-900 rounded-lg hover:bg-stone-300 transition-colors">Cancel</button>
+                <button id="external-link-confirm" class="px-4 py-2 bg-[#ca9627] text-white rounded-lg hover:bg-[#b8861f] transition-colors">Open Link</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const jump = urlParams.get('jump');
@@ -776,22 +798,6 @@
         // Always show help center (Raycast)
         comingSoon.classList.add('hidden');
         helpCenter.classList.remove('hidden');
-
-        // Handle jump parameter to navigate to specific section
-        if (jump) {
-            const targetSection = document.getElementById(`section-${jump}`);
-            if (targetSection) {
-                // Switch to the target section
-                switchSection(jump);
-                // Update nav link active state
-                document.querySelectorAll('.nav-link').forEach(link => {
-                    link.classList.remove('active');
-                    if (link.dataset.section === jump) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        }
 
         // Navigation for help center sections
         const navLinks = document.querySelectorAll('.nav-link[data-section]');
@@ -826,6 +832,25 @@
                 switchSection(section);
             });
         });
+
+        // Handle jump parameter to navigate to specific section
+        if (jump) {
+            const targetSection = document.getElementById(`section-${jump}`);
+            if (targetSection) {
+                // Switch to the target section
+                switchSection(jump);
+                // Handle hash fragment for scrolling to specific element
+                const hash = window.location.hash;
+                if (hash) {
+                    const targetElement = document.querySelector(hash);
+                    if (targetElement) {
+                        setTimeout(() => {
+                            targetElement.scrollIntoView({ behavior: 'smooth' });
+                        }, 100);
+                    }
+                }
+            }
+        }
 
         // Tab switching for troubleshooting
         const tabButtons = document.querySelectorAll('.tab-button');
@@ -877,6 +902,51 @@
             if (e.target === emailModal) {
                 emailModal.classList.remove('active');
             }
+        });
+
+        // External link confirmation modal functionality
+        const externalLinkModal = document.getElementById('external-link-modal');
+        const externalModalClose = document.getElementById('external-modal-close');
+        const externalLinkCancel = document.getElementById('external-link-cancel');
+        const externalLinkConfirm = document.getElementById('external-link-confirm');
+        const externalLinkUrl = document.getElementById('external-link-url');
+        let pendingExternalUrl = '';
+
+        // Show modal when clicking external links
+        document.querySelectorAll('.external-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                pendingExternalUrl = this.dataset.url;
+                externalLinkUrl.textContent = pendingExternalUrl;
+                externalLinkModal.classList.add('active');
+            });
+        });
+
+        // Close modal handlers
+        externalModalClose.addEventListener('click', function() {
+            externalLinkModal.classList.remove('active');
+            pendingExternalUrl = '';
+        });
+
+        externalLinkCancel.addEventListener('click', function() {
+            externalLinkModal.classList.remove('active');
+            pendingExternalUrl = '';
+        });
+
+        externalLinkModal.addEventListener('click', function(e) {
+            if (e.target === externalLinkModal) {
+                externalLinkModal.classList.remove('active');
+                pendingExternalUrl = '';
+            }
+        });
+
+        // Confirm and open external link
+        externalLinkConfirm.addEventListener('click', function() {
+            if (pendingExternalUrl) {
+                window.open(pendingExternalUrl, '_blank');
+            }
+            externalLinkModal.classList.remove('active');
+            pendingExternalUrl = '';
         });
 
         // Mobile menu functionality
