@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why Sign In? - Cookery Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body { background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        .blog-content { font-size: 18px; line-height: 1.8; color: #1c1917; }
+        .blog-content h2 { font-family: 'Playfair Display', serif; font-size: 28px; color: #1c1917; margin-top: 48px; margin-bottom: 20px; }
+        .blog-content p { margin-bottom: 24px; }
+        .blog-content ul { margin-bottom: 24px; padding-left: 24px; }
+        .blog-content li { margin-bottom: 12px; }
+        .blog-content strong { color: #1c1917; font-weight: 600; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-[#faf8f5] border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
+                    <span class="font-serif text-lg font-bold text-stone-900 tracking-tight">Cookery Blog</span>
+                </div>
+                <a href="index.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Blog Post -->
+    <article class="max-w-3xl mx-auto px-6 py-16">
+        <!-- Header -->
+        <header class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-[#ca9627] text-sm font-semibold uppercase tracking-wider">Product</span>
+                <span class="text-stone-400">•</span>
+                <span class="text-stone-500 text-sm">July 10, 2026</span>
+                <span class="text-stone-400">•</span>
+                <span class="text-stone-500 text-sm">5 min read</span>
+            </div>
+            <h1 class="font-serif text-5xl text-stone-900 mb-6 leading-tight">Why Sign In? Understanding Authentication in Cookery</h1>
+            <p class="text-xl text-stone-600 leading-relaxed">The honest truth about signing in and how it helps support Cookery's development.</p>
+        </header>
+
+        <!-- Featured Image -->
+        <div class="mb-12">
+            <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1200&h=600&fit=crop" alt="Cooking with technology" class="w-full h-64 object-cover rounded-2xl">
+        </div>
+
+        <!-- Content -->
+        <div class="blog-content">
+            <p>When you first use Cookery, you might wonder why we ask you to sign in. Let's be honest about it – the main reason is to support the project and help keep Cookery sustainable.</p>
+
+            <h2>💚 Supporting the Project</h2>
+            <p>Cookery is developed and maintained as a passion project. By signing in, you help support continued development, server costs, and the time invested in improving the AI-powered recipe generation features.</p>
+
+            <h2>🔐 Secure Authentication</h2>
+            <p>When you do sign in, your API keys and personal settings are securely stored and protected. Your credentials are encrypted using industry-standard encryption methods and never shared with third parties. This means your OpenAI, Anthropic, or Google API keys remain safe and private.</p>
+
+            <h2>⚙️ What You Get</h2>
+            <p>While supporting the project is the primary reason, signing in does offer some practical benefits:</p>
+            <ul>
+                <li>Your API keys are stored securely in the cloud</li>
+                <li>Settings sync across your devices</li>
+                <li>Access to future features as they're developed</li>
+                <li>Priority support when you need help</li>
+            </ul>
+
+            <h2>🔄 No Pressure</h2>
+            <p>You can use Cookery without signing in – it's completely optional. The core functionality works perfectly fine without an account. Signing in is simply a way to show your support for the project if you find value in it.</p>
+
+            <h2>🛡️ Privacy First</h2>
+            <p>We respect your privacy above all else. Your data is stored securely and used only to enhance your Cookery experience. We never sell your personal information, and you have full control over your data at all times. You can delete your account and all associated data whenever you choose.</p>
+
+            <h2>Getting Started</h2>
+            <p>If you'd like to support the project, signing in is quick and easy. Simply click the sign-in button in Cookery, choose your preferred authentication method, and you're ready to go. Your account is created instantly.</p>
+
+            <p>Thank you for considering supporting Cookery. Every user who signs in helps make this project more sustainable and allows us to continue improving it for everyone.</p>
+        </div>
+
+        <!-- Author -->
+        <div class="mt-12 pt-8 border-t border-stone-200">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-[#ca9627] rounded-full flex items-center justify-center text-white font-bold text-lg">C</div>
+                <div>
+                    <p class="font-semibold text-stone-900">Cookery Team</p>
+                    <p class="text-stone-500 text-sm">Building the future of AI-powered cooking</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Posts -->
+        <div class="mt-12 pt-8 border-t border-stone-200">
+            <h3 class="font-serif text-2xl text-stone-900 mb-6">Related Posts</h3>
+            <div class="space-y-4">
+                <a href="safety.html" class="block p-4 bg-white border border-stone-200 rounded-xl hover:border-[#ca9627] transition-colors">
+                    <h4 class="font-semibold text-stone-900 mb-1">Cooking with Cookery Guidelines</h4>
+                    <p class="text-stone-600 text-sm">Safety tips and best practices for AI-generated recipes</p>
+                </a>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="bg-[#faf8f5] border-t border-stone-200 mt-16">
+        <div class="max-w-4xl mx-auto px-6 py-8 text-center">
+            <p class="text-stone-500 text-sm">© 2026 Cookery. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
