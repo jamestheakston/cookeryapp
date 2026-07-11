@@ -8,6 +8,7 @@ Disallow: /business/
 Disallow: /business/signup.html
 Disallow: /business/login.html
 Disallow: /business/app.html
+Disallow: /business/sessionclosed.html
 
 # Sitemap
 Sitemap: https://cookery.app/sitemap.xml
