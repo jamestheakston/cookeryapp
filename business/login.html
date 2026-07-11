@@ -93,6 +93,19 @@
         const submitBtn = document.getElementById('submit-btn');
         const errorMessage = document.getElementById('error-message');
 
+        // Check if user is already logged in
+        async function checkAuth() {
+            const { data: { session } } = await SupabaseClient.auth.getSession();
+            
+            if (session) {
+                // User is already logged in, redirect to dashboard
+                window.location.href = 'app.html';
+            }
+        }
+
+        // Check auth on page load
+        checkAuth();
+
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
