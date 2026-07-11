@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery for Business</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body { background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        .hero-gradient {
+            background: linear-gradient(135deg, #1c1917 0%, #292524 100%);
+        }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-[#faf8f5] border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" class="rounded-lg">
+                    <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery</span>
+                </div>
+                <a href="index.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient py-24 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 bg-[#ca9627] text-white px-4 py-2 rounded-full mb-8">
+                <span class="text-xs font-semibold uppercase tracking-wider">Enterprise Solution</span>
+            </div>
+            <h1 class="font-serif text-5xl font-bold text-white mb-6 leading-tight">
+                Cookery for Business
+            </h1>
+            <p class="text-xl text-white/80 max-w-3xl mx-auto mb-10 font-light leading-relaxed">
+                Create amazing recipes for commercial use that your competitors have never seen. Unlock the power of AI-driven recipe innovation for your restaurant, food business, or culinary venture.
+            </p>
+            <div class="flex items-center justify-center gap-4 flex-wrap">
+                <a href="mailto:jamesttheakston2@gmail.com?subject=Cookery%20for%20Business%20Inquiry" class="bg-[#ca9627] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#b8861f] transition-colors">
+                    Contact Us
+                </a>
+                <a href="#features" class="border border-white/50 text-white px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition-colors">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Proposition -->
+    <section class="py-24 px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">Why Cookery for Business?</h2>
+                <p class="text-lg text-stone-600 max-w-2xl mx-auto">Stand out from the competition with unique, AI-generated recipes that nobody else has.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-[#faf8f5] p-8 rounded-2xl card-hover">
+                    <div class="w-12 h-12 bg-[#ca9627] rounded-xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-white" style="font-size: 28px;">auto_awesome</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Unique Recipes</h3>
+                    <p class="text-stone-600">Generate completely original recipes that your competitors have never seen. Stay ahead of culinary trends with AI-driven innovation.</p>
+                </div>
+                <div class="bg-[#faf8f5] p-8 rounded-2xl card-hover">
+                    <div class="w-12 h-12 bg-[#ca9627] rounded-xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-white" style="font-size: 28px;">trending_up</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Commercial Use</h3>
+                    <p class="text-stone-600">Full commercial licensing for all generated recipes. Use them in your restaurant, food products, or culinary business without restrictions.</p>
+                </div>
+                <div class="bg-[#faf8f5] p-8 rounded-2xl card-hover">
+                    <div class="w-12 h-12 bg-[#ca9627] rounded-xl flex items-center justify-center mb-6">
+                        <span class="material-symbols-outlined text-white" style="font-size: 28px;">speed</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 text-lg mb-3">Rapid Innovation</h3>
+                    <p class="text-stone-600">Generate hundreds of recipe variations in minutes. Test new concepts quickly and find winning combinations faster than ever.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 px-6 bg-[#faf8f5]">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">Business Features</h2>
+                <p class="text-lg text-stone-600 max-w-2xl mx-auto">Everything you need to innovate and scale your culinary business.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-[#fdfbeb] rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 24px;">restaurant</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-stone-900 text-lg mb-2">Menu Development</h3>
+                            <p class="text-stone-600">Create innovative menu items that set your restaurant apart. Generate seasonal specials and unique dishes that customers can't find anywhere else.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-[#fdfbeb] rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 24px;">inventory_2</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-stone-900 text-lg mb-2">Product Development</h3>
+                            <p class="text-stone-600">Develop new food products with unique recipes. Perfect for food manufacturers, CPG brands, and product innovators.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-[#fdfbeb] rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 24px;">school</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-stone-900 text-lg mb-2">Culinary Education</h3>
+                            <p class="text-stone-600">Create unique teaching materials and course content for culinary schools. Generate endless recipe variations for educational purposes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 rounded-2xl border border-stone-200 card-hover">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-[#fdfbeb] rounded-lg flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 24px;">campaign</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-stone-900 text-lg mb-2">Content Creation</h3>
+                            <p class="text-stone-600">Generate unique recipes for food blogs, cookbooks, and media content. Stand out with original content that drives engagement.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="py-24 px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">Perfect For</h2>
+                <p class="text-lg text-stone-600 max-w-2xl mx-auto">Businesses that benefit from AI-powered recipe innovation.</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 32px;">storefront</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 mb-2">Restaurants</h3>
+                    <p class="text-stone-600 text-sm">Create unique menu items and seasonal specials</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 32px;">factory</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 mb-2">Food Manufacturers</h3>
+                    <p class="text-stone-600 text-sm">Develop new product recipes and formulations</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 32px;">menu_book</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 mb-2">Publishers</h3>
+                    <p class="text-stone-600 text-sm">Generate unique cookbook and blog content</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-[#ca9627]" style="font-size: 32px;">apartment</span>
+                    </div>
+                    <h3 class="font-semibold text-stone-900 mb-2">Culinary Schools</h3>
+                    <p class="text-stone-600 text-sm">Create educational content and teaching materials</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 px-6 bg-[#1c1917]">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="font-serif text-4xl font-bold text-white mb-6">Ready to Innovate?</h2>
+            <p class="text-xl text-stone-300 mb-10 font-light">Contact us to learn more about Cookery for Business and how we can help your culinary business stand out.</p>
+            <a href="mailto:jamesttheakston2@gmail.com?subject=Cookery%20for%20Business%20Inquiry" class="inline-block bg-[#ca9627] text-white px-8 py-4 rounded-full font-semibold hover:bg-[#b8861f] transition-colors">
+                Get in Touch
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#faf8f5] border-t border-stone-200 py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
+                    <span class="font-serif text-lg font-bold text-stone-900">Cookery</span>
+                </div>
+                <div class="flex items-center gap-6 text-sm text-stone-600">
+                    <a href="index.html" class="hover:text-stone-900 transition-colors">Home</a>
+                    <a href="support.html" class="hover:text-stone-900 transition-colors">Support</a>
+                    <a href="privacy.html" class="hover:text-stone-900 transition-colors">Privacy Policy</a>
+                    <a href="terms.html" class="hover:text-stone-900 transition-colors">Terms & Conditions</a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-stone-200 text-center text-sm text-stone-500">
+                <p>&copy; 2026 Cookery App. All ingredients curated thoughtfully.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
