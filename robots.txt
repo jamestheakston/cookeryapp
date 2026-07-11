@@ -1,0 +1,13 @@
+# Robots.txt for Cookery Raycast Extension
+
+User-agent: *
+Allow: /
+
+# Disallow private/business areas
+Disallow: /business/
+Disallow: /business/signup.html
+Disallow: /business/login.html
+Disallow: /business/app.html
+
+# Sitemap
+Sitemap: https://cookery.app/sitemap.xml
