@@ -4,7 +4,7 @@ export async function onRequest(context) {
   // MAINTENANCE MODE TOGGLE
   // Set this to true to enable maintenance mode, false to disable
   // This takes precedence over environment variables
-  const MAINTENANCE_MODE = false;
+  const MAINTENANCE_MODE = true;
   
   // MAINTENANCE WINDOW
   // Configure the maintenance window dates and times
