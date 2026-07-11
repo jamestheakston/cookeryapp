@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery for Business - Dashboard</title>
+    <link rel="icon" href="/assets/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-[#faf8f5] border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" class="rounded-lg">
+                    <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery for Business</span>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span id="user-email" class="text-stone-600 text-sm"></span>
+                    <button id="logout-btn" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Log out</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-6 py-12">
+        <div class="mb-8">
+            <h1 class="font-serif text-4xl font-bold text-stone-900 mb-2">Welcome to Cookery for Business</h1>
+            <p class="text-lg text-stone-600">Your Aspiring Chef plan is now active</p>
+        </div>
+
+        <!-- Plan Info Card -->
+        <div class="bg-white border border-stone-200 rounded-2xl p-8 mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Aspiring Chef Plan</h2>
+                    <p class="text-stone-600">Perfect for small food businesses, home cooks, and culinary enthusiasts starting their journey</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-4xl font-bold text-stone-900">£0</span>
+                    <span class="text-stone-600">/month</span>
+                </div>
+            </div>
+            <div class="grid md:grid-cols-4 gap-4">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="text-[#ca9627]" style="width: 20px; height: 20px;"></i>
+                    <span class="text-stone-600">Basic recipe generation</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="text-[#ca9627]" style="width: 20px; height: 20px;"></i>
+                    <span class="text-stone-600">Commercial license</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="text-[#ca9627]" style="width: 20px; height: 20px;"></i>
+                    <span class="text-stone-600">Share with 1 person</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <i data-lucide="check" class="text-[#ca9627]" style="width: 20px; height: 20px;"></i>
+                    <span class="text-stone-600">Community support</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white border border-stone-200 rounded-2xl p-6 card-hover">
+                <div class="w-12 h-12 bg-[#ca9627] rounded-xl flex items-center justify-center mb-4">
+                    <i data-lucide="sparkles" class="text-white" style="width: 24px; height: 24px;"></i>
+                </div>
+                <h3 class="font-semibold text-stone-900 text-lg mb-2">Generate Recipe</h3>
+                <p class="text-stone-600 text-sm mb-4">Create a new recipe with AI</p>
+                <button class="text-[#ca9627] font-semibold hover:underline">Get Started →</button>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-2xl p-6 card-hover">
+                <div class="w-12 h-12 bg-[#ca9627] rounded-xl flex items-center justify-center mb-4">
+                    <i data-lucide="history" class="text-white" style="width: 24px; height: 24px;"></i>
+                </div>
+                <h3 class="font-semibold text-stone-900 text-lg mb-2">Recipe History</h3>
+                <p class="text-stone-600 text-sm mb-4">View your past recipes</p>
+                <button class="text-[#ca9627] font-semibold hover:underline">View All →</button>
+            </div>
+            <div class="bg-white border border-stone-200 rounded-2xl p-6 card-hover">
+                <div class="w-12 h-12 bg-[#ca9627] rounded-xl flex items-center justify-center mb-4">
+                    <i data-lucide="users" class="text-white" style="width: 24px; height: 24px;"></i>
+                </div>
+                <h3 class="font-semibold text-stone-900 text-lg mb-2">Share Account</h3>
+                <p class="text-stone-600 text-sm mb-4">Share with 1 other person</p>
+                <button class="text-[#ca9627] font-semibold hover:underline">Invite →</button>
+            </div>
+        </div>
+
+        <!-- Upgrade CTA -->
+        <div class="bg-[#1c1917] rounded-2xl p-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-serif text-2xl font-bold text-white mb-2">Need more?</h3>
+                    <p class="text-stone-300">Upgrade to Professional for unlimited recipes and priority support</p>
+                </div>
+                <a href="../business.html" class="bg-[#ca9627] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
+                    View Plans
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Supabase client
+        const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+        const SupabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const userEmail = document.getElementById('user-email');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Check authentication status
+        async function checkAuth() {
+            const { data: { session } } = await SupabaseClient.auth.getSession();
+            
+            if (!session) {
+                window.location.href = 'signup.html';
+                return;
+            }
+
+            userEmail.textContent = session.user.email;
+        }
+
+        // Logout functionality
+        logoutBtn.addEventListener('click', async function() {
+            await SupabaseClient.auth.signOut();
+            window.location.href = 'signup.html';
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Check auth on page load
+        checkAuth();
+    </script>
+</body>
+</html>
