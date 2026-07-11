@@ -38,8 +38,12 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-gradient py-24 px-6">
-        <div class="max-w-6xl mx-auto text-center">
+    <section class="hero-gradient py-24 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <img src="https://business.itn.co.uk/wp-content/uploads/2025/02/nicolakundai.png" alt="Cooking" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#1c1917]"></div>
+        </div>
+        <div class="max-w-6xl mx-auto text-center relative z-10">
             <div class="inline-flex items-center gap-2 bg-[#ca9627] text-white px-4 py-2 rounded-full mb-8">
                 <span class="text-xs font-semibold uppercase tracking-wider">Enterprise Solution</span>
             </div>
@@ -217,6 +221,7 @@
             </div>
             <div class="mt-8 pt-8 border-t border-stone-200 text-center text-sm text-stone-500">
                 <p>&copy; 2026 Cookery App. All ingredients curated thoughtfully.</p>
+                <p class="mt-2">Hero image by <a href="https://business.itn.co.uk" target="_blank" class="underline hover:text-stone-700">ITN</a></p>
             </div>
         </div>
     </footer>
