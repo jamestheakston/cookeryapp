@@ -52,6 +52,7 @@
         .platform-card:hover {
             border-color: #ca9627;
             box-shadow: 0 8px 24px rgba(202, 150, 39, 0.15);
+            transform: translateY(-4px);
         }
         .modal-overlay {
             position: fixed;
@@ -64,6 +65,7 @@
             align-items: center;
             justify-content: center;
             z-index: 1000;
+            backdrop-filter: blur(4px);
         }
         .modal-overlay.active {
             display: flex;
@@ -159,11 +161,12 @@
             flex: 1;
             padding: 14px 24px;
             border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.2s;
             font-family: 'Space Mono', monospace;
+            letter-spacing: 0.5px;
         }
         .modal-buttons button:disabled {
             opacity: 0.5;
@@ -171,19 +174,26 @@
         }
         .modal-buttons .btn-cancel {
             background-color: transparent;
-            border: 1px solid #1c1917;
+            border: 2px solid #1c1917;
             color: #1c1917;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
         .modal-buttons .btn-cancel:hover:not(:disabled) {
-            background-color: #faf8f5;
-        }
-        .modal-buttons .btn-download {
             background-color: #1c1917;
-            border: none;
             color: #ffffff;
         }
+        .modal-buttons .btn-download {
+            background-color: #ca9627;
+            border: none;
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
         .modal-buttons .btn-download:hover:not(:disabled) {
-            background-color: #2c2a28;
+            background-color: #b8861f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(202, 150, 39, 0.3);
         }
         .hidden {
             display: none !important;
