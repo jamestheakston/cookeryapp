@@ -275,11 +275,6 @@
                 </button>
             </div>
 
-            <!-- Progress Bar -->
-            <div class="progress-bar mb-6">
-                <div id="progress-fill" class="progress-fill" style="width: 33%;"></div>
-            </div>
-
             <!-- Step Indicators -->
             <div class="step-indicator">
                 <div class="step-dot active" data-step="1">1</div>
@@ -287,6 +282,8 @@
                 <div class="step-dot" data-step="2">2</div>
                 <div class="step-line"></div>
                 <div class="step-dot" data-step="3">3</div>
+                <div class="step-line"></div>
+                <div class="step-dot" data-step="4">4</div>
             </div>
 
             <form id="api-form">
@@ -348,6 +345,25 @@
                     </div>
                     <div class="flex gap-3">
                         <button type="button" id="prev-step-3" class="flex-1 py-3 border border-stone-300 rounded-lg font-semibold text-stone-900 hover:bg-stone-50 transition-colors">← Back</button>
+                        <button type="button" id="next-step-3" class="flex-1 submit-btn">Next →</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Safety Terms -->
+                <div class="form-step" data-step="4">
+                    <h3 class="font-semibold text-stone-900 text-lg mb-4">Safety Guidelines</h3>
+                    <p class="text-stone-600 text-sm mb-4">Please review our safety guidelines before proceeding. You can generate recipes for 3 days before needing to review these guidelines again.</p>
+                    <div class="border border-stone-200 rounded-lg overflow-hidden mb-6" style="height: 300px;">
+                        <iframe src="../safety.html" class="w-full h-full" title="Safety Guidelines"></iframe>
+                    </div>
+                    <div class="mb-6">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" id="safety-terms" class="mt-1" required>
+                            <span class="text-sm text-stone-600">I have read and agree to the safety guidelines. I understand that I can generate recipes for 3 days before needing to review these guidelines again.</span>
+                        </label>
+                    </div>
+                    <div class="flex gap-3">
+                        <button type="button" id="prev-step-4" class="flex-1 py-3 border border-stone-300 rounded-lg font-semibold text-stone-900 hover:bg-stone-50 transition-colors">← Back</button>
                         <button type="submit" class="flex-1 submit-btn">Save Configuration</button>
                     </div>
                 </div>
@@ -401,7 +417,7 @@
         const denyPermission = document.getElementById('deny-permission');
 
         let currentStep = 1;
-        const totalSteps = 3;
+        const totalSteps = 4;
         let pendingApiConfig = null;
 
         // Check authentication status
@@ -485,10 +501,6 @@
 
         // Multi-step form functionality
         function updateStepUI() {
-            // Update progress bar
-            const progress = (currentStep / totalSteps) * 100;
-            progressFill.style.width = progress + '%';
-
             // Update step indicators
             const stepDots = document.querySelectorAll('.step-dot');
             const stepLines = document.querySelectorAll('.step-line');
@@ -559,6 +571,16 @@
 
         document.getElementById('prev-step-3').addEventListener('click', function() {
             currentStep = 2;
+            updateStepUI();
+        });
+
+        document.getElementById('next-step-3').addEventListener('click', function() {
+            currentStep = 4;
+            updateStepUI();
+        });
+
+        document.getElementById('prev-step-4').addEventListener('click', function() {
+            currentStep = 3;
             updateStepUI();
         });
 
@@ -643,12 +665,22 @@
             
             const selectedProvider = document.querySelector('input[name="api-provider"]:checked');
             const apiKey = document.getElementById('api-key').value;
+            const safetyTerms = document.getElementById('safety-terms');
+            
+            // Check if safety terms are accepted
+            if (!safetyTerms.checked) {
+                alert('Please accept the safety guidelines to continue');
+                return;
+            }
             
             // Store in pending config
             pendingApiConfig = {
                 provider: selectedProvider.value,
                 apiKey: apiKey
             };
+
+            // Store safety terms acceptance date
+            localStorage.setItem('cookery_safety_terms_accepted', new Date().toISOString());
 
             // Check if user has already made a choice
             const storagePreference = localStorage.getItem('cookery_storage_preference');
