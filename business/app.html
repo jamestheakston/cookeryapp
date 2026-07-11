@@ -355,6 +355,34 @@
         </div>
     </div>
 
+    <!-- Permission Modal -->
+    <div id="permission-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="font-serif text-2xl font-bold text-stone-900">Store API Key?</h2>
+                <button id="close-permission-modal" class="text-stone-400 hover:text-stone-600 transition-colors">
+                    <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                </button>
+            </div>
+            <div class="mb-6">
+                <p class="text-stone-600 mb-4">We'd like to store your API key securely in our database so you don't have to enter it every time.</p>
+                <div class="bg-[#fdfbeb] border border-[#fbf5c4] rounded-lg p-4 mb-4">
+                    <p class="text-sm text-stone-700"><strong>Benefits:</strong></p>
+                    <ul class="text-sm text-stone-600 mt-2 space-y-1">
+                        <li>• Access your API key from any device</li>
+                        <li>• Automatic backup and sync</li>
+                        <li>• Encrypted storage for security</li>
+                    </ul>
+                </div>
+                <p class="text-sm text-stone-500">Your API key will be encrypted and stored securely. You can revoke access at any time.</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="deny-permission" class="flex-1 py-3 border border-stone-300 rounded-lg font-semibold text-stone-900 hover:bg-stone-50 transition-colors">Deny</button>
+                <button id="allow-permission" class="flex-1 submit-btn">Allow</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Initialize Supabase client
         const SUPABASE_URL = 'https://ojvigxnwweixjhugekmm.supabase.co';
@@ -367,9 +395,14 @@
         const closeModal = document.getElementById('close-modal');
         const apiForm = document.getElementById('api-form');
         const progressFill = document.getElementById('progress-fill');
+        const permissionModal = document.getElementById('permission-modal');
+        const closePermissionModal = document.getElementById('close-permission-modal');
+        const allowPermission = document.getElementById('allow-permission');
+        const denyPermission = document.getElementById('deny-permission');
 
         let currentStep = 1;
         const totalSteps = 3;
+        let pendingApiConfig = null;
 
         // Check authentication status
         async function checkAuth() {
@@ -529,6 +562,81 @@
             updateStepUI();
         });
 
+        // Permission modal functionality
+        function openPermissionModal() {
+            permissionModal.classList.add('active');
+        }
+
+        function closePermissionModalFunc() {
+            permissionModal.classList.remove('active');
+        }
+
+        closePermissionModal.addEventListener('click', closePermissionModalFunc);
+        permissionModal.addEventListener('click', function(e) {
+            if (e.target === permissionModal) {
+                closePermissionModalFunc();
+            }
+        });
+
+        allowPermission.addEventListener('click', async function() {
+            closePermissionModalFunc();
+            
+            if (pendingApiConfig) {
+                try {
+                    // Store in Supabase (persistent storage)
+                    const { data: { user } } = await SupabaseClient.auth.getUser();
+                    
+                    const { error } = await SupabaseClient
+                        .from('api_keys')
+                        .upsert({
+                            user_id: user.id,
+                            provider: pendingApiConfig.provider,
+                            api_key: pendingApiConfig.apiKey,
+                            updated_at: new Date().toISOString()
+                        });
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    // Also store in localStorage as backup
+                    localStorage.setItem('cookery_api_provider', pendingApiConfig.provider);
+                    localStorage.setItem('cookery_api_key', pendingApiConfig.apiKey);
+                    localStorage.setItem('cookery_storage_preference', 'persistent');
+
+                    closeModalFunc();
+                    alert('API configuration saved successfully!');
+                } catch (error) {
+                    console.error('Error saving to Supabase:', error);
+                    // Fallback to localStorage
+                    localStorage.setItem('cookery_api_provider', pendingApiConfig.provider);
+                    localStorage.setItem('cookery_api_key', pendingApiConfig.apiKey);
+                    localStorage.setItem('cookery_storage_preference', 'local');
+                    
+                    closeModalFunc();
+                    alert('API configuration saved locally (cloud storage unavailable)');
+                }
+            }
+            
+            pendingApiConfig = null;
+        });
+
+        denyPermission.addEventListener('click', function() {
+            closePermissionModalFunc();
+            
+            if (pendingApiConfig) {
+                // Store only in localStorage
+                localStorage.setItem('cookery_api_provider', pendingApiConfig.provider);
+                localStorage.setItem('cookery_api_key', pendingApiConfig.apiKey);
+                localStorage.setItem('cookery_storage_preference', 'local');
+                
+                closeModalFunc();
+                alert('API configuration saved locally');
+            }
+            
+            pendingApiConfig = null;
+        });
+
         // Form submission
         apiForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -536,13 +644,25 @@
             const selectedProvider = document.querySelector('input[name="api-provider"]:checked');
             const apiKey = document.getElementById('api-key').value;
             
-            // Store configuration (in a real app, this would go to a database)
-            localStorage.setItem('cookery_api_provider', selectedProvider.value);
-            localStorage.setItem('cookery_api_key', apiKey);
+            // Store in pending config
+            pendingApiConfig = {
+                provider: selectedProvider.value,
+                apiKey: apiKey
+            };
+
+            // Check if user has already made a choice
+            const storagePreference = localStorage.getItem('cookery_storage_preference');
             
-            // Close modal and show success
-            closeModalFunc();
-            alert('API configuration saved successfully!');
+            if (storagePreference === 'persistent') {
+                // User already chose persistent storage, save directly
+                allowPermission.click();
+            } else if (storagePreference === 'local') {
+                // User already chose local storage, save directly
+                denyPermission.click();
+            } else {
+                // User hasn't made a choice, show permission modal
+                openPermissionModal();
+            }
         });
 
         // Initialize Lucide icons
