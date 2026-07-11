@@ -6,6 +6,13 @@ export async function onRequest(context) {
   // This takes precedence over environment variables
   const MAINTENANCE_MODE = false;
   
+  // MAINTENANCE WINDOW
+  // Configure the maintenance window dates and times
+  const MAINTENANCE_START_DATE = '2025-01-15';
+  const MAINTENANCE_START_TIME = '09:00';
+  const MAINTENANCE_END_DATE = '2025-01-15';
+  const MAINTENANCE_END_TIME = '17:00';
+  
   // Check if maintenance mode is enabled (code toggle takes precedence)
   const isMaintenance = MAINTENANCE_MODE === true || env.MAINTENANCE_MODE === 'true';
   
@@ -17,47 +24,109 @@ export async function onRequest(context) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Maintenance Mode - Cookery</title>
-    <link rel="icon" href="/assets/favicon.ico">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <title>Under Maintenance</title>
     <style>
-        body { 
-            background-color: #faf8f5; 
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #6b3de8;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 24px;
+        }
+
+        .card {
+            background: #ffffff;
+            max-width: 42rem;
+            width: 100%;
+            padding: 32px 48px;
+            text-align: center;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #111827;
+            margin: 0 0 12px;
+        }
+
+        .intro {
+            color: #374151;
+            margin: 0 0 20px;
+            line-height: 1.5;
+        }
+
+        .details {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #f3f4f6;
+        }
+
+        .details p.label {
+            color: #111827;
+            font-weight: 600;
+            font-size: 14px;
+            margin: 0 0 8px;
+        }
+
+        .details p.body-text {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="max-w-2xl mx-auto px-6 text-center">
-        <div class="mb-8">
-            <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="120" height="120" class="mx-auto rounded-2xl">
-        </div>
-        <h1 class="font-serif text-5xl font-bold text-stone-900 mb-6" style="font-family: 'Playfair Display', serif;">
-            We'll Be Back Soon
-        </h1>
-        <p class="text-xl text-stone-600 mb-8 leading-relaxed">
-            Cookery is currently undergoing scheduled maintenance. We're working hard to improve your experience and will be back shortly.
+    <div class="card">
+
+        <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png"
+             alt="Maintenance"
+             class="icon">
+
+        <h1>Under Maintenance</h1>
+
+        <p class="intro">
+            We are currently improving the site. Please check back soon.
         </p>
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-8">
-            <p class="text-amber-800 font-medium mb-2">What to expect:</p>
-            <ul class="text-amber-700 text-left space-y-2">
-                <li>• Improved performance and speed</li>
-                <li>• New features and enhancements</li>
-                <li>• Better recipe generation</li>
-            </ul>
+
+        <div class="details">
+            <p class="label">Period: ${MAINTENANCE_START_DATE} ${MAINTENANCE_START_TIME} <span id="tz1"></span> - ${MAINTENANCE_END_DATE} ${MAINTENANCE_END_TIME} <span id="tz2"></span></p>
+            <p class="body-text">
+                Some features may be temporarily unavailable during this window. For urgent inquiries, please contact our support team.
+            </p>
         </div>
-        <p class="text-stone-500 text-sm">
-            Thank you for your patience. For urgent matters, please contact us at 
-            <a href="mailto:support@cookery.app" class="text-amber-600 hover:text-amber-700 underline">support@cookery.app</a>
-        </p>
+
     </div>
+
+    <script>
+        // Determine whether it's currently GMT or BST in London
+        try {
+            const tz = new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'Europe/London',
+                timeZoneName: 'short'
+            }).formatToParts(new Date())
+              .find(part => part.type === 'timeZoneName').value;
+
+            document.getElementById('tz1').textContent = tz;
+            document.getElementById('tz2').textContent = tz;
+        } catch (e) {
+            console.error("Could not determine timezone", e);
+        }
+    </script>
 </body>
 </html>
     `;
