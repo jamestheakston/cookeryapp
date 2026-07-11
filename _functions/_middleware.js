@@ -106,6 +106,9 @@ export async function onRequest(context) {
 
         <div class="details">
             <p class="label">Period: ${MAINTENANCE_START_DATE} ${MAINTENANCE_START_TIME} <span id="tz1"></span> - ${MAINTENANCE_END_DATE} ${MAINTENANCE_END_TIME} <span id="tz2"></span></p>
+            <p class="body-text" style="font-size: 12px; color: #9ca3af; margin-top: 8px;">
+                * All dates and times are in UK format (DD/MM/YY and 24-hour time)
+            </p>
             <p class="body-text">
                 Some features may be temporarily unavailable during this window. For urgent inquiries, please contact our support team.
             </p>
