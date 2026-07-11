@@ -1,8 +1,13 @@
 export async function onRequest(context) {
   const { env, request, next } = context;
   
-  // Check if maintenance mode is enabled
-  const isMaintenance = env.MAINTENANCE_MODE === 'true';
+  // MAINTENANCE MODE TOGGLE
+  // Set this to true to enable maintenance mode, false to disable
+  // This takes precedence over environment variables
+  const MAINTENANCE_MODE = false;
+  
+  // Check if maintenance mode is enabled (code toggle takes precedence)
+  const isMaintenance = MAINTENANCE_MODE === true || env.MAINTENANCE_MODE === 'true';
   
   if (isMaintenance) {
     // Return maintenance page for all requests

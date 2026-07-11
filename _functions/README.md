@@ -6,7 +6,27 @@ This directory contains Cloudflare Pages Functions for the Cookery website.
 
 The `_middleware.js` file provides a maintenance mode feature that allows you to temporarily take the site offline for maintenance.
 
-### How to Enable Maintenance Mode
+### Quick Toggle (Recommended)
+
+The fastest way to enable/disable maintenance mode is directly in the code:
+
+1. Open `_functions/_middleware.js`
+2. Find the `MAINTENANCE_MODE` constant at the top of the file
+3. Set it to `true` to enable, `false` to disable:
+   ```javascript
+   const MAINTENANCE_MODE = true;  // Enable maintenance
+   const MAINTENANCE_MODE = false; // Disable maintenance
+   ```
+4. Commit and push the changes
+5. Cloudflare will automatically redeploy with the new setting
+
+**Note:** The code toggle takes precedence over environment variables.
+
+### Using Environment Variables
+
+Alternatively, you can use Cloudflare environment variables:
+
+#### How to Enable Maintenance Mode
 
 1. Go to your Cloudflare Pages dashboard
 2. Navigate to your project settings
@@ -16,7 +36,7 @@ The `_middleware.js` file provides a maintenance mode feature that allows you to
    - **Value**: `true`
    - **Environment**: Production (and/or Preview)
 
-### How to Disable Maintenance Mode
+#### How to Disable Maintenance Mode
 
 1. Go to your Cloudflare Pages dashboard
 2. Navigate to your project settings
