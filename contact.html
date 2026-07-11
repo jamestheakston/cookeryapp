@@ -75,7 +75,7 @@
             </div>
 
             <div class="bg-white border border-stone-200 rounded-2xl p-8">
-                <form id="contact-form">
+                <form id="contact-form" action="https://formspree.io/f/mgojggbn" method="POST">
                     <div class="mb-6">
                         <label for="name" class="block text-sm font-medium text-stone-900 mb-2">Name</label>
                         <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
@@ -151,31 +151,39 @@
             serviceSelect.value = serviceParam;
         }
 
-        // Handle form submission
+        // Handle Formspree AJAX submission
         const contactForm = document.getElementById('contact-form');
         const successMessage = document.getElementById('success-message');
 
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Get form data
             const formData = new FormData(contactForm);
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const service = formData.get('service');
-            const message = formData.get('message');
+            const object = Object.fromEntries(formData);
+            const json = JSON.stringify(object);
 
-            // Create mailto link with form data
-            const subject = encodeURIComponent(`Cookery Contact: ${service} - ${name}`);
-            const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nService: ${service}\n\nMessage:\n${message}`);
-            const mailtoLink = `mailto:jamesttheakston2@gmail.com?subject=${subject}&body=${body}`;
+            contactForm.style.display = 'none';
 
-            // Open email client
-            window.location.href = mailtoLink;
-
-            // Show success message
-            contactForm.classList.add('hidden');
-            successMessage.classList.remove('hidden');
+            fetch('https://formspree.io/f/mgojggbn', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: json
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    successMessage.classList.remove('hidden');
+                } else {
+                    contactForm.style.display = 'block';
+                    alert('There was a problem with your submission. Please try again.');
+                }
+            })
+            .catch(function(error) {
+                contactForm.style.display = 'block';
+                alert('There was a problem with your submission. Please try again.');
+            });
         });
     </script>
 </body>
