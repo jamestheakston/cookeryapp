@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Cookery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <style>
+        body { background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #ca9627;
+            box-shadow: 0 0 0 3px rgba(202, 150, 39, 0.1);
+        }
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            min-height: 120px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        .form-textarea:focus {
+            outline: none;
+            border-color: #ca9627;
+            box-shadow: 0 0 0 3px rgba(202, 150, 39, 0.1);
+        }
+        .submit-btn {
+            background-color: #1c1917;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .submit-btn:hover {
+            background-color: #292524;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-[#faf8f5] border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" class="rounded-lg">
+                    <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery</span>
+                </div>
+                <a href="index.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="py-24 px-6">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="font-serif text-4xl font-bold text-stone-900 mb-4">Contact Us</h1>
+                <p class="text-lg text-stone-600">Have questions or want to learn more? We'd love to hear from you.</p>
+            </div>
+
+            <div class="bg-white border border-stone-200 rounded-2xl p-8">
+                <form id="contact-form">
+                    <div class="mb-6">
+                        <label for="name" class="block text-sm font-medium text-stone-900 mb-2">Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="email" class="block text-sm font-medium text-stone-900 mb-2">Email</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="service" class="block text-sm font-medium text-stone-900 mb-2">What are you contacting us about?</label>
+                        <select id="service" name="service" class="form-input" required>
+                            <option value="">Select a topic</option>
+                            <option value="general">General Inquiry</option>
+                            <option value="business">Cookery for Business</option>
+                            <option value="support">Technical Support</option>
+                            <option value="feedback">Feedback</option>
+                            <option value="partnership">Partnership</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="message" class="block text-sm font-medium text-stone-900 mb-2">Message</label>
+                        <textarea id="message" name="message" class="form-textarea" placeholder="Tell us more about your inquiry..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn w-full">Send Message</button>
+                </form>
+
+                <div id="success-message" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <p class="text-green-900 font-medium">Thank you for your message!</p>
+                    <p class="text-green-700 text-sm mt-1">We'll get back to you as soon as possible.</p>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <p class="text-stone-600 mb-4">Or reach us directly:</p>
+                <a href="mailto:jamesttheakston2@gmail.com" class="text-[#ca9627] font-semibold hover:underline">jamesttheakston2@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#faf8f5] border-t border-stone-200 py-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
+                    <span class="font-serif text-lg font-bold text-stone-900">Cookery</span>
+                </div>
+                <div class="flex items-center gap-6 text-sm text-stone-600">
+                    <a href="index.html" class="hover:text-stone-900 transition-colors">Home</a>
+                    <a href="support.html" class="hover:text-stone-900 transition-colors">Support</a>
+                    <a href="privacy.html" class="hover:text-stone-900 transition-colors">Privacy Policy</a>
+                    <a href="terms.html" class="hover:text-stone-900 transition-colors">Terms & Conditions</a>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-stone-200 text-center text-sm text-stone-500">
+                <p>&copy; 2026 Cookery App. All ingredients curated thoughtfully.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Handle service parameter from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const serviceParam = urlParams.get('service');
+        const serviceSelect = document.getElementById('service');
+
+        if (serviceParam && serviceSelect) {
+            serviceSelect.value = serviceParam;
+        }
+
+        // Handle form submission
+        const contactForm = document.getElementById('contact-form');
+        const successMessage = document.getElementById('success-message');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(contactForm);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const service = formData.get('service');
+            const message = formData.get('message');
+
+            // Create mailto link with form data
+            const subject = encodeURIComponent(`Cookery Contact: ${service} - ${name}`);
+            const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nService: ${service}\n\nMessage:\n${message}`);
+            const mailtoLink = `mailto:jamesttheakston2@gmail.com?subject=${subject}&body=${body}`;
+
+            // Open email client
+            window.location.href = mailtoLink;
+
+            // Show success message
+            contactForm.classList.add('hidden');
+            successMessage.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
