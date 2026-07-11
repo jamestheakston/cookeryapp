@@ -88,15 +88,23 @@
 
                     <div class="mb-6">
                         <label for="service" class="block text-sm font-medium text-stone-900 mb-2">What are you contacting us about?</label>
-                        <select id="service" name="service" class="form-input" required>
-                            <option value="">Select a topic</option>
-                            <option value="general">General Inquiry</option>
-                            <option value="business">Cookery for Business</option>
-                            <option value="support">Technical Support</option>
-                            <option value="feedback">Feedback</option>
-                            <option value="partnership">Partnership</option>
-                            <option value="other">Other</option>
-                        </select>
+                        <div class="relative" id="custom-dropdown">
+                            <button type="button" id="dropdown-button" class="form-input text-left flex items-center justify-between">
+                                <span id="dropdown-selected">Select a topic</span>
+                                <span class="material-symbols-outlined text-stone-400">expand_more</span>
+                            </button>
+                            <input type="hidden" id="service" name="service" required>
+                            <div id="dropdown-menu" class="absolute top-full left-0 right-0 mt-2 bg-white border border-stone-200 rounded-lg shadow-lg z-10 hidden">
+                                <div class="py-2">
+                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="general">General Inquiry</button>
+                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="business">Cookery for Business</button>
+                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="support">Technical Support</button>
+                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="feedback">Feedback</button>
+                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="partnership">Partnership</button>
+                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="other">Other</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="mb-6">
@@ -145,10 +153,45 @@
         // Handle service parameter from URL
         const urlParams = new URLSearchParams(window.location.search);
         const serviceParam = urlParams.get('service');
-        const serviceSelect = document.getElementById('service');
+        const serviceInput = document.getElementById('service');
+        const dropdownSelected = document.getElementById('dropdown-selected');
 
-        if (serviceParam && serviceSelect) {
-            serviceSelect.value = serviceParam;
+        // Custom dropdown functionality
+        const dropdownButton = document.getElementById('dropdown-button');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+
+        // Toggle dropdown
+        dropdownButton.addEventListener('click', function() {
+            dropdownMenu.classList.toggle('hidden');
+        });
+
+        // Handle option selection
+        dropdownOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                const value = this.dataset.value;
+                const text = this.textContent;
+                
+                serviceInput.value = value;
+                dropdownSelected.textContent = text;
+                dropdownMenu.classList.add('hidden');
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!document.getElementById('custom-dropdown').contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+
+        // Set initial value from URL parameter
+        if (serviceParam) {
+            const matchingOption = document.querySelector(`.dropdown-option[data-value="${serviceParam}"]`);
+            if (matchingOption) {
+                serviceInput.value = serviceParam;
+                dropdownSelected.textContent = matchingOption.textContent;
+            }
         }
 
         // Handle Formspree AJAX submission
