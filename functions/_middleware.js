@@ -21,6 +21,12 @@ export async function onRequest(context) {
   // Check if maintenance mode is enabled (code toggle takes precedence)
   const isMaintenance = MAINTENANCE_MODE === true || env.MAINTENANCE_MODE === 'true';
   
+  // Allow support.md to be accessible during maintenance mode
+  const url = new URL(request.url);
+  if (url.pathname === '/support.md') {
+    return next();
+  }
+  
   if (isMaintenance) {
     // Return maintenance page for all requests
     const maintenanceHtml = `
@@ -93,6 +99,23 @@ export async function onRequest(context) {
             line-height: 1.6;
             margin: 0;
         }
+
+        .support-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #6b3de8;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .support-link:hover {
+            background-color: #5b2ed8;
+        }
     </style>
 </head>
 <body>
@@ -118,6 +141,8 @@ export async function onRequest(context) {
                 Some features may be temporarily unavailable during this window. For urgent inquiries, please contact our support team.
             </p>
         </div>
+
+        <a href="/support.md" class="support-link">Need urgent support? Click here</a>
 
     </div>
 
