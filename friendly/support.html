@@ -64,8 +64,12 @@
                 
                 // Custom ID generator to match markdown links
                 const renderer = new marked.Renderer();
-                renderer.heading = function(text, level, raw) {
-                    const id = raw.toLowerCase().replace(/[^\w]+/g, '-');
+                renderer.heading = function(text, level) {
+                    // Strip HTML tags from text for ID generation
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = text;
+                    const plainText = tempDiv.textContent || tempDiv.innerText || '';
+                    const id = plainText.toLowerCase().replace(/[^\w]+/g, '-');
                     return `<h${level} id="${id}">${text}</h${level}>`;
                 };
                 marked.setOptions({ renderer: renderer });
