@@ -6,13 +6,39 @@
     <title>Support Documentation</title>
     <!-- Importing Marked from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.6.1/github-markdown.min.css">
     <style>
-        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        .markdown-body {
+            box-sizing: border-box;
+            min-width: 200px;
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 45px;
+        }
+        .maintenance-notice {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #856404;
+        }
+        .maintenance-notice strong {
+            display: block;
+            margin-bottom: 8px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="content">Loading support documentation...</div>
+    <div class="markdown-body">
+        <div class="maintenance-notice">
+            <strong>⚠️ Site Under Maintenance</strong>
+            The Cookery website is currently under maintenance. Some links and features may not be available. Please check back later.
+        </div>
+        <div id="content">Loading support documentation...</div>
+    </div>
 
     <script>
         async function loadMarkdown() {
@@ -20,7 +46,13 @@
                 const response = await fetch('/friendly/support.md');
                 if (!response.ok) throw new Error('Could not find the support file.');
                 
-                const markdown = await response.text();
+                let markdown = await response.text();
+                
+                // Replace links with maintenance notice
+                markdown = markdown.replace(/\[([^\]]+)\]\([^)]+\)/g, (match, text) => {
+                    return `[${text}] (currently unavailable due to maintenance)`;
+                });
+                
                 document.getElementById('content').innerHTML = marked.parse(markdown);
             } catch (error) {
                 document.getElementById('content').innerHTML = 'Error: ' + error.message;
