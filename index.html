@@ -288,7 +288,11 @@
                     <a href="#features" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Features</a>
                     <a href="business.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">For Business</a>
                     <a href="support.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Support</a>
+                    <a href="contact.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">Contact</a>
                 </div>
+                <button class="mobile-menu-btn hidden text-stone-600 hover:text-stone-900">
+                    <span class="material-symbols-outlined" style="font-size: 28px;">menu</span>
+                </button>
             </div>
         </div>
     </nav>
@@ -439,6 +443,7 @@
                 </div>
                 <div class="flex items-center gap-6 text-sm text-stone-600">
                     <a href="support.html" class="hover:text-stone-900 transition-colors">Support</a>
+                    <a href="contact.html" class="hover:text-stone-900 transition-colors">Contact</a>
                     <a href="privacy.html" class="hover:text-stone-900 transition-colors">Privacy Policy</a>
                     <a href="terms.html" class="hover:text-stone-900 transition-colors">Terms & Conditions</a>
                     <a href="https://github.com/jamestheakston/cookeryapp" target="_blank" class="hover:text-stone-900 transition-colors">GitHub</a>
@@ -452,6 +457,23 @@
     </footer>
 
     <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        if (mobileMenuBtn && navLinks) {
+            mobileMenuBtn.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Close menu when clicking a link
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                });
+            });
+        }
+
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
