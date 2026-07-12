@@ -1,6 +1,6 @@
 # Maintenance Mode
 
-Toggle maintenance mode in `_functions/_middleware.js`:
+Toggle maintenance mode in `functions/_middleware.js`:
 
 ```javascript
 const MAINTENANCE_MODE = true;  // Enable
@@ -14,6 +14,12 @@ const MAINTENANCE_START_DATE = '11/06/26';
 const MAINTENANCE_START_TIME = '18:25';
 const MAINTENANCE_END_DATE = '12/06/26';
 const MAINTENANCE_END_TIME = '18:25';
+```
+
+Set maintenance reason:
+
+```javascript
+const MAINTENANCE_REASON = 'Scheduled server maintenance and performance improvements';
 ```
 
 Commit and push to deploy changes.

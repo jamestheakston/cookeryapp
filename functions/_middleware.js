@@ -14,6 +14,10 @@ export async function onRequest(context) {
   const MAINTENANCE_END_DATE = '12/06/26';
   const MAINTENANCE_END_TIME = '18:25';
   
+  // MAINTENANCE REASON
+  // Explain why the site is under maintenance
+  const MAINTENANCE_REASON = 'Scheduled server maintenance and performance improvements';
+  
   // Check if maintenance mode is enabled (code toggle takes precedence)
   const isMaintenance = MAINTENANCE_MODE === true || env.MAINTENANCE_MODE === 'true';
   
@@ -106,6 +110,7 @@ export async function onRequest(context) {
 
         <div class="details">
             <p class="label">Period: ${MAINTENANCE_START_DATE} ${MAINTENANCE_START_TIME} <span id="tz1"></span> - ${MAINTENANCE_END_DATE} ${MAINTENANCE_END_TIME} <span id="tz2"></span></p>
+            <p class="label" style="margin-top: 16px;">Reason: ${MAINTENANCE_REASON}</p>
             <p class="body-text" style="font-size: 12px; color: #9ca3af; margin-top: 8px;">
                 * All dates and times are in UK format (DD/MM/YY and 24-hour time)
             </p>
