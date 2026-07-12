@@ -20,7 +20,7 @@ body{margin:0;padding:0}.top-row{border-bottom:3px solid #121315;background-colo
   
     <h1>Verification required</h1>
     <p>We just need to check something, please follow the instructions below</p>
-    <div class="h-captcha" data-sitekey="8906fb68-f822-4a50-a122-5f76a1666d84"></div>
+    <div class="h-captcha" data-sitekey="8906fb68-f822-4a50-a122-5f76a1666d84" data-callback="onCaptchaSuccess"></div>
     <p>Please use your browser's back button if not redirected<p>
  <!--        <form>
         <input type="button" value="Go back" onclick="history.back()">
@@ -32,6 +32,27 @@ body{margin:0;padding:0}.top-row{border-bottom:3px solid #121315;background-colo
 <div class="footer">
     Inspired by TfL
 </div>
+
+<script>
+    function onCaptchaSuccess(token) {
+        // Mark user as verified in session storage
+        sessionStorage.setItem('verified', 'true');
+        sessionStorage.setItem('verifiedTime', Date.now().toString());
+        
+        // Get the redirect URL from URL parameter or localStorage
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect') || localStorage.getItem('redirectUrl');
+        
+        // Clear localStorage redirect
+        localStorage.removeItem('redirectUrl');
+        
+        if (redirectUrl && redirectUrl !== 'back') {
+            window.location.href = redirectUrl;
+        } else {
+            window.history.back();
+        }
+    }
+</script>
 
 </body>
 </html>
