@@ -138,6 +138,10 @@ export async function onRequest(context) {
 
         <a href="/friendly/support.html" class="support-link">Need urgent support? Click here</a>
 
+        <p style="margin-top: 24px; font-size: 12px; color: #9ca3af;">
+            Taking part in <a href="https://unplugged.pages.dev" target="_blank" style="color: #6b3de8; text-decoration: underline;">#UnpluggedForFifteen</a>
+        </p>
+
     </div>
 
     <script>
