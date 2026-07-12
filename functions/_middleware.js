@@ -16,7 +16,7 @@ export async function onRequest(context) {
   
   // MAINTENANCE REASON
   // Explain why the site is under maintenance
-  const MAINTENANCE_REASON = 'Site performance improvements. The Raycast extension will still function normally. Are you a business user? This feature is being removed in this update. Email support.cookery@gmail.com for more information.';
+  const MAINTENANCE_REASON = 'We are testing the site maintenance-mode capabilities over a 24-hour period, verifying that the maintenance page displays correctly, normal traffic is properly blocked or redirected, scheduled tasks continue running as expected, and the site returns to normal operation cleanly afterward with no data loss. For urgent support, click the link below to view the documentation, or email support.cookery@gmail.com for other inquiries.';
   
   // Check if maintenance mode is enabled (code toggle takes precedence)
   const isMaintenance = MAINTENANCE_MODE === true || env.MAINTENANCE_MODE === 'true';
