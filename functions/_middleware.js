@@ -4,19 +4,19 @@ export async function onRequest(context) {
   // MAINTENANCE MODE TOGGLE
   // Set this to true to enable maintenance mode, false to disable
   // This takes precedence over environment variables
-  const MAINTENANCE_MODE = false;
+  const MAINTENANCE_MODE = true;
   
   // MAINTENANCE WINDOW
   // Configure the maintenance window dates and times
   // WARNING: All dates and times are in UK format (DD/MM/YY and 24-hour time)
   const MAINTENANCE_START_DATE = '12/06/26';
-  const MAINTENANCE_START_TIME = '12:01';
-  const MAINTENANCE_END_DATE = '12/06/26';
-  const MAINTENANCE_END_TIME = '12:15';
+  const MAINTENANCE_START_TIME = '12:51';
+  const MAINTENANCE_END_DATE = '13/06/26';
+  const MAINTENANCE_END_TIME = '16:35';
   
   // MAINTENANCE REASON
   // Explain why the site is under maintenance
-  const MAINTENANCE_REASON = 'Site performance improvements. The Raycast extension will still function normally. Are you a business user? This feature is being removed in this update. Email support.cookery@gmail.com for more information.';
+  const MAINTENANCE_REASON = 'We are testing the site maintenance-mode capabilities over a 24-hour period, verifying that the maintenance page displays correctly, normal traffic is properly blocked or redirected, scheduled tasks continue running as expected, and the site returns to normal operation cleanly afterward with no data loss. For urgent support, click the link below to view the documentation, or email support.cookery@gmail.com for other inquiries.';
   
   // Check if maintenance mode is enabled (code toggle takes precedence)
   const isMaintenance = MAINTENANCE_MODE === true || env.MAINTENANCE_MODE === 'true';
