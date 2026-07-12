@@ -4,15 +4,15 @@ export async function onRequest(context) {
   // MAINTENANCE MODE TOGGLE
   // Set this to true to enable maintenance mode, false to disable
   // This takes precedence over environment variables
-  const MAINTENANCE_MODE = false;
+  const MAINTENANCE_MODE = true;
   
   // MAINTENANCE WINDOW
   // Configure the maintenance window dates and times
   // WARNING: All dates and times are in UK format (DD/MM/YY and 24-hour time)
   const MAINTENANCE_START_DATE = '12/06/26';
-  const MAINTENANCE_START_TIME = '12:01';
-  const MAINTENANCE_END_DATE = '12/06/26';
-  const MAINTENANCE_END_TIME = '12:15';
+  const MAINTENANCE_START_TIME = '12:51';
+  const MAINTENANCE_END_DATE = '13/06/26';
+  const MAINTENANCE_END_TIME = '16:35';
   
   // MAINTENANCE REASON
   // Explain why the site is under maintenance
