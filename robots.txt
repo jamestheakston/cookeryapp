@@ -10,4 +10,4 @@ Disallow: /business/app.html
 Disallow: /business/sessionclosed.html
 
 # Sitemap
-Sitemap: https://cookery.app/sitemap.xml
+Sitemap: https://cookeryapp.pages.dev/sitemap.xml
