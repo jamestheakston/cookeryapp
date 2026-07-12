@@ -2,6 +2,15 @@
 
 Get help with Cookery Raycast extension. Find documentation, FAQs, and support resources for using our AI-powered recipe generation in Raycast.
 
+## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Authentication](#authentication)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [Additional Resources](#additional-resources)
+- [Contact Us](#contact-us)
+
 ## Getting Started
 
 ### Step 1: Find Cookery in Raycast
@@ -176,28 +185,6 @@ Troubleshooting guidance for OpenAI is coming soon. Check back later for detaile
 If you see this error, it means the custom provider configuration is incomplete. You need to provide both an endpoint URL and a model name in the preferences.
 
 **Solution:** Go to Cookery extension settings and add your custom model name and endpoint URL in the preferences.
-
-## Coming Soon
-
-Exciting new features we're working on to enhance your Cookery experience.
-
-### Recipe History
-View and access your previously generated recipes, making it easy to revisit your favorites or recreate dishes you loved.
-
-### Recipe Scaling
-Automatically adjust ingredient quantities based on the number of servings you need, from intimate dinners to large gatherings.
-
-### Cooking Timer
-Built-in timers for each step of your recipes, with notifications to help you stay on track while cooking.
-
-### Sharing
-Easily share your favorite recipes with friends and family through various platforms and formats.
-
-### Ingredient Substitution Suggestions
-Get smart suggestions for ingredient substitutions based on what you have available or dietary preferences.
-
-### Grocery Delivery Integration
-Seamlessly integrate with UK-based grocery delivery apps to order ingredients for your recipes with just a few clicks.
 
 ## Additional Resources
 
