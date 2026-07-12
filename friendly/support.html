@@ -60,40 +60,6 @@
                 });
                 
                 document.getElementById('content').innerHTML = marked.parse(markdown);
-                
-                // Update TOC links to match generated header IDs
-                const headers = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
-                const tocLinks = document.querySelectorAll('a[href^="#"]');
-                
-                // Map headers by their text content
-                const headerMap = {};
-                headers.forEach(header => {
-                    const text = header.textContent.trim();
-                    headerMap[text.toLowerCase()] = header.id;
-                });
-                
-                // Update TOC links
-                tocLinks.forEach(link => {
-                    const linkText = link.textContent.trim().toLowerCase();
-                    if (headerMap[linkText]) {
-                        link.setAttribute('href', '#' + headerMap[linkText]);
-                    }
-                });
-                
-                // Add smooth scrolling for anchor links
-                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-                    anchor.addEventListener('click', function (e) {
-                        e.preventDefault();
-                        const targetId = this.getAttribute('href').substring(1);
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            targetElement.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'start'
-                            });
-                        }
-                    });
-                });
             } catch (error) {
                 document.getElementById('content').innerHTML = 'Error: ' + error.message;
             }

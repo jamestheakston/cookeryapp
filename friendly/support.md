@@ -4,15 +4,6 @@ Get help with Cookery Raycast extension. Find documentation, FAQs, and support r
 
 > **⚠️ Note:** These documentation pages may not be up to date. If the site is not under maintenance, please visit the [normal support page](/support.html) for the most current information.
 
-## Table of Contents
-
-- [Getting Started](#getting-started)
-- [Authentication](#authentication)
-- [Configuration](#configuration)
-- [Troubleshooting](#troubleshooting)
-- [Additional Resources](#additional-resources)
-- [Contact Us](#contact-us)
-
 ## Getting Started
 
 ### Step 1: Find Cookery in Raycast
