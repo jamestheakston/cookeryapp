@@ -188,4 +188,4 @@ If you see this error, it means the custom provider configuration is incomplete.
 
 ## Contact Us
 
-For support inquiries, email us at: jamesttheakston2@gmail.com
+For support inquiries, email us at: support.cookery@gmail.com
