@@ -12,7 +12,7 @@ export async function onRequest(context) {
   const MAINTENANCE_START_DATE = '11/06/26';
   const MAINTENANCE_START_TIME = '18:25';
   const MAINTENANCE_END_DATE = '12/06/26';
-  const MAINTENANCE_END_TIME = '18:25';
+  const MAINTENANCE_END_TIME = '09:30';
   
   // MAINTENANCE REASON
   // Explain why the site is under maintenance
