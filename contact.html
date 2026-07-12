@@ -30,45 +30,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <style>
         body { background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        .form-input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e7e5e4;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.2s;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: #ca9627;
-            box-shadow: 0 0 0 3px rgba(202, 150, 39, 0.1);
-        }
-        .form-textarea {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #e7e5e4;
-            border-radius: 8px;
-            font-size: 14px;
-            min-height: 120px;
-            resize: vertical;
-            transition: border-color 0.2s;
-        }
-        .form-textarea:focus {
-            outline: none;
-            border-color: #ca9627;
-            box-shadow: 0 0 0 3px rgba(202, 150, 39, 0.1);
-        }
-        .submit-btn {
-            background-color: #1c1917;
-            color: white;
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-        .submit-btn:hover {
-            background-color: #292524;
-        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -93,56 +54,45 @@
                 <p class="text-lg text-stone-600">Have questions or want to learn more? We'd love to hear from you.</p>
             </div>
 
-            <div class="bg-white border border-stone-200 rounded-2xl p-8">
-                <form id="contact-form" action="https://formspree.io/f/mgojggbn" method="POST">
-                    <div class="mb-6">
-                        <label for="name" class="block text-sm font-medium text-stone-900 mb-2">Name</label>
-                        <input type="text" id="name" name="name" class="form-input" placeholder="Your name" required>
+            <div class="bg-white border border-stone-200 rounded-2xl p-8 text-center">
+                <div class="mb-8">
+                    <div class="w-16 h-16 bg-[#faf8f5] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="material-symbols-outlined text-3xl text-[#ca9627]">mail</span>
                     </div>
-
-                    <div class="mb-6">
-                        <label for="email" class="block text-sm font-medium text-stone-900 mb-2">Email</label>
-                        <input type="email" id="email" name="email" class="form-input" placeholder="your@email.com" required>
-                    </div>
-
-                    <div class="mb-6">
-                        <label for="service" class="block text-sm font-medium text-stone-900 mb-2">What are you contacting us about?</label>
-                        <div class="relative" id="custom-dropdown">
-                            <button type="button" id="dropdown-button" class="form-input text-left flex items-center justify-between">
-                                <span id="dropdown-selected">Select a topic</span>
-                                <span class="material-symbols-outlined text-stone-400">expand_more</span>
-                            </button>
-                            <input type="hidden" id="service" name="service" required>
-                            <div id="dropdown-menu" class="absolute top-full left-0 right-0 mt-2 bg-white border border-stone-200 rounded-lg shadow-lg z-10 hidden">
-                                <div class="py-2">
-                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="general">General Inquiry</button>
-                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="business">Cookery for Business</button>
-                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="support">Technical Support</button>
-                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="feedback">Feedback</button>
-                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="partnership">Partnership</button>
-                                    <button type="button" class="dropdown-option w-full text-left px-4 py-2 hover:bg-stone-50 transition-colors" data-value="other">Other</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-6">
-                        <label for="message" class="block text-sm font-medium text-stone-900 mb-2">Message</label>
-                        <textarea id="message" name="message" class="form-textarea" placeholder="Tell us more about your inquiry..." required></textarea>
-                    </div>
-
-                    <button type="submit" class="submit-btn w-full">Send Message</button>
-                </form>
-
-                <div id="success-message" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                    <p class="text-green-900 font-medium">Thank you for your message!</p>
-                    <p class="text-green-700 text-sm mt-1">We'll get back to you as soon as possible.</p>
+                    <h2 class="font-serif text-2xl font-bold text-stone-900 mb-2">Get in Touch</h2>
+                    <p class="text-stone-600">We'd love to hear from you. Send us an email and we'll respond as soon as possible.</p>
                 </div>
-            </div>
 
-            <div class="mt-12 text-center">
-                <p class="text-stone-600 mb-4">Or reach us directly:</p>
-                <a href="mailto:support.cookery@gmail.com" class="text-[#ca9627] font-semibold hover:underline">support.cookery@gmail.com</a>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-semibold text-stone-900 mb-2">Email Us</h3>
+                        <a href="mailto:support.cookery@gmail.com" class="inline-block bg-[#1c1917] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#292524] transition-colors">
+                            support.cookery@gmail.com
+                        </a>
+                    </div>
+
+                    <div class="pt-6 border-t border-stone-200">
+                        <h3 class="font-semibold text-stone-900 mb-3">What can we help with?</h3>
+                        <ul class="text-left text-stone-600 space-y-2">
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-[#ca9627]">check</span>
+                                Technical support
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-[#ca9627]">check</span>
+                                General inquiries
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-[#ca9627]">check</span>
+                                Feedback and suggestions
+                            </li>
+                            <li class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm text-[#ca9627]">check</span>
+                                Business partnerships
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -167,86 +117,5 @@
             </div>
         </div>
     </footer>
-
-    <script>
-        // Handle service parameter from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const serviceParam = urlParams.get('service');
-        const serviceInput = document.getElementById('service');
-        const dropdownSelected = document.getElementById('dropdown-selected');
-
-        // Custom dropdown functionality
-        const dropdownButton = document.getElementById('dropdown-button');
-        const dropdownMenu = document.getElementById('dropdown-menu');
-        const dropdownOptions = document.querySelectorAll('.dropdown-option');
-
-        // Toggle dropdown
-        dropdownButton.addEventListener('click', function() {
-            dropdownMenu.classList.toggle('hidden');
-        });
-
-        // Handle option selection
-        dropdownOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                const value = this.dataset.value;
-                const text = this.textContent;
-                
-                serviceInput.value = value;
-                dropdownSelected.textContent = text;
-                dropdownMenu.classList.add('hidden');
-            });
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!document.getElementById('custom-dropdown').contains(e.target)) {
-                dropdownMenu.classList.add('hidden');
-            }
-        });
-
-        // Set initial value from URL parameter
-        if (serviceParam) {
-            const matchingOption = document.querySelector(`.dropdown-option[data-value="${serviceParam}"]`);
-            if (matchingOption) {
-                serviceInput.value = serviceParam;
-                dropdownSelected.textContent = matchingOption.textContent;
-            }
-        }
-
-        // Handle Formspree AJAX submission
-        const contactForm = document.getElementById('contact-form');
-        const successMessage = document.getElementById('success-message');
-
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(contactForm);
-            const object = Object.fromEntries(formData);
-            const json = JSON.stringify(object);
-
-            contactForm.style.display = 'none';
-
-            fetch('https://formspree.io/f/mgojggbn', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: json
-            })
-            .then(function(response) {
-                if (response.ok) {
-                    successMessage.classList.remove('hidden');
-                } else {
-                    contactForm.style.display = 'block';
-                    alert('There was a problem with your submission. Please try again.');
-                }
-            })
-            .catch(function(error) {
-                contactForm.style.display = 'block';
-                alert('There was a problem with your submission. Please try again.');
-            });
-        });
-    </script>
 </body>
 </html>
