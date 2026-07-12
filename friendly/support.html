@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support Documentation</title>
+    <!-- Importing Marked from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 0 20px; }
+    </style>
+</head>
+<body>
+
+    <div id="content">Loading support documentation...</div>
+
+    <script>
+        async function loadMarkdown() {
+            try {
+                const response = await fetch('/friendly/support.md');
+                if (!response.ok) throw new Error('Could not find the support file.');
+                
+                const markdown = await response.text();
+                document.getElementById('content').innerHTML = marked.parse(markdown);
+            } catch (error) {
+                document.getElementById('content').innerHTML = 'Error: ' + error.message;
+            }
+        }
+
+        loadMarkdown();
+    </script>
+</body>
+</html>

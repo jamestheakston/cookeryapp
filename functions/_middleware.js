@@ -23,7 +23,7 @@ export async function onRequest(context) {
   
   // Allow support.md to be accessible during maintenance mode
   const url = new URL(request.url);
-  if (url.pathname === '/support.md') {
+  if (url.pathname === '/support.md' || url.pathname.startsWith('/friendly/')) {
     return next();
   }
   
@@ -103,18 +103,15 @@ export async function onRequest(context) {
         .support-link {
             display: inline-block;
             margin-top: 20px;
-            padding: 12px 24px;
-            background-color: #6b3de8;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
+            color: #6b3de8;
+            text-decoration: underline;
             font-weight: 600;
             font-size: 14px;
-            transition: background-color 0.2s;
+            transition: color 0.2s;
         }
 
         .support-link:hover {
-            background-color: #5b2ed8;
+            color: #5b2ed8;
         }
     </style>
 </head>
@@ -142,7 +139,7 @@ export async function onRequest(context) {
             </p>
         </div>
 
-        <a href="/support.md" class="support-link">Need urgent support? Click here</a>
+        <a href="/friendly/support.html" class="support-link">Need urgent support? Click here</a>
 
     </div>
 
