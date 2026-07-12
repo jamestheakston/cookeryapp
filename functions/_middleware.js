@@ -139,7 +139,7 @@ export async function onRequest(context) {
         <a href="/friendly/support.html" class="support-link">Need urgent support? Click here</a>
 
         <p style="margin-top: 24px; font-size: 12px; color: #9ca3af;">
-            Taking part in <a href="https://unpluggedevent.pages.dev" target="_blank" style="color: #6b3de8; text-decoration: underline;">#UnpluggedForFifteen</a> on Saturday, July 25th, 5-5:15 BST
+            We're also taking part in <a href="https://unpluggedevent.pages.dev" target="_blank" style="color: #6b3de8; text-decoration: underline;">#UnpluggedForFifteen</a> on Saturday, July 25th, 5-5:15 BST
         </p>
 
     </div>
