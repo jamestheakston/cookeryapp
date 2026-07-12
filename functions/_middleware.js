@@ -129,8 +129,8 @@ export async function onRequest(context) {
         </p>
 
         <div class="details">
-            <p class="label">Period: ${MAINTENANCE_START_DATE} ${MAINTENANCE_START_TIME} <span id="tz1"></span> - ${MAINTENANCE_END_DATE} ${MAINTENANCE_END_TIME} <span id="tz2"></span></p>
-            <p class="label" style="margin-top: 16px;">Reason: ${MAINTENANCE_REASON}</p>
+            <p class="label">Period: <span style="font-weight: 400;">${MAINTENANCE_START_DATE} ${MAINTENANCE_START_TIME} <span id="tz1"></span> - ${MAINTENANCE_END_DATE} ${MAINTENANCE_END_TIME} <span id="tz2"></span></span></p>
+            <p class="label" style="margin-top: 16px;">Reason: <span style="font-weight: 400;">${MAINTENANCE_REASON}</span></p>
             <p class="body-text" style="font-size: 12px; color: #9ca3af; margin-top: 8px;">
                 * All dates and times are in UK format (DD/MM/YY and 24-hour time)
             </p>
