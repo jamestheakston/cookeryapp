@@ -58,8 +58,17 @@
                     gfm: true,
                     breaks: true,
                     headerIds: true,
-                    mangle: false
+                    mangle: false,
+                    headerPrefix: ''
                 });
+                
+                // Custom ID generator to match markdown links
+                const renderer = new marked.Renderer();
+                renderer.heading = function(text, level) {
+                    const id = text.toLowerCase().replace(/[^\w]+/g, '-');
+                    return `<h${level} id="${id}">${text}</h${level}>`;
+                };
+                marked.setOptions({ renderer: renderer });
                 
                 document.getElementById('content').innerHTML = marked.parse(markdown);
                 
