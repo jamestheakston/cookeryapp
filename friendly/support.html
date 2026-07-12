@@ -53,7 +53,30 @@
                     return `[${text}] (currently unavailable due to maintenance)`;
                 });
                 
+                // Configure marked to generate header IDs
+                marked.setOptions({
+                    gfm: true,
+                    breaks: true,
+                    headerIds: true,
+                    mangle: false
+                });
+                
                 document.getElementById('content').innerHTML = marked.parse(markdown);
+                
+                // Add smooth scrolling for anchor links
+                document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                    anchor.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const targetId = this.getAttribute('href').substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            targetElement.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    });
+                });
             } catch (error) {
                 document.getElementById('content').innerHTML = 'Error: ' + error.message;
             }
