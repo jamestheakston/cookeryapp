@@ -2,6 +2,8 @@
 
 Get help with Cookery Raycast extension. Find documentation, FAQs, and support resources for using our AI-powered recipe generation in Raycast.
 
+> **⚠️ Note:** These documentation pages may not be up to date. If the site is not under maintenance, please visit the [normal support page](/support.html) for the most current information.
+
 ## Table of Contents
 
 - [Getting Started](#getting-started)

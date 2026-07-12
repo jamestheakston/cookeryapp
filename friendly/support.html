@@ -48,8 +48,8 @@
                 
                 let markdown = await response.text();
                 
-                // Replace external links with maintenance notice (preserve internal anchor links)
-                markdown = markdown.replace(/\[([^\]]+)\]\((?!#)([^)]+)\)/g, (match, text, url) => {
+                // Replace external links with maintenance notice (preserve internal anchor links and support.html)
+                markdown = markdown.replace(/\[([^\]]+)\]\((?!#)(?!\/support.html)([^)]+)\)/g, (match, text, url) => {
                     return `[${text}] (currently unavailable due to maintenance)`;
                 });
                 
