@@ -16,7 +16,7 @@ export async function onRequest(context) {
   
   // MAINTENANCE REASON
   // Explain why the site is under maintenance
-  const MAINTENANCE_REASON = 'Scheduled server maintenance and performance improvements';
+  const MAINTENANCE_REASON = 'Site performance improvements. The Raycast extension will still function normally.';
   
   // Check if maintenance mode is enabled (code toggle takes precedence)
   const isMaintenance = MAINTENANCE_MODE === true || env.MAINTENANCE_MODE === 'true';
