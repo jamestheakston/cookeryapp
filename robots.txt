@@ -3,14 +3,9 @@
 User-agent: *
 Allow: /
 
-# Disallow private/business areas
-Disallow: /business/signup.html
-Disallow: /business/login.html
-Disallow: /business/app.html
-Disallow: /business/sessionclosed.html
-
-# Disallow verification page
+# Disallow private areas
 Disallow: /verification.html
+Disallow: /friendly/*
 
 # Sitemap
 Sitemap: https://cookeryapp.pages.dev/sitemap.xml
