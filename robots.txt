@@ -9,5 +9,8 @@ Disallow: /business/login.html
 Disallow: /business/app.html
 Disallow: /business/sessionclosed.html
 
+# Disallow verification page
+Disallow: /verification.html
+
 # Sitemap
 Sitemap: https://cookeryapp.pages.dev/sitemap.xml
