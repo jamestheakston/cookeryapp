@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Guidelines | Cookery AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #faf8f5; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #1c1917; }
+        .brand-section { border-left: 4px solid #ca9627; padding-left: 1rem; margin-bottom: 2rem; }
+        h1, h2 { font-family: 'Playfair Display', serif; }
+        .color-box { width: 80px; height: 80px; border-radius: 8px; border: 1px solid #e7e5e4; }
+        @media (min-width: 768px) {
+            .brand-section { padding-left: 24px; margin-bottom: 48px; }
+            .color-box { width: 100px; height: 100px; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-16 flex flex-col min-h-screen">
+    <main class="max-w-4xl mx-auto flex-grow">
+        <header class="mb-10 md:mb-16">
+            <h1 class="text-3xl md:text-5xl mb-4">Cookery AI Brand Guidelines</h1>
+            <p class="text-lg md:text-xl text-stone-600">Visual and tonal identity for the Cookery ecosystem.</p>
+        </header>
+
+        <section class="brand-section">
+            <h2 class="text-2xl md:text-3xl mb-6">1. Logo Identity & Usage</h2>
+            <div class="flex flex-col sm:flex-row items-center gap-6 bg-white p-6 rounded-xl border border-stone-200 mb-8">
+                <div class="p-4">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" class="w-20 h-20 md:w-24 md:h-24 rounded-lg">
+                </div>
+                <div class="flex-1 space-y-3">
+                    <h3 class="font-bold text-lg md:text-xl">Usage Rules</h3>
+                    <ul class="list-disc pl-5 text-sm md:text-base text-stone-600 space-y-1">
+                        <li><strong>Clear Space:</strong> Maintain a minimum clear space around the logo equal to 25% of the icon's width.</li>
+                        <li><strong>Integrity:</strong> Do not stretch, rotate, or alter the icon.</li>
+                        <li><strong>Impersonation:</strong> Do not use our name or likeness to mislead, impersonate, or falsely imply affiliation.</li>
+                    </ul>
+                    <button id="open-modal" class="text-[#6a3de8] font-bold text-sm hover:underline">Read Full Guidelines & Trademark Notice</button>
+                </div>
+            </div>
+
+            <div class="bg-stone-100 p-6 rounded-xl border border-stone-200">
+                <h3 class="font-bold text-lg mb-4">Download Brand Assets</h3>
+                <label class="flex items-center gap-3 mb-4 cursor-pointer">
+                    <input type="checkbox" id="agree-checkbox" class="w-5 h-5 accent-[#ca9627]">
+                    <span class="text-sm text-stone-700">I agree to the Cookery AI branding and logo usage guidelines.</span>
+                </label>
+                <a id="download-btn" href="/assets/brand/logos.zip" download class="inline-block bg-[#1c1917] text-white px-6 py-3 rounded-lg font-medium opacity-50 cursor-not-allowed pointer-events-none transition-opacity">
+                    Download logos.zip
+                </a>
+            </div>
+        </section>
+
+        <section class="brand-section">
+            <h2 class="text-2xl md:text-3xl mb-6">2. Color Palette</h2>
+            <div class="grid grid-cols-2 md:flex md:gap-6 gap-4">
+                <div class="text-center">
+                    <div class="color-box bg-[#faf8f5] mb-2 mx-auto"></div>
+                    <span class="font-bold text-sm">Surface</span><br><code class="text-xs">#faf8f5</code>
+                </div>
+                <div class="text-center">
+                    <div class="color-box bg-[#1c1917] mb-2 mx-auto"></div>
+                    <span class="font-bold text-sm">Text</span><br><code class="text-xs">#1c1917</code>
+                </div>
+                <div class="text-center">
+                    <div class="color-box bg-[#ca9627] mb-2 mx-auto"></div>
+                    <span class="font-bold text-sm">Accent</span><br><code class="text-xs">#ca9627</code>
+                </div>
+                <div class="text-center">
+                    <div class="color-box bg-[#6a3de8] mb-2 mx-auto"></div>
+                    <span class="font-bold text-sm">Logo</span><br><code class="text-xs">#6a3de8</code>
+                </div>
+            </div>
+        </section>
+
+        <section class="brand-section">
+            <h2 class="text-2xl md:text-3xl mb-6">3. Typography</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold mb-1">Display (Headings)</h3>
+                    <p class="font-serif text-2xl md:text-3xl">Playfair Display</p>
+                    <p class="text-stone-600 mt-1 text-sm md:text-base">Refined and elegant for titles.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-1">UI (Body)</h3>
+                    <p class="text-2xl md:text-3xl">Plus Jakarta Sans</p>
+                    <p class="text-stone-600 mt-1 text-sm md:text-base">Modern and readable for interfaces.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="brand-section">
+            <h2 class="text-2xl md:text-3xl mb-6">4. Brand Voice</h2>
+            <div class="space-y-4 text-base md:text-lg">
+                <p><strong>Transparent:</strong> Always state intent clearly. Explain why specific features exist.</p>
+                <p><strong>Respectful:</strong> The user is in control. Keep the experience optional and low-friction.</p>
+                <p><strong>Minimalist:</strong> "Less is more." Remove unnecessary clutter to focus on recipe generation.</p>
+            </div>
+        </section>
+
+        <!-- Modals -->
+        <div id="guidelines-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+            <div class="bg-white p-8 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-4">Brand Identity & Trademark Notice</h2>
+                <div class="space-y-4 text-stone-700">
+                    <p>Cookery AI is a developing brand. While we are not currently trademarked, we are actively building our identity and community. These guidelines protect our brand from misuse, impersonation, and unauthorized commercial exploitation.</p>
+                    <p><strong>Do Not Impersonate:</strong> You may not use the Cookery AI name, logo, or likeness to create websites, applications, or social media accounts that impersonate or falsely suggest an official affiliation with Cookery AI.</p>
+                    <p><strong>Attribution:</strong> When referencing Cookery AI, use it as a descriptor for the service, not as part of your own product or brand name.</p>
+                    <p><strong>Restricted Uses:</strong> Any use that disparages our brand, misleads users, or attempts to capitalize on our goodwill without express permission is prohibited and may result in a request for removal or legal action.</p>
+                </div>
+                <button id="close-modal" class="mt-8 bg-[#1c1917] text-white px-6 py-2 rounded-lg">Close</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-stone-200 mt-16 pt-8 text-center text-stone-500 text-sm">
+        <p>&copy; 2026 Cookery AI. All rights reserved.</p>
+        <p class="mt-2 italic">Building a more sustainable way to cook.</p>
+    </footer>
+
+    <script>
+        const checkbox = document.getElementById('agree-checkbox');
+        const downloadBtn = document.getElementById('download-btn');
+        const modal = document.getElementById('guidelines-modal');
+        const openModal = document.getElementById('open-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        checkbox.addEventListener('change', function() {
+            if(this.checked) {
+                downloadBtn.classList.remove('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+            } else {
+                downloadBtn.classList.add('opacity-50', 'cursor-not-allowed', 'pointer-events-none');
+            }
+        });
+
+        openModal.addEventListener('click', () => modal.classList.remove('hidden'));
+        closeModal.addEventListener('click', () => modal.classList.add('hidden'));
+    </script>
+</body>
+</html>
+
