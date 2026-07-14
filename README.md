@@ -19,12 +19,10 @@ Cookery is a powerful Raycast extension that uses artificial intelligence to gen
 
 ### Installation
 
-1. Open Raycast on your Mac
+1. Open Raycast on your Mac or Windows
 2. Go to the Raycast Store
 3. Search for "Cookery"
 4. Click "Install"
-
-Or download directly from our website: [cookeryapp.pages.dev/download.html](https://cookeryapp.pages.dev/download.html)
 
 ### Usage
 
@@ -80,8 +78,8 @@ If you find Cookery helpful, please consider giving us a star on GitHub!
 ## 📱 Social Media
 
 Follow us for updates, tips, and recipe inspiration:
-- Twitter: [@CookeryApp](https://twitter.com/CookeryApp)
-- Product Hunt: [Cookery](https://www.producthunt.com/posts/cookery)
+- Instagram: [@cookeryraycast](https://instagram.com/cookeryraycast)
+- Product Hunt: [Cookery](https://www.producthunt.com/products/cookery-2)
 
 ## 🎉 Acknowledgments
 
