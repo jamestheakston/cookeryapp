@@ -150,6 +150,9 @@
 
         // Replace with your Supabase Edge Function URL
         const SUPABASE_FUNCTION_URL = 'https://ojvigxnwweixjhugekmm.supabase.co/functions/v1/mux-video-upload';
+        
+        // Replace with your Supabase anon key
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
 
         // File selection handlers
         uploadZone.addEventListener('click', () => fileInput.click());
@@ -242,6 +245,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                     },
                 });
 
