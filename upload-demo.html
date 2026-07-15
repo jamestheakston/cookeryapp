@@ -246,7 +246,8 @@
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to get upload URL');
+                    const errorText = await response.text();
+                    throw new Error(`Failed to get upload URL (${response.status}): ${errorText}`);
                 }
 
                 const { uploadUrl, uploadId: muxUploadId } = await response.json();
