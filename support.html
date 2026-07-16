@@ -1053,6 +1053,17 @@
             });
         });
 
+        // Escape user-controlled text before inserting into innerHTML
+        function escapeHtml(str) {
+            return String(str).replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[c]));
+        }
+
         // Search functionality
         const searchInput = document.getElementById('search-input');
         const searchResults = document.getElementById('search-results');
@@ -1099,10 +1110,10 @@
                 // Display results
                 if (results.length > 0) {
                     searchResultsList.innerHTML = results.map(result => `
-                        <div class="p-3 hover:bg-stone-50 rounded-lg cursor-pointer transition-colors" data-section="${result.section}">
-                            <div class="font-medium text-stone-900">${result.title}</div>
-                            <div class="text-sm text-stone-500 mt-1">${result.matchReason}</div>
-                            <div class="text-xs text-stone-400 mt-1 truncate">...${result.context}...</div>
+                        <div class="p-3 hover:bg-stone-50 rounded-lg cursor-pointer transition-colors" data-section="${escapeHtml(result.section)}">
+                            <div class="font-medium text-stone-900">${escapeHtml(result.title)}</div>
+                            <div class="text-sm text-stone-500 mt-1">${escapeHtml(result.matchReason)}</div>
+                            <div class="text-xs text-stone-400 mt-1 truncate">...${escapeHtml(result.context)}...</div>
                         </div>
                     `).join('');
                     searchResults.classList.remove('hidden');

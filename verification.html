@@ -38,6 +38,21 @@ body{margin:0;padding:0}.top-row{border-bottom:3px solid #121315;background-colo
 </div>
 
 <script>
+    // Only permit same-origin http(s) targets. This prevents open-redirect
+    // phishing and DOM XSS via "javascript:"/"data:" URIs being assigned to
+    // window.location.href.
+    function getSafeRedirect(raw) {
+        if (!raw || raw === 'back') return null;
+        try {
+            const url = new URL(raw, window.location.origin);
+            if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
+            if (url.origin !== window.location.origin) return null;
+            return url.href;
+        } catch (e) {
+            return null;
+        }
+    }
+
     function onCaptchaSuccess(token) {
         // Mark user as verified in session storage
         sessionStorage.setItem('verified', 'true');
@@ -45,12 +60,12 @@ body{margin:0;padding:0}.top-row{border-bottom:3px solid #121315;background-colo
         
         // Get the redirect URL from URL parameter or localStorage
         const urlParams = new URLSearchParams(window.location.search);
-        const redirectUrl = urlParams.get('redirect') || localStorage.getItem('redirectUrl');
+        const redirectUrl = getSafeRedirect(urlParams.get('redirect') || localStorage.getItem('redirectUrl'));
         
         // Clear localStorage redirect
         localStorage.removeItem('redirectUrl');
         
-        if (redirectUrl && redirectUrl !== 'back') {
+        if (redirectUrl) {
             window.location.href = redirectUrl;
         } else {
             window.history.back();
