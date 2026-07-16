@@ -140,12 +140,24 @@
                 return;
             }
 
+            // Resolve the target and only gate same-origin http(s) navigations.
+            // Cross-origin/other-scheme links proceed normally so the verification
+            // flow never redirects to an attacker-controlled destination.
+            let targetUrl;
+            try {
+                const resolved = new URL(href, window.location.origin);
+                if (resolved.protocol !== 'http:' && resolved.protocol !== 'https:') return;
+                if (resolved.origin !== window.location.origin) return;
+                targetUrl = resolved.href;
+            } catch (err) {
+                return;
+            }
+
             // Check if user might be a bot
             if (detectBot()) {
                 e.preventDefault();
                 
                 // Store the target URL
-                const targetUrl = new URL(href, window.location.origin).href;
                 localStorage.setItem('redirectUrl', targetUrl);
                 
                 // Redirect to verification page
