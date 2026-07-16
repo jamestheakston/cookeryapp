@@ -56,6 +56,67 @@
             box-shadow: 0 8px 24px rgba(202, 150, 39, 0.15);
             transform: translateY(-4px);
         }
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .scroll-animate-left {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-animate-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .scroll-animate-right {
+            opacity: 0;
+            transform: translateX(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-animate-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .mobile-menu-content {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 80%;
+            max-width: 400px;
+            background: #faf8f5;
+            z-index: 101;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+        }
+        .mobile-menu-content.active {
+            transform: translateX(0);
+        }
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -194,9 +255,6 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(202, 150, 39, 0.3);
         }
-        .hidden {
-            display: none !important;
-        }
         @media (max-width: 768px) {
             .hero-title {
                 font-size: 2.5rem !important;
@@ -262,11 +320,50 @@
     <!-- Header -->
     <nav class="bg-[#faf8f5] border-b border-stone-200 sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-6 py-4">
-            <div class="flex items-center justify-center">
+            <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                     <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="36" height="36" class="rounded-lg">
                     <span class="font-serif text-xl font-bold text-stone-900 tracking-tight">Cookery</span>
                 </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-6 text-sm text-stone-800">
+                    <a href="#features" class="hover:text-stone-900 transition-colors font-medium">Features</a>
+                    <a href="#how-it-works" class="hover:text-stone-900 transition-colors font-medium">How It Works</a>
+                    <a href="#testimonials" class="hover:text-stone-900 transition-colors font-medium">Testimonials</a>
+                    <a href="#faq" class="hover:text-stone-900 transition-colors font-medium">FAQ</a>
+                    <a href="support.html" class="hover:text-stone-900 transition-colors font-medium">Support</a>
+                    <a href="#platforms" class="bg-[#ca9627] text-white px-4 py-2 rounded-full font-semibold hover:bg-[#b8861f] transition-colors">Get Started</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 text-stone-600 hover:text-stone-900">
+                    <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu-overlay" class="mobile-menu-overlay md:hidden"></div>
+
+        <!-- Mobile Menu Content -->
+        <div id="mobile-menu-content" class="mobile-menu-content md:hidden">
+            <div class="flex items-center justify-between mb-8">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
+                    <span class="font-serif text-lg font-bold text-stone-900 tracking-tight">Cookery</span>
+                </div>
+                <button id="mobile-menu-close" class="p-2 text-stone-600 hover:text-stone-900">
+                    <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                </button>
+            </div>
+            <div class="flex flex-col gap-4 text-lg text-stone-600">
+                <a href="#features" class="hover:text-stone-900 transition-colors py-3 border-b border-stone-200">Features</a>
+                <a href="#how-it-works" class="hover:text-stone-900 transition-colors py-3 border-b border-stone-200">How It Works</a>
+                <a href="#testimonials" class="hover:text-stone-900 transition-colors py-3 border-b border-stone-200">Testimonials</a>
+                <a href="#faq" class="hover:text-stone-900 transition-colors py-3 border-b border-stone-200">FAQ</a>
+                <a href="support.html" class="hover:text-stone-900 transition-colors py-3 border-b border-stone-200">Support</a>
+                <a href="#platforms" class="bg-[#ca9627] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#b8861f] transition-colors text-center mt-4">Get Started</a>
             </div>
         </div>
     </nav>
@@ -332,7 +429,7 @@
         </div>
 
         <!-- AI-Powered Generation -->
-        <section class="max-w-6xl mx-auto mb-24">
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-left">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <div class="w-16 h-16 bg-[#fdfbeb] rounded-2xl flex items-center justify-center mb-6">
@@ -364,7 +461,7 @@
         </section>
 
         <!-- Multi-Platform Integration -->
-        <section class="max-w-6xl mx-auto mb-24">
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-right">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="order-2 md:order-1 bg-white p-8 rounded-2xl border border-stone-200">
                     <div class="aspect-video rounded-xl overflow-hidden">
@@ -389,7 +486,7 @@
         </section>
 
         <!-- Recipe Management -->
-        <section class="max-w-6xl mx-auto mb-24">
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-left">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <div class="w-16 h-16 bg-[#fdfbeb] rounded-2xl flex items-center justify-center mb-6">
@@ -414,7 +511,7 @@
         </section>
 
         <!-- Instant Results -->
-        <section class="max-w-6xl mx-auto mb-24">
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-right">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="order-2 md:order-1 bg-white p-8 rounded-2xl border border-stone-200">
                     <div class="aspect-video rounded-xl overflow-hidden">
@@ -447,7 +544,7 @@
         </section>
 
         <!-- Independent Developer -->
-        <section class="max-w-6xl mx-auto mb-24">
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-left">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <div class="w-16 h-16 bg-[#fdfbeb] rounded-2xl flex items-center justify-center mb-6">
@@ -483,7 +580,7 @@
         </section>
 
         <!-- Culinary Expertise -->
-        <section class="max-w-6xl mx-auto mb-24">
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-right">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <div class="w-16 h-16 bg-[#fdfbeb] rounded-2xl flex items-center justify-center mb-6">
@@ -512,7 +609,7 @@
         </section>
 
         <!-- Sustainable Cooking -->
-        <section class="max-w-6xl mx-auto">
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-left">
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div class="order-2 md:order-1 bg-white p-8 rounded-2xl border border-stone-200">
                     <div class="aspect-video rounded-xl overflow-hidden">
@@ -543,10 +640,44 @@
                 </div>
             </div>
         </section>
+
+        <!-- Kitchen Sync -->
+        <section class="max-w-6xl mx-auto mb-24 scroll-animate-right">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="w-16 h-16 bg-[#fdfbeb] rounded-2xl flex items-center justify-center mb-6">
+                        <i data-lucide="refresh-cw" class="text-[#ca9627]" style="width: 36px; height: 36px;"></i>
+                    </div>
+                    <h3 class="font-serif text-2xl md:text-3xl font-bold text-stone-900 mb-4">Kitchen Sync</h3>
+                    <p class="text-base md:text-lg text-stone-600 mb-6">Coming soon: Sync your recipes across all your devices. Access your cooking journey from anywhere with our phased rollout starting July 2026.</p>
+                    <ul class="text-stone-600 space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#ca9627] text-xl">✓</span>
+                            <span>Cross-device synchronization</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#ca9627] text-xl">✓</span>
+                            <span>Recipe history backup</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-[#ca9627] text-xl">✓</span>
+                            <span>Share with family & friends</span>
+                        </li>
+                    </ul>
+                    <a href="kitchensync.html" class="inline-block mt-6 text-[#ca9627] hover:underline font-medium">View Roadmap →</a>
+                </div>
+                <div class="bg-white p-8 rounded-2xl border border-stone-200">
+                    <div class="aspect-video rounded-xl overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1466637574441-749b8f19452f?w=800" alt="Kitchen Sync" class="w-full h-full object-cover">
+                    </div>
+                    <p class="text-xs text-stone-400 mt-2 text-center">Photo by <a href="https://unsplash.com/@brookelark" target="_blank" class="underline">Brooke Lark</a> on Unsplash</p>
+                </div>
+            </div>
+        </section>
     </section>
 
     <!-- How It Works Section -->
-    <section class="py-24 px-6 bg-white">
+    <section id="how-it-works" class="py-24 px-6 bg-white scroll-animate">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">How It Works</h2>
@@ -582,7 +713,7 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section class="py-24 px-6 bg-[#faf8f5]">
+    <section id="testimonials" class="py-24 px-6 bg-[#faf8f5] scroll-animate">
         <div class="max-w-6xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">What Users Say</h2>
@@ -630,7 +761,7 @@
     </section>
 
     <!-- FAQ Section -->
-    <section class="py-24 px-6 bg-white">
+    <section id="faq" class="py-24 px-6 bg-white">
         <div class="max-w-4xl mx-auto">
             <div class="text-center mb-16">
                 <h2 class="font-serif text-4xl font-bold text-stone-900 mb-4">Frequently Asked Questions</h2>
@@ -711,6 +842,67 @@
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenuClose = document.getElementById('mobile-menu-close');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileMenuContent = document.getElementById('mobile-menu-content');
+
+        function openMobileMenu() {
+            mobileMenuOverlay.classList.add('active');
+            mobileMenuContent.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenuOverlay.classList.remove('active');
+            mobileMenuContent.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuBtn.addEventListener('click', openMobileMenu);
+        mobileMenuClose.addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        // Close mobile menu when clicking a link and navigate to section
+        mobileMenuContent.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    closeMobileMenu();
+                    setTimeout(() => {
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 300);
+                } else {
+                    closeMobileMenu();
+                }
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all elements with scroll animation classes
+        document.querySelectorAll('.scroll-animate, .scroll-animate-left, .scroll-animate-right').forEach(el => {
+            observer.observe(el);
+        });
 
 
         // Smooth scrolling for anchor links
