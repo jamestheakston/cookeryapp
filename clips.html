@@ -564,23 +564,6 @@
             document.getElementById('profile-content').classList.remove('hidden');
         });
 
-        // Save profile
-        profileForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            currentUser.display_name = document.getElementById('display-name-input').value;
-            currentUser.username = document.getElementById('username-input').value;
-            currentUser.bio = document.getElementById('bio-input').value;
-            
-            localStorage.setItem('cookery_user', JSON.stringify(currentUser));
-            
-            // Update UI
-            document.getElementById('profile-display-name').textContent = currentUser.display_name;
-            document.getElementById('profile-username').textContent = currentUser.username;
-            
-            alert('Profile saved successfully!');
-        });
-
         // Upload modal functionality
         const uploadBtn = document.getElementById('upload-btn');
         const uploadBtnNav = document.getElementById('upload-btn-nav');
@@ -782,15 +765,22 @@
                 feedItems.push({ ...video, is_ad: false });
             });
 
-            // Insert ads randomly (every 3-5 videos)
-            if (ads.length > 0 && videos.length > 0) {
-                const adFrequency = Math.floor(Math.random() * 3) + 3;
-                let adIndex = 0;
-                
-                for (let i = adFrequency; i < feedItems.length; i += adFrequency) {
-                    if (adIndex < ads.length) {
-                        feedItems.splice(i, 0, { ...ads[adIndex], is_ad: true });
-                        adIndex++;
+            // Insert ads randomly (every 3-5 videos), or show ads if no videos
+            if (ads.length > 0) {
+                if (videos.length === 0) {
+                    // Show ads if no videos
+                    ads.forEach(ad => {
+                        feedItems.push({ ...ad, is_ad: true });
+                    });
+                } else {
+                    const adFrequency = Math.floor(Math.random() * 3) + 3;
+                    let adIndex = 0;
+                    
+                    for (let i = adFrequency; i < feedItems.length; i += adFrequency) {
+                        if (adIndex < ads.length) {
+                            feedItems.splice(i, 0, { ...ads[adIndex], is_ad: true });
+                            adIndex++;
+                        }
                     }
                 }
             }
@@ -840,7 +830,7 @@
                                         </div>`
                                     }
                                     <div>
-                                        <p class="font-semibold">${username}</p>
+                                        <p class="font-semibold cursor-pointer hover:underline username-click" data-username="${username}" data-user-id="${item.user_id || ''}">${username}</p>
                                         <p class="text-sm text-gray-300">${title}</p>
                                     </div>
                                     ${isAd ? '<span class="ml-auto bg-amber-500 text-white px-2 py-1 rounded text-xs font-semibold">Sponsored</span>' : ''}
@@ -970,6 +960,20 @@
                     openVideoOptions(videoId);
                 });
             });
+
+            // Username click handlers
+            document.querySelectorAll('.username-click').forEach(el => {
+                el.addEventListener('click', function() {
+                    const userId = this.dataset.userId;
+                    const username = this.dataset.username;
+                    if (userId && userId !== currentUser?.id) {
+                        showUserProfile(userId, username);
+                    } else if (userId === currentUser?.id) {
+                        // Show own profile
+                        document.getElementById('profile-nav').click();
+                    }
+                });
+            });
         }
 
         // Video options menu
@@ -1037,6 +1041,75 @@
         // Connect recipe (placeholder)
         document.getElementById('connect-recipe-btn').addEventListener('click', () => {
             alert('Recipe connection feature coming soon!');
+        });
+
+        // Show other user's profile
+        async function showUserProfile(userId, username) {
+            // For now, just show an alert - this would need a proper user profile modal
+            alert(`Viewing ${username}'s profile (Feature coming soon)`);
+        }
+
+        // Username validation and change limit
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const newUsername = document.getElementById('username-input').value.trim();
+            const currentUsername = currentUser.username;
+            
+            // Check if username changed
+            if (newUsername !== currentUsername) {
+                // Check username change limit
+                const usernameChanges = JSON.parse(localStorage.getItem('username_changes') || '[]');
+                const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+                
+                const recentChanges = usernameChanges.filter(change => change.timestamp > thirtyDaysAgo);
+                
+                if (recentChanges.length >= 2) {
+                    alert('You can only change your username twice every 30 days. Please try again later.');
+                    return;
+                }
+                
+                // Check if username is unique
+                try {
+                    const response = await fetch(`https://ojvigxnwweixjhugekmm.supabase.co/rest/v1/user_profiles?username=eq.${encodeURIComponent(newUsername)}`, {
+                        headers: {
+                            'apikey': 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
+                            'Authorization': 'Bearer sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W'
+                        }
+                    });
+                    
+                    const existingUsers = await response.json();
+                    
+                    if (existingUsers.length > 0 && existingUsers[0].user_id !== currentUser.id) {
+                        alert('This username is already taken. Please choose another.');
+                        return;
+                    }
+                    
+                    // Username is available, record the change
+                    usernameChanges.push({
+                        timestamp: Date.now(),
+                        oldUsername: currentUsername,
+                        newUsername: newUsername
+                    });
+                    localStorage.setItem('username_changes', JSON.stringify(usernameChanges));
+                    
+                } catch (error) {
+                    console.error('Username validation failed:', error);
+                    // Continue anyway if validation fails
+                }
+            }
+            
+            currentUser.display_name = document.getElementById('display-name-input').value;
+            currentUser.username = newUsername;
+            currentUser.bio = document.getElementById('bio-input').value;
+            
+            localStorage.setItem('cookery_user', JSON.stringify(currentUser));
+            
+            // Update UI
+            document.getElementById('profile-display-name').textContent = currentUser.display_name;
+            document.getElementById('profile-username').textContent = currentUser.username;
+            
+            alert('Profile saved successfully!');
         });
 
         // Update video likes in database
