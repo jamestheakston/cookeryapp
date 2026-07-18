@@ -353,40 +353,29 @@
         </div>
     </div>
 
-    <!-- Inbox Modal -->
-    <div id="inbox-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-[100] hidden items-center justify-center p-4">
-        <div class="bg-gray-900 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold">Inbox</h2>
-                    <button id="close-inbox" class="p-2 hover:bg-white/10 rounded-full transition-colors">
-                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
-                    </button>
-                </div>
-                
-                <div id="inbox-content">
-                    <p class="text-gray-400 text-center py-8">No notifications yet</p>
-                </div>
+    <!-- Inbox Page -->
+    <div id="inbox-page" class="fixed inset-0 bg-black z-[100] hidden pt-16 pb-20 overflow-y-auto">
+        <div class="max-w-lg mx-auto p-4">
+            <h2 class="text-xl font-bold mb-6">Inbox</h2>
+            <div id="inbox-content">
+                <p class="text-gray-400 text-center py-8">No notifications yet</p>
             </div>
         </div>
     </div>
 
     <!-- Discover Page -->
-    <div id="discover-page" class="fixed inset-0 bg-black z-[100] hidden items-center justify-center p-4">
-        <div class="text-center">
+    <div id="discover-page" class="fixed inset-0 bg-black z-[100] hidden pt-16 pb-20 overflow-y-auto">
+        <div class="text-center py-20">
             <i data-lucide="compass" style="width: 64px; height: 64px;" class="mx-auto text-gray-600 mb-4"></i>
             <h2 class="text-2xl font-bold mb-2">Discover</h2>
             <p class="text-gray-400 mb-6">Coming soon</p>
-            <button id="close-discover" class="bg-[#ca9627] text-white px-6 py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
-                Go Back
-            </button>
         </div>
     </div>
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-lg border-t border-white/10 z-50">
         <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-around">
-            <button class="flex flex-col items-center text-white">
+            <button class="flex flex-col items-center text-white" id="home-nav">
                 <i data-lucide="home" style="width: 24px; height: 24px;"></i>
                 <span class="text-xs mt-1">Home</span>
             </button>
@@ -454,7 +443,18 @@
             authPage.classList.remove('active');
         }
 
-        profileNav.addEventListener('click', openAuthPage);
+        profileNav.addEventListener('click', () => {
+            if (!currentUser) {
+                openAuthPage();
+                return;
+            }
+            hideAllPages();
+            const profileModal = document.getElementById('profile-modal');
+            profileModal.classList.remove('hidden');
+            profileModal.classList.add('flex');
+            updateNavActive('profile-nav');
+            loadUserProfile();
+        });
         backToFeed.addEventListener('click', closeAuthPage);
 
         // Toggle between sign in and sign up forms
@@ -624,31 +624,49 @@
         });
 
         // Discover and Inbox navigation
+        document.getElementById('home-nav').addEventListener('click', () => {
+            hideAllPages();
+            document.getElementById('video-feed').style.display = 'block';
+            updateNavActive('home-nav');
+        });
+
         document.getElementById('discover-nav').addEventListener('click', () => {
+            hideAllPages();
             const discoverPage = document.getElementById('discover-page');
             discoverPage.classList.remove('hidden');
-            discoverPage.classList.add('flex');
+            updateNavActive('discover-nav');
             lucide.createIcons();
         });
 
-        document.getElementById('close-discover').addEventListener('click', () => {
-            const discoverPage = document.getElementById('discover-page');
-            discoverPage.classList.add('hidden');
-            discoverPage.classList.remove('flex');
-        });
-
         document.getElementById('inbox-nav').addEventListener('click', () => {
-            const inboxModal = document.getElementById('inbox-modal');
-            inboxModal.classList.remove('hidden');
-            inboxModal.classList.add('flex');
+            hideAllPages();
+            const inboxPage = document.getElementById('inbox-page');
+            inboxPage.classList.remove('hidden');
+            updateNavActive('inbox-nav');
             loadInbox();
         });
 
-        document.getElementById('close-inbox').addEventListener('click', () => {
-            const inboxModal = document.getElementById('inbox-modal');
-            inboxModal.classList.add('hidden');
-            inboxModal.classList.remove('flex');
-        });
+        function hideAllPages() {
+            document.getElementById('video-feed').style.display = 'none';
+            document.getElementById('discover-page').classList.add('hidden');
+            document.getElementById('inbox-page').classList.add('hidden');
+            document.getElementById('profile-modal').classList.add('hidden');
+            document.getElementById('auth-page').classList.add('hidden');
+        }
+
+        function updateNavActive(activeId) {
+            const navButtons = ['home-nav', 'discover-nav', 'inbox-nav', 'profile-nav'];
+            navButtons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (id === activeId) {
+                    btn.classList.remove('text-gray-400');
+                    btn.classList.add('text-white');
+                } else {
+                    btn.classList.add('text-gray-400');
+                    btn.classList.remove('text-white');
+                }
+            });
+        }
 
         // Profile picture upload using ImgBB
         document.getElementById('change-avatar').addEventListener('click', () => {
@@ -831,7 +849,7 @@
                 });
 
                 const videos = await response.json();
-                console.log('API Response:', videos); // This will show you exactly what is returned
+                console.log('API Response:', videos);
 
                 if (videos.length === 0) {
                     console.warn('No videos found in database.');
@@ -844,6 +862,17 @@
                 console.error('Failed to load videos:', error);
             }
         }
+
+        // Initialize app - start on Home
+        function initializeApp() {
+            hideAllPages();
+            document.getElementById('video-feed').style.display = 'block';
+            updateNavActive('home-nav');
+            loadVideos();
+        }
+
+        // Start the app
+        initializeApp();
 
         // Load ads from JSON file
         async function loadAds() {
@@ -927,10 +956,14 @@
                 videoItem.innerHTML = `
                     <div class="relative w-full max-w-md mx-auto h-full">
                         ${!isAd && item.user_id === currentUser?.id ? `
-                        <button class="video-options-btn absolute top-4 right-4 z-30 p-2 bg-black/50 rounded-full hover:bg-black/70 transition-colors" data-video-id="${item.id}">
+                        <button class="video-options-btn absolute top-4 right-4 z-30 p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
                             <i data-lucide="more-vertical" style="width: 20px; height: 20px;"></i>
                         </button>
                         ` : ''}
+                        <button class="mute-btn absolute top-4 left-4 z-30 p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
+                            <i data-lucide="volume-x" style="width: 20px; height: 20px;" class="mute-icon"></i>
+                            <i data-lucide="volume-2" style="width: 20px; height: 20px;" class="unmute-icon hidden"></i>
+                        </button>
                         <mux-player 
                             id="video-${item.id}"
                             playback-id="${playbackId}"
@@ -1075,6 +1108,28 @@
                 btn.addEventListener('click', function() {
                     const videoId = this.dataset.videoId;
                     openVideoOptions(videoId);
+                });
+            });
+
+            // Mute/unmute buttons
+            document.querySelectorAll('.mute-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const videoId = this.dataset.videoId;
+                    const player = document.getElementById(`video-${videoId}`);
+                    const muteIcon = this.querySelector('.mute-icon');
+                    const unmuteIcon = this.querySelector('.unmute-icon');
+                    
+                    if (player) {
+                        if (player.muted) {
+                            player.muted = false;
+                            muteIcon.classList.add('hidden');
+                            unmuteIcon.classList.remove('hidden');
+                        } else {
+                            player.muted = true;
+                            muteIcon.classList.remove('hidden');
+                            unmuteIcon.classList.add('hidden');
+                        }
+                    }
                 });
             });
 
