@@ -663,12 +663,16 @@
             
             if (videos.length === 0 && ads.length === 0) {
                 console.log('Showing no videos message');
-                noVideos.classList.remove('hidden');
+                if (noVideos) {
+                    noVideos.classList.remove('hidden');
+                }
                 return;
             }
 
             console.log('Hiding no videos message and rendering feed');
-            noVideos.classList.add('hidden');
+            if (noVideos) {
+                noVideos.classList.add('hidden');
+            }
             videoFeed.innerHTML = '';
 
             // Combine videos with ads
