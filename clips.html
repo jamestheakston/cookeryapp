@@ -92,6 +92,12 @@
         .save-btn.saved svg {
             fill: #ca9627;
         }
+        .verified-badge {
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            margin-left: 4px;
+        }
     </style>
 </head>
 <body class="bg-black text-white">
@@ -197,6 +203,13 @@
                     <p class="text-xs text-gray-400 text-center mb-2">Images uploaded to ImgBB</p>
                     <h3 id="profile-display-name" class="text-xl font-bold">User Name</h3>
                     <p id="profile-username" class="text-gray-400 text-sm">@username</p>
+                    <div id="profile-verified-badge" class="hidden mt-1">
+                        <svg class="verified-badge" viewBox="0 0 122.88 116.87">
+                            <defs><style>.cls-1{fill:#10a64a;fill-rule:evenodd;}.cls-2{fill:#fff;}</style></defs>
+                            <polygon class="cls-1" points="61.37 8.24 80.43 0 90.88 17.79 111.15 22.32 109.15 42.85 122.88 58.43 109.2 73.87 111.15 94.55 91 99 80.43 116.87 61.51 108.62 42.45 116.87 32 99.08 11.73 94.55 13.73 74.01 0 58.43 13.68 42.99 11.73 22.32 31.88 17.87 42.45 0 61.37 8.24 61.37 8.24"/>
+                            <path class="cls-2" d="M37.92,65c-6.07-6.53,3.25-16.26,10-10.1,2.38,2.17,5.84,5.34,8.24,7.49L74.66,39.66C81.1,33,91.27,42.78,84.91,49.48L61.67,77.2a7.13,7.13,0,0,1-9.9.44C47.83,73.89,42.05,68.5,37.92,65Z"/>
+                        </svg>
+                    </div>
                     <button id="edit-profile-btn" class="mt-2 text-[#ca9627] text-sm hover:underline">Edit Profile</button>
                 </div>
 
@@ -568,6 +581,14 @@
             
             if (currentUser.avatar) {
                 document.getElementById('profile-avatar').innerHTML = `<img src="${currentUser.avatar}" alt="Avatar" class="w-20 h-20 rounded-full object-cover">`;
+            }
+            
+            // Show verification badge if user is verified
+            const verifiedBadge = document.getElementById('profile-verified-badge');
+            if (currentUser.is_verified) {
+                verifiedBadge.classList.remove('hidden');
+            } else {
+                verifiedBadge.classList.add('hidden');
             }
             
             loadUserVideos();
@@ -988,7 +1009,16 @@
                                         </div>`
                                     }
                                     <div>
-                                        <p class="font-semibold cursor-pointer hover:underline username-click" data-username="${username}" data-user-id="${item.user_id || ''}">${username}</p>
+                                        <p class="font-semibold cursor-pointer hover:underline username-click" data-username="${username}" data-user-id="${item.user_id || ''}">
+                                            ${username}
+                                            ${item.is_verified ? `
+                                            <svg class="verified-badge" viewBox="0 0 122.88 116.87">
+                                                <defs><style>.cls-1{fill:#10a64a;fill-rule:evenodd;}.cls-2{fill:#fff;}</style></defs>
+                                                <polygon class="cls-1" points="61.37 8.24 80.43 0 90.88 17.79 111.15 22.32 109.15 42.85 122.88 58.43 109.2 73.87 111.15 94.55 91 99 80.43 116.87 61.51 108.62 42.45 116.87 32 99.08 11.73 94.55 13.73 74.01 0 58.43 13.68 42.99 11.73 22.32 31.88 17.87 42.45 0 61.37 8.24 61.37 8.24"/>
+                                                <path class="cls-2" d="M37.92,65c-6.07-6.53,3.25-16.26,10-10.1,2.38,2.17,5.84,5.34,8.24,7.49L74.66,39.66C81.1,33,91.27,42.78,84.91,49.48L61.67,77.2a7.13,7.13,0,0,1-9.9.44C47.83,73.89,42.05,68.5,37.92,65Z"/>
+                                            </svg>
+                                            ` : ''}
+                                        </p>
                                         <p class="text-sm text-gray-300">${title}</p>
                                     </div>
                                     ${isAd ? '<span class="ml-auto bg-amber-500 text-white px-2 py-1 rounded text-xs font-semibold">Sponsored</span>' : ''}
@@ -1378,6 +1408,8 @@
             
             const newUsername = document.getElementById('username-input').value.trim();
             const currentUsername = currentUser.username;
+            const displayName = document.getElementById('display-name-input').value;
+            const bio = document.getElementById('bio-input').value;
             
             // Check if username changed
             if (newUsername !== currentUsername) {
@@ -1422,17 +1454,37 @@
                 }
             }
             
-            currentUser.display_name = document.getElementById('display-name-input').value;
-            currentUser.username = newUsername;
-            currentUser.bio = document.getElementById('bio-input').value;
-            
-            localStorage.setItem('cookery_user', JSON.stringify(currentUser));
-            
-            // Update UI
-            document.getElementById('profile-display-name').textContent = currentUser.display_name;
-            document.getElementById('profile-username').textContent = currentUser.username;
-            
-            alert('Profile saved successfully!');
+            // Update user metadata in Supabase
+            try {
+                const { data, error } = await supabaseClient.auth.updateUser({
+                    data: {
+                        display_name: displayName,
+                        username: newUsername,
+                        bio: bio
+                    }
+                });
+                
+                if (error) {
+                    console.error('Failed to update profile in Supabase:', error);
+                    alert('Failed to update profile. Please try again.');
+                    return;
+                }
+                
+                // Update local state
+                currentUser.display_name = displayName;
+                currentUser.username = newUsername;
+                currentUser.bio = bio;
+                localStorage.setItem('cookery_user', JSON.stringify(currentUser));
+                
+                // Update UI
+                document.getElementById('profile-display-name').textContent = currentUser.display_name;
+                document.getElementById('profile-username').textContent = currentUser.username;
+                
+                alert('Profile saved successfully!');
+            } catch (error) {
+                console.error('Profile update failed:', error);
+                alert('Failed to update profile. Please try again.');
+            }
         });
 
         // Update video likes in database
