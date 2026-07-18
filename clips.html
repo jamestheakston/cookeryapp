@@ -567,12 +567,16 @@
 
                 if (!response.ok) {
                     const error = await response.text();
-                    console.error('Failed to create user profile:', error);
-                    // Try using service role key as fallback (you'll need to add this to your code)
-                    // For now, just log the error - user needs to fix RLS policy
+                    console.error('Failed to create user profile with anon key:', error);
+                    
+                    // Fallback: Try to create profile via Edge Function or alert user
+                    console.log('Please check RLS policies for user_profiles table');
+                    return false;
                 }
+                return true;
             } catch (error) {
                 console.error('Error creating user profile:', error);
+                return false;
             }
         }
 
@@ -592,7 +596,10 @@
                     console.log('Profile not found, creating...');
                     const session = await supabaseClient.auth.getSession();
                     if (session.data.session?.user) {
-                        await createUserProfile(userId, session.data.session.user.email);
+                        const success = await createUserProfile(userId, session.data.session.user.email);
+                        if (!success) {
+                            console.warn('Could not create user profile automatically. Please check RLS policies.');
+                        }
                     }
                 }
             } catch (error) {
