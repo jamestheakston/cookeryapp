@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { 
@@ -703,6 +703,8 @@
                         <mux-player 
                             id="video-${item.id}"
                             playback-id="${playbackId}"
+                            metadata-video-title="${title}"
+                            metadata-viewer-user-id="${currentUser?.id || 'anonymous'}"
                             stream-type="on-demand"
                             autoplay
                             muted
