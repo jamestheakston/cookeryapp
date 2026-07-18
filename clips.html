@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery Clips - Share Your Culinary Journey</title>
+    <meta name="description" content="Share your cooking moments with Cookery Clips. A TikTok-style video sharing platform for food enthusiasts.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player"></script>
+    <style>
+        body { 
+            background-color: #0f0f0f; 
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
+        .video-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+            scrollbar-width: none;
+        }
+        .video-container::-webkit-scrollbar {
+            display: none;
+        }
+        .video-item {
+            scroll-snap-align: start;
+            height: 100vh;
+            position: relative;
+        }
+        .video-overlay {
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+        }
+        .action-btn {
+            transition: transform 0.2s ease;
+        }
+        .action-btn:active {
+            transform: scale(0.9);
+        }
+        .like-btn.liked {
+            color: #ef4444;
+        }
+        .like-btn.liked svg {
+            fill: #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Header -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
+                <span class="font-serif text-xl font-bold tracking-tight">Cookery Clips</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                    <i data-lucide="search" style="width: 24px; height: 24px;"></i>
+                </button>
+                <button class="bg-[#ca9627] text-white px-4 py-2 rounded-full font-semibold hover:bg-[#b8861f] transition-colors flex items-center gap-2">
+                    <i data-lucide="plus" style="width: 20px; height: 20px;"></i>
+                    Upload
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Video Feed -->
+    <div class="video-container" id="video-feed">
+        <!-- Video 1 -->
+        <div class="video-item flex items-center justify-center bg-gradient-to-br from-stone-900 to-black">
+            <div class="relative w-full max-w-md mx-auto h-full">
+                <!-- Mux Video Player -->
+                <mux-player 
+                    playback-id="your-mux-playback-id"
+                    metadata-video-title="Perfect Pasta Carbonara"
+                    metadata-viewer-user-id="user-123"
+                    stream-type="on-demand"
+                    class="w-full h-full object-cover"
+                ></mux-player>
+                
+                <!-- Video Overlay -->
+                <div class="video-overlay absolute inset-0 pointer-events-none">
+                    <div class="absolute bottom-0 left-0 right-0 p-4 pb-20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="User" class="w-10 h-10 rounded-full border-2 border-white">
+                            <div>
+                                <p class="font-semibold">@chefmaria</p>
+                                <p class="text-sm text-gray-300">Perfect Pasta Carbonara in 60 seconds 🍝</p>
+                            </div>
+                            <button class="ml-auto bg-red-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Follow</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#pasta</span>
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#carbonara</span>
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#italianfood</span>
+                        </div>
+                        <p class="text-sm text-gray-300">Making the perfect carbonara is easier than you think! No cream, just eggs, cheese, and pasta water. 🧀✨</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="absolute right-4 bottom-24 flex flex-col gap-6">
+                    <button class="action-btn like-btn flex flex-col items-center">
+                        <i data-lucide="heart" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">24.5K</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="message-circle" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">1.2K</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="share-2" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">Share</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="bookmark" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video 2 -->
+        <div class="video-item flex items-center justify-center bg-gradient-to-br from-amber-900 to-black">
+            <div class="relative w-full max-w-md mx-auto h-full">
+                <div class="w-full h-full bg-gradient-to-br from-amber-800 to-stone-900 flex items-center justify-center">
+                    <div class="text-center">
+                        <i data-lucide="play-circle" style="width: 80px; height: 80px;" class="mx-auto mb-4 opacity-50"></i>
+                        <p class="text-xl font-semibold">Your video here</p>
+                        <p class="text-sm text-gray-400 mt-2">Upload your cooking clips</p>
+                    </div>
+                </div>
+                
+                <div class="video-overlay absolute inset-0 pointer-events-none">
+                    <div class="absolute bottom-0 left-0 right-0 p-4 pb-20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="User" class="w-10 h-10 rounded-full border-2 border-white">
+                            <div>
+                                <p class="font-semibold">@homecookjohn</p>
+                                <p class="text-sm text-gray-300">Weekend Meal Prep Made Easy 🥗</p>
+                            </div>
+                            <button class="ml-auto bg-red-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Follow</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#mealprep</span>
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#healthy</span>
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#cooking</span>
+                        </div>
+                        <p class="text-sm text-gray-300">Preparing healthy meals for the week doesn't have to be complicated. Here's my simple system! 🥬🍗</p>
+                    </div>
+                </div>
+
+                <div class="absolute right-4 bottom-24 flex flex-col gap-6">
+                    <button class="action-btn like-btn flex flex-col items-center">
+                        <i data-lucide="heart" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">18.2K</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="message-circle" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">856</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="share-2" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">Share</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="bookmark" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video 3 -->
+        <div class="video-item flex items-center justify-center bg-gradient-to-br from-green-900 to-black">
+            <div class="relative w-full max-w-md mx-auto h-full">
+                <div class="w-full h-full bg-gradient-to-br from-green-800 to-stone-900 flex items-center justify-center">
+                    <div class="text-center">
+                        <i data-lucide="play-circle" style="width: 80px; height: 80px;" class="mx-auto mb-4 opacity-50"></i>
+                        <p class="text-xl font-semibold">Your video here</p>
+                        <p class="text-sm text-gray-400 mt-2">Share your recipes</p>
+                    </div>
+                </div>
+                
+                <div class="video-overlay absolute inset-0 pointer-events-none">
+                    <div class="absolute bottom-0 left-0 right-0 p-4 pb-20">
+                        <div class="flex items-center gap-3 mb-3">
+                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100" alt="User" class="w-10 h-10 rounded-full border-2 border-white">
+                            <div>
+                                <p class="font-semibold">@veganvibes</p>
+                                <p class="text-sm text-gray-300">5-Minute Buddha Bowl 🥑</p>
+                            </div>
+                            <button class="ml-auto bg-red-500 text-white px-4 py-1 rounded-full text-sm font-semibold">Follow</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#vegan</span>
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#healthy</span>
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm">#buddhabowl</span>
+                        </div>
+                        <p class="text-sm text-gray-300">The quickest, healthiest lunch you'll ever make! Perfect for busy days. 🌱</p>
+                    </div>
+                </div>
+
+                <div class="absolute right-4 bottom-24 flex flex-col gap-6">
+                    <button class="action-btn like-btn flex flex-col items-center">
+                        <i data-lucide="heart" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">32.1K</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="message-circle" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">2.4K</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="share-2" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">Share</span>
+                    </button>
+                    <button class="action-btn flex flex-col items-center">
+                        <i data-lucide="bookmark" style="width: 32px; height: 32px;"></i>
+                        <span class="text-xs mt-1">Save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-lg border-t border-white/10 z-50">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-around">
+            <button class="flex flex-col items-center text-white">
+                <i data-lucide="home" style="width: 24px; height: 24px;"></i>
+                <span class="text-xs mt-1">Home</span>
+            </button>
+            <button class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+                <i data-lucide="compass" style="width: 24px; height: 24px;"></i>
+                <span class="text-xs mt-1">Discover</span>
+            </button>
+            <button class="flex flex-col items-center">
+                <div class="bg-gradient-to-r from-[#ca9627] to-[#b8861f] w-12 h-8 rounded-lg flex items-center justify-center">
+                    <i data-lucide="plus" style="width: 20px; height: 20px;"></i>
+                </div>
+            </button>
+            <button class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+                <i data-lucide="inbox" style="width: 24px; height: 24px;"></i>
+                <span class="text-xs mt-1">Inbox</span>
+            </button>
+            <button class="flex flex-col items-center text-gray-400 hover:text-white transition-colors">
+                <i data-lucide="user" style="width: 24px; height: 24px;"></i>
+                <span class="text-xs mt-1">Profile</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Like button functionality
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.classList.toggle('liked');
+            });
+        });
+
+        // Video scroll snap detection
+        const videoFeed = document.getElementById('video-feed');
+        const videos = document.querySelectorAll('.video-item');
+
+        videoFeed.addEventListener('scroll', () => {
+            videos.forEach((video, index) => {
+                const rect = video.getBoundingClientRect();
+                if (rect.top >= 0 && rect.top < window.innerHeight / 2) {
+                    // Video is in view - could auto-play here
+                    console.log(`Video ${index + 1} is in view`);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
