@@ -264,7 +264,8 @@
 
     <script>
         // Initialize Supabase
-        const supabase = supabase.createClient('https://ojvigxnwweixjhugekmm.supabase.co', 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W');
+        const { createClient } = supabase;
+        const supabaseClient = createClient('https://ojvigxnwweixjhugekmm.supabase.co', 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W');
 
         // Initialize Lucide icons
         lucide.createIcons();
@@ -272,6 +273,7 @@
         // State management
         let currentUser = null;
         let userVideos = [];
+        let ads = [];
 
         // Profile modal functionality
         const profileNav = document.getElementById('profile-nav');
@@ -311,7 +313,7 @@
         // GitHub Sign In using Supabase Auth
         githubSignin.addEventListener('click', async () => {
             try {
-                const { data, error } = await supabase.auth.signInWithOAuth({
+                const { data, error } = await supabaseClient.auth.signInWithOAuth({
                     provider: 'github',
                     options: {
                         redirectTo: window.location.href
@@ -327,7 +329,7 @@
 
         // Sign Out
         signoutBtn.addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             currentUser = null;
             localStorage.removeItem('cookery_user');
             openProfileModal();
@@ -335,7 +337,7 @@
 
         // Check for existing session on load
         async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 currentUser = {
                     id: session.user.id,
@@ -349,7 +351,7 @@
         }
 
         // Listen for auth changes
-        supabase.auth.onAuthStateChange((event, session) => {
+        supabaseClient.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN' && session) {
                 currentUser = {
                     id: session.user.id,
@@ -548,9 +550,25 @@
 
                 const videos = await response.json();
                 userVideos = videos;
+                
+                // Load ads
+                await loadAds();
+                
                 renderVideos(videos);
             } catch (error) {
                 console.error('Failed to load videos:', error);
+            }
+        }
+
+        // Load ads from JSON file
+        async function loadAds() {
+            try {
+                const response = await fetch('/clips/ads.json');
+                const data = await response.json();
+                ads = data.ads || [];
+            } catch (error) {
+                console.error('Failed to load ads:', error);
+                ads = [];
             }
         }
 
@@ -559,7 +577,7 @@
             const videoFeed = document.getElementById('video-feed');
             const noVideos = document.getElementById('no-videos');
             
-            if (videos.length === 0) {
+            if (videos.length === 0 && ads.length === 0) {
                 noVideos.classList.remove('hidden');
                 return;
             }
@@ -567,16 +585,45 @@
             noVideos.classList.add('hidden');
             videoFeed.innerHTML = '';
 
+            // Combine videos with ads
+            const feedItems = [];
+            
+            // Add videos
             videos.forEach(video => {
+                feedItems.push({ ...video, is_ad: false });
+            });
+
+            // Insert ads randomly (every 3-5 videos)
+            if (ads.length > 0 && videos.length > 0) {
+                const adFrequency = Math.floor(Math.random() * 3) + 3;
+                let adIndex = 0;
+                
+                for (let i = adFrequency; i < feedItems.length; i += adFrequency) {
+                    if (adIndex < ads.length) {
+                        feedItems.splice(i, 0, { ...ads[adIndex], is_ad: true });
+                        adIndex++;
+                    }
+                }
+            }
+
+            feedItems.forEach(item => {
                 const videoItem = document.createElement('div');
                 videoItem.className = 'video-item flex items-center justify-center bg-gradient-to-br from-stone-900 to-black';
-                videoItem.dataset.videoId = video.id;
+                videoItem.dataset.videoId = item.id;
+                
+                const isAd = item.is_ad;
+                const playbackId = isAd ? item.mux_asset_id : item.playback_id;
+                const username = isAd ? item.username : item.username;
+                const profilePicture = isAd ? item.profile_picture : null;
+                const title = isAd ? item.title : item.title;
+                const description = isAd ? item.description : item.description;
+                const hashtags = isAd ? item.hashtags : item.hashtags;
                 
                 videoItem.innerHTML = `
                     <div class="relative w-full max-w-md mx-auto h-full">
                         <mux-player 
-                            playback-id="${video.playback_id}"
-                            metadata-video-title="${video.title}"
+                            playback-id="${playbackId}"
+                            metadata-video-title="${title}"
                             stream-type="on-demand"
                             class="w-full h-full object-cover"
                         ></mux-player>
@@ -584,43 +631,50 @@
                         <div class="video-overlay absolute inset-0 pointer-events-none">
                             <div class="absolute bottom-0 left-0 right-0 p-4 pb-20">
                                 <div class="flex items-center gap-3 mb-3">
-                                    <div class="w-10 h-10 rounded-full bg-[#ca9627] flex items-center justify-center">
-                                        <span class="font-bold">${video.username.charAt(1).toUpperCase()}</span>
-                                    </div>
+                                    ${profilePicture ? 
+                                        `<img src="${profilePicture}" alt="User" class="w-10 h-10 rounded-full border-2 border-white">` :
+                                        `<div class="w-10 h-10 rounded-full bg-[#ca9627] flex items-center justify-center">
+                                            <span class="font-bold">${username.charAt(1).toUpperCase()}</span>
+                                        </div>`
+                                    }
                                     <div>
-                                        <p class="font-semibold">${video.username}</p>
-                                        <p class="text-sm text-gray-300">${video.title}</p>
+                                        <p class="font-semibold">${username}</p>
+                                        <p class="text-sm text-gray-300">${title}</p>
                                     </div>
+                                    ${isAd ? '<span class="ml-auto bg-amber-500 text-white px-2 py-1 rounded text-xs font-semibold">Sponsored</span>' : ''}
                                 </div>
                                 <div class="flex flex-wrap gap-2 mb-3">
-                                    ${video.hashtags.map(tag => `<span class="bg-white/20 px-3 py-1 rounded-full text-sm">${tag}</span>`).join('')}
+                                    ${hashtags.map(tag => `<span class="bg-white/20 px-3 py-1 rounded-full text-sm">${tag}</span>`).join('')}
                                 </div>
-                                <p class="text-sm text-gray-300">${video.description}</p>
+                                <p class="text-sm text-gray-300">${description}</p>
                             </div>
                         </div>
 
                         <!-- Action Buttons -->
                         <div class="absolute right-4 bottom-24 flex flex-col gap-6">
-                            <button class="action-btn follow-btn flex flex-col items-center" data-video-id="${video.id}" data-user="${video.username}">
+                            ${!isAd ? `
+                            <button class="action-btn follow-btn flex flex-col items-center" data-video-id="${item.id}" data-user="${username}">
                                 <i data-lucide="user-plus" style="width: 32px; height: 32px;"></i>
-                                <span class="text-xs mt-1">Follow</span>
                             </button>
-                            <button class="action-btn like-btn flex flex-col items-center" data-video-id="${video.id}">
+                            ` : ''}
+                            <button class="action-btn like-btn flex flex-col items-center" data-video-id="${item.id}" ${isAd ? 'disabled' : ''}>
                                 <i data-lucide="heart" style="width: 32px; height: 32px;"></i>
-                                <span class="text-xs mt-1 like-count">${video.likes || 0}</span>
+                                <span class="text-xs mt-1 like-count">${item.likes || 0}</span>
                             </button>
-                            <button class="action-btn comment-btn flex flex-col items-center" data-video-id="${video.id}">
+                            ${!isAd ? `
+                            <button class="action-btn comment-btn flex flex-col items-center" data-video-id="${item.id}">
                                 <i data-lucide="message-circle" style="width: 32px; height: 32px;"></i>
-                                <span class="text-xs mt-1 comment-count">${video.comments || 0}</span>
+                                <span class="text-xs mt-1 comment-count">${item.comments || 0}</span>
                             </button>
-                            <button class="action-btn share-btn flex flex-col items-center" data-video-id="${video.id}">
+                            <button class="action-btn share-btn flex flex-col items-center" data-video-id="${item.id}">
                                 <i data-lucide="share-2" style="width: 32px; height: 32px;"></i>
                                 <span class="text-xs mt-1">Share</span>
                             </button>
-                            <button class="action-btn save-btn flex flex-col items-center" data-video-id="${video.id}">
+                            <button class="action-btn save-btn flex flex-col items-center" data-video-id="${item.id}">
                                 <i data-lucide="bookmark" style="width: 32px; height: 32px;"></i>
                                 <span class="text-xs mt-1">Save</span>
                             </button>
+                            ` : ''}
                         </div>
                     </div>
                 `;

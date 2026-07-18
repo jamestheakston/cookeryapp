@@ -1,0 +1,15 @@
+{
+  "ads": [
+    {
+      "id": "ad-001",
+      "mux_asset_id": "MnfyUbqjG4IWm3TYwbKJ2Ts0002Skql9UtVmzQGMvI8RQ",
+      "title": "Sponsored",
+      "description": "Advertisement",
+      "username": "@cookery",
+      "profile_picture": "https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png",
+      "hashtags": ["#sponsored"],
+      "is_ad": true,
+      "weight": 1
+    }
+  ]
+}
