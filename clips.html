@@ -557,12 +557,8 @@
 
                 if (error) throw error;
                 
-                // Create user profile after successful sign up
-                if (data.user) {
-                    await createUserProfile(data.user.id, email);
-                }
-                
                 alert('Sign up successful! Please check your email to confirm your account.');
+                // Profile will be created automatically when user signs in
             } catch (error) {
                 console.error('Sign up error:', error);
                 alert('Sign up failed: ' + error.message);
