@@ -301,6 +301,7 @@
                         <div class="w-full bg-gray-700 rounded-full h-2">
                             <div id="progress-bar" class="bg-[#ca9627] h-2 rounded-full transition-all" style="width: 0%"></div>
                         </div>
+                        <span id="estimated-time" class="text-xs text-gray-400">Estimated time: 30s</span>
                     </div>
 
                     <button type="submit" id="submit-upload" class="w-full bg-[#ca9627] text-white py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
@@ -463,8 +464,10 @@
             }
             hideAllPages();
             const profileModal = document.getElementById('profile-modal');
-            profileModal.classList.remove('hidden');
-            profileModal.classList.add('flex');
+            if (profileModal) {
+                profileModal.classList.remove('hidden');
+                profileModal.classList.add('flex');
+            }
             updateNavActive('profile-nav');
             loadUserProfile();
         });
@@ -1071,15 +1074,6 @@
                 
                 videoItem.innerHTML = `
                     <div class="relative w-full max-w-md mx-auto h-full">
-                        ${!isAd && item.user_id === currentUser?.id ? `
-                        <button class="video-options-btn absolute top-4 right-4 z-30 p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
-                            <i data-lucide="more-vertical" style="width: 20px; height: 20px;"></i>
-                        </button>
-                        ` : ''}
-                        <button class="mute-btn absolute top-4 left-4 z-30 p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
-                            <i data-lucide="volume-x" style="width: 20px; height: 20px;" class="mute-icon"></i>
-                            <i data-lucide="volume-2" style="width: 20px; height: 20px;" class="unmute-icon hidden"></i>
-                        </button>
                         <mux-player 
                             id="video-${item.id}"
                             playback-id="${playbackId}"
@@ -1094,6 +1088,17 @@
                         
                         <div class="video-overlay absolute inset-0 pointer-events-none z-10">
                             <div class="absolute bottom-0 left-0 right-0 p-4 pb-20">
+                                <div class="flex items-center justify-between mb-3">
+                                    ${!isAd && item.user_id === currentUser?.id ? `
+                                    <button class="video-options-btn pointer-events-auto p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
+                                        <i data-lucide="more-vertical" style="width: 20px; height: 20px;"></i>
+                                    </button>
+                                    ` : '<div></div>'}
+                                    <button class="mute-btn pointer-events-auto p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
+                                        <i data-lucide="volume-x" style="width: 20px; height: 20px;" class="mute-icon"></i>
+                                        <i data-lucide="volume-2" style="width: 20px; height: 20px;" class="unmute-icon hidden"></i>
+                                    </button>
+                                </div>
                                 <div class="flex items-center gap-3 mb-3">
                                     ${profilePicture ? 
                                         `<img src="${profilePicture}" alt="User" class="w-10 h-10 rounded-full border-2 border-white">` :
