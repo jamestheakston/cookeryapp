@@ -634,11 +634,14 @@
                 });
 
                 const videos = await response.json();
+                console.log('API Response:', videos); // This will show you exactly what is returned
+
+                if (videos.length === 0) {
+                    console.warn('No videos found in database.');
+                }
+
                 userVideos = videos;
-                
-                // Load ads
                 await loadAds();
-                
                 renderVideos(videos);
             } catch (error) {
                 console.error('Failed to load videos:', error);
