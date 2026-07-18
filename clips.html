@@ -1095,16 +1095,16 @@
                         
                         <div class="video-overlay absolute inset-0 pointer-events-none z-10">
                             <div class="absolute bottom-0 left-0 right-0 p-4 pb-20">
-                                <div class="flex items-center justify-between mb-3">
-                                    ${!isAd && item.user_id === currentUser?.id ? `
-                                    <button class="video-options-btn pointer-events-auto p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
-                                        <i data-lucide="more-vertical" style="width: 20px; height: 20px;"></i>
-                                    </button>
-                                    ` : '<div></div>'}
+                                <div class="flex items-center gap-2 mb-3">
                                     <button class="mute-btn pointer-events-auto p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
                                         <i data-lucide="volume-x" style="width: 20px; height: 20px;" class="mute-icon"></i>
                                         <i data-lucide="volume-2" style="width: 20px; height: 20px;" class="unmute-icon hidden"></i>
                                     </button>
+                                    ${!isAd && item.user_id === currentUser?.id ? `
+                                    <button class="video-options-btn pointer-events-auto p-2 bg-black/50 rounded-full hover:bg-black-70 transition-colors" data-video-id="${item.id}">
+                                        <i data-lucide="more-vertical" style="width: 20px; height: 20px;"></i>
+                                    </button>
+                                    ` : ''}
                                 </div>
                                 <div class="flex items-center gap-3 mb-3">
                                     ${profilePicture ? 
