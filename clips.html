@@ -563,57 +563,49 @@
                     throw new Error('Failed to get upload URL');
                 }
 
-                // Step 2: Upload video to Mux
+                // Step 2: Upload video to Mux through edge function to avoid CORS
                 const formData = new FormData();
                 formData.append('file', videoFile);
+                formData.append('upload_url', uploadData.upload_url);
 
-                const xhr = new XMLHttpRequest();
-                xhr.open('PUT', uploadData.upload_url);
+                const uploadVideoResponse = await fetch('https://ojvigxnwweixjhugekmm.supabase.co/functions/v1/videoupload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W'
+                    },
+                    body: formData
+                });
+
+                if (!uploadVideoResponse.ok) {
+                    throw new Error('Failed to upload video');
+                }
+
+                // Step 3: Save metadata to database
+                const hashtagsArray = hashtags.split(',').map(tag => tag.trim()).filter(tag => tag);
                 
-                xhr.upload.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        const percentComplete = Math.round((e.loaded / e.total) * 100);
-                        progressBar.style.width = percentComplete + '%';
-                        progressPercent.textContent = percentComplete + '%';
-                    }
-                };
+                await fetch('https://ojvigxnwweixjhugekmm.supabase.co/rest/v1/videos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
+                        'Authorization': 'Bearer sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        playback_id: uploadData.upload_id,
+                        title,
+                        description,
+                        username,
+                        hashtags: hashtagsArray,
+                        user_id: currentUser.id
+                    })
+                });
 
-                xhr.onload = async () => {
-                    if (xhr.status === 200) {
-                        // Step 3: Save metadata to database
-                        const hashtagsArray = hashtags.split(',').map(tag => tag.trim()).filter(tag => tag);
-                        
-                        await fetch('https://ojvigxnwweixjhugekmm.supabase.co/rest/v1/videos', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'apikey': 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
-                                'Authorization': 'Bearer sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
-                                'Prefer': 'return=minimal'
-                            },
-                            body: JSON.stringify({
-                                playback_id: uploadData.upload_id,
-                                title,
-                                description,
-                                username,
-                                hashtags: hashtagsArray,
-                                user_id: currentUser.id
-                            })
-                        });
-
-                        alert('Video uploaded successfully!');
-                        closeModalHandler();
-                        loadVideos();
-                    } else {
-                        throw new Error('Upload failed');
-                    }
-                };
-
-                xhr.onerror = () => {
-                    throw new Error('Upload failed');
-                };
-
-                xhr.send(formData);
+                alert('Video uploaded successfully!');
+                closeModalHandler();
+                loadVideos();
+                uploadProgress.classList.add('hidden');
+                document.getElementById('submit-upload').disabled = false;
 
             } catch (error) {
                 console.error('Upload error:', error);
