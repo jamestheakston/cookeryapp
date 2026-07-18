@@ -662,14 +662,20 @@
 
         // Render videos to the feed
         function renderVideos(videos) {
+            console.log('renderVideos called with:', videos);
             const videoFeed = document.getElementById('video-feed');
             const noVideos = document.getElementById('no-videos');
             
+            console.log('videoFeed element:', videoFeed);
+            console.log('noVideos element:', noVideos);
+            
             if (videos.length === 0 && ads.length === 0) {
+                console.log('Showing no videos message');
                 noVideos.classList.remove('hidden');
                 return;
             }
 
+            console.log('Hiding no videos message and rendering feed');
             noVideos.classList.add('hidden');
             videoFeed.innerHTML = '';
 
@@ -694,7 +700,10 @@
                 }
             }
 
+            console.log('Feed items to render:', feedItems.length);
+
             feedItems.forEach(item => {
+                console.log('Rendering item:', item.id, 'is_ad:', item.is_ad);
                 const videoItem = document.createElement('div');
                 videoItem.className = 'video-item flex items-center justify-center bg-gradient-to-br from-stone-900 to-black';
                 videoItem.dataset.videoId = item.id;
@@ -779,12 +788,16 @@
                     const player = document.getElementById(`video-${item.id}`);
                     if (player) {
                         console.log('Mux player initialized for:', playbackId);
+                    } else {
+                        console.error('Failed to find Mux player element:', `video-${item.id}`);
                     }
                 }, 100);
             });
 
+            console.log('Finished rendering, calling lucide.createIcons()');
             lucide.createIcons();
             attachActionListeners();
+            console.log('renderVideos completed');
         }
 
         // Attach action button listeners
