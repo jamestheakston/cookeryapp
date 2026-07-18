@@ -580,6 +580,9 @@
                     throw new Error('Failed to upload video');
                 }
 
+                const uploadResult = await uploadVideoResponse.json();
+                const actualPlaybackId = uploadResult.playback_id;
+
                 // Step 3: Save metadata to database
                 const hashtagsArray = hashtags.split(',').map(tag => tag.trim()).filter(tag => tag);
                 
@@ -592,7 +595,7 @@
                         'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify({
-                        playback_id: uploadData.upload_id,
+                        playback_id: actualPlaybackId,
                         title,
                         description,
                         username,
