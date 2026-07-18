@@ -574,16 +574,24 @@
         });
 
         // Create user profile in Supabase
-        async function createUserProfile(userId, email) {
+        async function createUserProfile(userId, email, accessToken) {
             try {
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'apikey': 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
+                    'Prefer': 'return=minimal'
+                };
+                
+                // Use access token if available, otherwise fall back to anon key
+                if (accessToken) {
+                    headers['Authorization'] = `Bearer ${accessToken}`;
+                } else {
+                    headers['Authorization'] = 'Bearer sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+                }
+                
                 const response = await fetch('https://ojvigxnwweixjhugekmm.supabase.co/rest/v1/user_profiles', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
-                        'Authorization': 'Bearer sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
-                        'Prefer': 'return=minimal'
-                    },
+                    headers: headers,
                     body: JSON.stringify({
                         user_id: userId,
                         username: `@user${userId.slice(0, 6)}`,
@@ -595,10 +603,7 @@
 
                 if (!response.ok) {
                     const error = await response.text();
-                    console.error('Failed to create user profile with anon key:', error);
-                    
-                    // Fallback: Try to create profile via Edge Function or alert user
-                    console.log('Please check RLS policies for user_profiles table');
+                    console.error('Failed to create user profile:', error);
                     return false;
                 }
                 return true;
@@ -624,7 +629,8 @@
                     console.log('Profile not found, creating...');
                     const session = await supabaseClient.auth.getSession();
                     if (session.data.session?.user) {
-                        const success = await createUserProfile(userId, session.data.session.user.email);
+                        const accessToken = session.data.session.access_token;
+                        const success = await createUserProfile(userId, session.data.session.user.email, accessToken);
                         if (!success) {
                             console.warn('Could not create user profile automatically. Please check RLS policies.');
                         }
