@@ -563,7 +563,7 @@
         // Load ads from JSON file
         async function loadAds() {
             try {
-                const response = await fetch('/clips/ads.json');
+                const response = await fetch('/ads.json');
                 const data = await response.json();
                 ads = data.ads || [];
             } catch (error) {
