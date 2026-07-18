@@ -58,6 +58,12 @@
         .profile-modal.active {
             display: flex;
         }
+        .auth-page {
+            display: none;
+        }
+        .auth-page.active {
+            display: flex;
+        }
         .follow-btn.following {
             color: #ca9627;
         }
@@ -114,68 +120,101 @@
         </div>
     </div>
 
-    <!-- Profile Modal -->
-    <div id="profile-modal" class="profile-modal fixed inset-0 bg-black/90 backdrop-blur-lg z-[100] items-center justify-center p-4">
-        <div class="bg-gray-900 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold">Profile</h2>
-                    <button id="close-profile-modal" class="p-2 hover:bg-white/10 rounded-full transition-colors">
-                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
-                    </button>
+    <!-- Auth/Profile Page -->
+    <div id="auth-page" class="auth-page fixed inset-0 bg-black z-[100] flex-col">
+        <div class="max-w-lg mx-auto w-full p-6 flex flex-col h-full">
+            <div class="flex items-center justify-between mb-8">
+                <button id="back-to-feed" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                    <i data-lucide="arrow-left" style="width: 24px; height: 24px;"></i>
+                </button>
+                <h2 class="text-xl font-bold">Profile</h2>
+                <div class="w-10"></div>
+            </div>
+
+            <!-- Auth Required Section -->
+            <div id="auth-required" class="flex-1 flex flex-col justify-center">
+                <div class="text-center mb-8">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="80" height="80" class="mx-auto mb-4 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-2">Welcome to Cookery Clips</h3>
+                    <p class="text-gray-400">Sign in to upload videos and interact with the community</p>
                 </div>
 
-                <div id="auth-required" class="text-center py-8">
-                    <i data-lucide="github" style="width: 64px; height: 64px;" class="mx-auto mb-4 text-gray-400"></i>
-                    <h3 class="text-xl font-bold mb-2">Sign in to Continue</h3>
-                    <p class="text-gray-400 mb-6">You need to sign in to access your profile and upload videos.</p>
-                    <button id="github-signin" class="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition-colors flex items-center gap-2 mx-auto">
-                        <i data-lucide="github" style="width: 20px; height: 20px;"></i>
-                        Sign in with GitHub
-                    </button>
-                </div>
-
-                <div id="profile-content" class="hidden">
-                    <div class="flex items-center gap-4 mb-6">
-                        <div class="relative">
-                            <div id="profile-avatar" class="w-20 h-20 rounded-full bg-[#ca9627] flex items-center justify-center">
-                                <span class="text-2xl font-bold">U</span>
-                            </div>
-                            <button id="change-avatar" class="absolute bottom-0 right-0 bg-white text-black p-2 rounded-full hover:bg-gray-200 transition-colors">
-                                <i data-lucide="camera" style="width: 16px; height: 16px;"></i>
-                            </button>
+                <div class="space-y-4">
+                    <div id="signin-form">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" id="signin-email" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white" placeholder="your@email.com">
                         </div>
-                        <div>
-                            <h3 id="profile-display-name" class="text-xl font-bold">User Name</h3>
-                            <p id="profile-username" class="text-gray-400">@username</p>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium mb-2">Password</label>
+                            <input type="password" id="signin-password" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white" placeholder="••••••••">
                         </div>
+                        <button id="signin-btn" class="w-full bg-[#ca9627] text-white py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
+                            Sign In
+                        </button>
+                        <p class="text-center text-gray-400 text-sm mt-4">
+                            Don't have an account? <button id="show-signup" class="text-[#ca9627] hover:underline">Sign Up</button>
+                        </p>
                     </div>
 
-                    <form id="profile-form">
+                    <div id="signup-form" class="hidden">
                         <div class="mb-4">
-                            <label class="block text-sm font-medium mb-2">Display Name</label>
-                            <input type="text" id="display-name-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white">
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" id="signup-email" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white" placeholder="your@email.com">
                         </div>
-
                         <div class="mb-4">
-                            <label class="block text-sm font-medium mb-2">Username</label>
-                            <input type="text" id="username-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white">
+                            <label class="block text-sm font-medium mb-2">Password</label>
+                            <input type="password" id="signup-password" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white" placeholder="••••••••">
                         </div>
-
-                        <div class="mb-6">
-                            <label class="block text-sm font-medium mb-2">Bio</label>
-                            <textarea id="bio-input" rows="3" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white"></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full bg-[#ca9627] text-white py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
-                            Save Profile
+                        <button id="signup-btn" class="w-full bg-[#ca9627] text-white py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
+                            Sign Up
                         </button>
-                    </form>
-
-                    <button id="signout-btn" class="w-full mt-4 border border-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                        Sign Out
-                    </button>
+                        <p class="text-center text-gray-400 text-sm mt-4">
+                            Already have an account? <button id="show-signin" class="text-[#ca9627] hover:underline">Sign In</button>
+                        </p>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Profile Content Section -->
+            <div id="profile-content" class="hidden flex-1 overflow-y-auto">
+                <div class="flex flex-col items-center mb-8">
+                    <div class="relative mb-4">
+                        <div id="profile-avatar" class="w-24 h-24 rounded-full bg-[#ca9627] flex items-center justify-center">
+                            <span class="text-3xl font-bold">U</span>
+                        </div>
+                        <button id="change-avatar" class="absolute bottom-0 right-0 bg-white text-black p-2 rounded-full hover:bg-gray-200 transition-colors">
+                            <i data-lucide="camera" style="width: 20px; height: 20px;"></i>
+                        </button>
+                    </div>
+                    <h3 id="profile-display-name" class="text-2xl font-bold">User Name</h3>
+                    <p id="profile-username" class="text-gray-400">@username</p>
+                </div>
+
+                <form id="profile-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Display Name</label>
+                        <input type="text" id="display-name-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Username</label>
+                        <input type="text" id="username-input" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Bio</label>
+                        <textarea id="bio-input" rows="3" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-[#ca9627] text-white py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
+                        Save Profile
+                    </button>
+                </form>
+
+                <button id="signout-btn" class="w-full mt-6 border border-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
+                    Sign Out
+                </button>
             </div>
         </div>
     </div>
@@ -275,18 +314,23 @@
         let userVideos = [];
         let ads = [];
 
-        // Profile modal functionality
+        // Profile page functionality
         const profileNav = document.getElementById('profile-nav');
-        const profileModal = document.getElementById('profile-modal');
-        const closeProfileModal = document.getElementById('close-profile-modal');
-        const githubSignin = document.getElementById('github-signin');
+        const authPage = document.getElementById('auth-page');
+        const backToFeed = document.getElementById('back-to-feed');
         const authRequired = document.getElementById('auth-required');
         const profileContent = document.getElementById('profile-content');
         const profileForm = document.getElementById('profile-form');
         const signoutBtn = document.getElementById('signout-btn');
+        const signinForm = document.getElementById('signin-form');
+        const signupForm = document.getElementById('signup-form');
+        const signinBtn = document.getElementById('signin-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const showSignup = document.getElementById('show-signup');
+        const showSignin = document.getElementById('show-signin');
 
-        function openProfileModal() {
-            profileModal.classList.add('active');
+        function openAuthPage() {
+            authPage.classList.add('active');
             if (currentUser) {
                 authRequired.classList.add('hidden');
                 profileContent.classList.remove('hidden');
@@ -297,33 +341,68 @@
             }
         }
 
-        function closeProfileModalHandler() {
-            profileModal.classList.remove('active');
+        function closeAuthPage() {
+            authPage.classList.remove('active');
         }
 
-        profileNav.addEventListener('click', openProfileModal);
-        closeProfileModal.addEventListener('click', closeProfileModalHandler);
+        profileNav.addEventListener('click', openAuthPage);
+        backToFeed.addEventListener('click', closeAuthPage);
 
-        profileModal.addEventListener('click', (e) => {
-            if (e.target === profileModal) {
-                closeProfileModalHandler();
+        // Toggle between sign in and sign up forms
+        showSignup.addEventListener('click', () => {
+            signinForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        });
+
+        showSignin.addEventListener('click', () => {
+            signupForm.classList.add('hidden');
+            signinForm.classList.remove('hidden');
+        });
+
+        // Email/Password Sign In
+        signinBtn.addEventListener('click', async () => {
+            const email = document.getElementById('signin-email').value;
+            const password = document.getElementById('signin-password').value;
+
+            if (!email || !password) {
+                alert('Please enter email and password');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
+
+                if (error) throw error;
+            } catch (error) {
+                console.error('Sign in error:', error);
+                alert('Sign in failed: ' + error.message);
             }
         });
 
-        // GitHub Sign In using Supabase Auth
-        githubSignin.addEventListener('click', async () => {
+        // Email/Password Sign Up
+        signupBtn.addEventListener('click', async () => {
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+
+            if (!email || !password) {
+                alert('Please enter email and password');
+                return;
+            }
+
             try {
-                const { data, error } = await supabaseClient.auth.signInWithOAuth({
-                    provider: 'github',
-                    options: {
-                        redirectTo: window.location.href
-                    }
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email,
+                    password
                 });
-                
+
                 if (error) throw error;
+                alert('Sign up successful! Please check your email to confirm your account.');
             } catch (error) {
-                console.error('Auth error:', error);
-                alert('Sign in failed. Please try again.');
+                console.error('Sign up error:', error);
+                alert('Sign up failed: ' + error.message);
             }
         });
 
@@ -332,7 +411,7 @@
             await supabaseClient.auth.signOut();
             currentUser = null;
             localStorage.removeItem('cookery_user');
-            openProfileModal();
+            openAuthPage();
         });
 
         // Check for existing session on load
@@ -361,7 +440,7 @@
                     avatar: session.user.user_metadata.avatar || null
                 };
                 localStorage.setItem('cookery_user', JSON.stringify(currentUser));
-                openProfileModal();
+                openAuthPage();
             } else if (event === 'SIGNED_OUT') {
                 currentUser = null;
                 localStorage.removeItem('cookery_user');
@@ -413,7 +492,7 @@
         function openModal() {
             if (!currentUser) {
                 alert('Please sign in to upload videos');
-                openProfileModal();
+                openAuthPage();
                 return;
             }
             uploadModal.classList.add('active');
