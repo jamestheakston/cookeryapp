@@ -96,7 +96,7 @@
 </head>
 <body class="bg-black text-white">
     <!-- Header -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-black/80 to-transparent">
+    <nav class="fixed top-0 left-0 right-0 z-40 bg-gradient-to-b from-black/80 to-transparent">
         <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
@@ -651,6 +651,7 @@
             document.getElementById('discover-page').classList.add('hidden');
             document.getElementById('inbox-page').classList.add('hidden');
             document.getElementById('profile-modal').classList.add('hidden');
+            document.getElementById('profile-modal').classList.remove('flex');
             document.getElementById('auth-page').classList.add('hidden');
         }
 
@@ -868,7 +869,8 @@
             hideAllPages();
             document.getElementById('video-feed').style.display = 'block';
             updateNavActive('home-nav');
-            loadVideos();
+            // Load videos after a short delay to ensure DOM is ready
+            setTimeout(() => loadVideos(), 100);
         }
 
         // Start the app
@@ -1077,7 +1079,31 @@
             // Save buttons
             document.querySelectorAll('.save-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
+                    const videoId = this.dataset.videoId;
                     this.classList.toggle('saved');
+                    
+                    const savedVideos = JSON.parse(localStorage.getItem('saved_videos') || '[]');
+                    
+                    if (this.classList.contains('saved')) {
+                        // Add to saved videos
+                        const videoItem = document.querySelector(`[data-video-id="${videoId}"]`);
+                        if (videoItem) {
+                            const playbackId = videoItem.querySelector('mux-player')?.getAttribute('playback-id');
+                            const title = videoItem.querySelector('.font-semibold')?.textContent || 'Untitled';
+                            
+                            if (playbackId) {
+                                savedVideos.push({ videoId, playbackId, title });
+                                localStorage.setItem('saved_videos', JSON.stringify(savedVideos));
+                            }
+                        }
+                    } else {
+                        // Remove from saved videos
+                        const index = savedVideos.findIndex(v => v.videoId === videoId);
+                        if (index > -1) {
+                            savedVideos.splice(index, 1);
+                            localStorage.setItem('saved_videos', JSON.stringify(savedVideos));
+                        }
+                    }
                 });
             });
 
@@ -1270,25 +1296,7 @@
 
         async function loadComments(videoId) {
             const commentsList = document.getElementById('comments-list');
-            commentsList.innerHTML = '<p class="text-gray-400 text-center">Loading comments...</p>';
-            
-            try {
-                // For now, show placeholder comments
-                commentsList.innerHTML = `
-                    <div class="flex gap-3 items-start">
-                        <div class="w-8 h-8 rounded-full bg-[#ca9627] flex items-center justify-center flex-shrink-0">
-                            <span class="text-sm font-bold">U</span>
-                        </div>
-                        <div class="flex-1">
-                            <p class="font-semibold text-sm">User123</p>
-                            <p class="text-sm text-gray-300">Great recipe! Love this video 🍳</p>
-                        </div>
-                    </div>
-                `;
-            } catch (error) {
-                console.error('Failed to load comments:', error);
-                commentsList.innerHTML = '<p class="text-gray-400 text-center">No comments yet</p>';
-            }
+            commentsList.innerHTML = '<p class="text-gray-400 text-center">No comments yet</p>';
         }
 
         document.getElementById('submit-comment').addEventListener('click', async () => {
@@ -1328,18 +1336,33 @@
             inboxContent.innerHTML = '<p class="text-gray-400 text-center">Loading...</p>';
             
             try {
-                // For now, show placeholder notifications
-                inboxContent.innerHTML = `
-                    <div class="space-y-4">
+                // Show saved videos in inbox
+                const savedVideos = JSON.parse(localStorage.getItem('saved_videos') || '[]');
+                
+                if (savedVideos.length === 0) {
+                    inboxContent.innerHTML = `
                         <div class="text-center py-8 text-gray-400">
-                            <p>No notifications yet</p>
-                            <p class="text-sm mt-2">When users like your videos, you'll see them here</p>
+                            <p>No saved videos yet</p>
+                            <p class="text-sm mt-2">Tap the bookmark icon on videos to save them</p>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    inboxContent.innerHTML = `
+                        <div class="grid grid-cols-3 gap-1">
+                            ${savedVideos.map(video => `
+                                <div class="aspect-[9/16] bg-gray-800 relative cursor-pointer">
+                                    <img src="https://image.mux.com/${video.playback_id}/thumbnail.webp?width=200&height=356&fit_mode=crop" 
+                                         alt="${video.title}" 
+                                         class="w-full h-full object-cover"
+                                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 356%22%3E%3Crect fill=%22%23333%22 width=%22200%22 height=%22356%22/%3E%3C/svg%3E'">
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
             } catch (error) {
                 console.error('Failed to load inbox:', error);
-                inboxContent.innerHTML = '<p class="text-gray-400 text-center">Failed to load notifications</p>';
+                inboxContent.innerHTML = '<p class="text-gray-400 text-center">Failed to load saved videos</p>';
             }
         }
 
