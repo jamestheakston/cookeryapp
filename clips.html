@@ -563,7 +563,10 @@
                 });
 
                 if (!response.ok) {
-                    console.error('Failed to create user profile:', await response.text());
+                    const error = await response.text();
+                    console.error('Failed to create user profile:', error);
+                    // Try using service role key as fallback (you'll need to add this to your code)
+                    // For now, just log the error - user needs to fix RLS policy
                 }
             } catch (error) {
                 console.error('Error creating user profile:', error);
@@ -732,12 +735,23 @@
         });
 
         function hideAllPages() {
-            document.getElementById('video-feed').style.display = 'none';
-            document.getElementById('discover-page').classList.add('hidden');
-            document.getElementById('inbox-page').classList.add('hidden');
-            document.getElementById('profile-modal').classList.add('hidden');
-            document.getElementById('profile-modal').classList.remove('flex');
-            document.getElementById('auth-page').classList.add('hidden');
+            const videoFeed = document.getElementById('video-feed');
+            if (videoFeed) videoFeed.style.display = 'none';
+            
+            const discoverPage = document.getElementById('discover-page');
+            if (discoverPage) discoverPage.classList.add('hidden');
+            
+            const inboxPage = document.getElementById('inbox-page');
+            if (inboxPage) inboxPage.classList.add('hidden');
+            
+            const profileModal = document.getElementById('profile-modal');
+            if (profileModal) {
+                profileModal.classList.add('hidden');
+                profileModal.classList.remove('flex');
+            }
+            
+            const authPage = document.getElementById('auth-page');
+            if (authPage) authPage.classList.add('hidden');
         }
 
         function updateNavActive(activeId) {
@@ -951,11 +965,26 @@
 
         // Initialize app - start on Home
         function initializeApp() {
-            hideAllPages();
-            document.getElementById('video-feed').style.display = 'block';
-            updateNavActive('home-nav');
-            // Load videos after a short delay to ensure DOM is ready
-            setTimeout(() => loadVideos(), 100);
+            // Wait for DOM to be ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    hideAllPages();
+                    const videoFeed = document.getElementById('video-feed');
+                    if (videoFeed) {
+                        videoFeed.style.display = 'block';
+                        updateNavActive('home-nav');
+                        setTimeout(() => loadVideos(), 100);
+                    }
+                });
+            } else {
+                hideAllPages();
+                const videoFeed = document.getElementById('video-feed');
+                if (videoFeed) {
+                    videoFeed.style.display = 'block';
+                    updateNavActive('home-nav');
+                    setTimeout(() => loadVideos(), 100);
+                }
+            }
         }
 
         // Start the app
