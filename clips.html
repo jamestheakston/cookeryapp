@@ -701,9 +701,12 @@
                 videoItem.innerHTML = `
                     <div class="relative w-full max-w-md mx-auto h-full">
                         <mux-player 
+                            id="video-${item.id}"
                             playback-id="${playbackId}"
-                            metadata-video-title="${title}"
                             stream-type="on-demand"
+                            autoplay
+                            muted
+                            loop
                             class="w-full h-full object-cover"
                         ></mux-player>
                         
