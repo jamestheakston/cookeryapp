@@ -355,8 +355,8 @@
 
     <!-- Welcome Modal (Before Onboarding) -->
     <div id="welcome-modal" class="fixed inset-0 bg-black/95 z-[210] hidden items-center justify-center p-4">
-        <div class="text-center">
-            <dotlottie-wc src="https://lottie.host/120dd140-3778-4c6c-a467-1a9e2d093355/jU44iJJZKu.lottie" style="width: 300px; height: 300px" autoplay loop></dotlottie-wc>
+        <div class="text-center flex flex-col items-center justify-center">
+            <dotlottie-wc src="https://lottie.host/120dd140-3778-4c6c-a467-1a9e2d093355/jU44iJJZKu.lottie" style="width: 180px; height: 180px" autoplay loop></dotlottie-wc>
             <h2 class="text-3xl font-bold mt-8 mb-4 text-white">Welcome to Cookery Clips</h2>
             <p class="text-gray-300 text-lg max-w-md mx-auto leading-relaxed">
                 Share your culinary journey with the world. Whether it's your latest creation or an all-time favourite, the world wants to see what you're cooking.
@@ -367,10 +367,11 @@
         </div>
     </div>
 
-    <!-- Onboarding Modal -->
-    <div id="onboarding-modal" class="fixed inset-0 bg-black/90 z-[200] hidden items-center justify-center p-4">
-        <div class="bg-gray-900 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <!-- Onboarding Slide-up Menu -->
+    <div id="onboarding-modal" class="fixed inset-0 bg-black/50 z-[200] hidden">
+        <div class="absolute bottom-0 left-0 right-0 bg-gray-900 rounded-t-2xl transform translate-y-full transition-transform duration-300 max-h-[85vh] overflow-y-auto" id="onboarding-panel">
             <div class="p-6">
+                <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
                 <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-bold">Complete Your Profile</h2>
                     <div class="flex gap-2">
@@ -2002,7 +2003,7 @@
             }
 
             function nextOnboardingStep() {
-                if (onboardingStep < 3) {
+                if (onboardingStep < 4) {
                     onboardingStep++;
                     updateOnboardingStep();
                 }
@@ -2178,8 +2179,11 @@
                     }
                     onboardingStep = 0;
                     const onboardingModal = document.getElementById('onboarding-modal');
+                    const onboardingPanel = document.getElementById('onboarding-panel');
                     onboardingModal.classList.remove('hidden');
-                    onboardingModal.classList.add('flex');
+                    setTimeout(() => {
+                        onboardingPanel.classList.remove('translate-y-full');
+                    }, 10);
                     updateOnboardingStep();
                 });
             }
@@ -2206,12 +2210,29 @@
                     
                     // Close onboarding modal
                     const onboardingModal = document.getElementById('onboarding-modal');
-                    onboardingModal.classList.add('hidden');
-                    onboardingModal.classList.remove('flex');
+                    const onboardingPanel = document.getElementById('onboarding-panel');
+                    onboardingPanel.classList.add('translate-y-full');
+                    setTimeout(() => {
+                        onboardingModal.classList.add('hidden');
+                    }, 300);
                     
                     // Show profile
                     openAuthPage();
                 }
+            }
+
+            // Close onboarding modal when clicking outside
+            const onboardingModal = document.getElementById('onboarding-modal');
+            if (onboardingModal) {
+                onboardingModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'onboarding-modal') {
+                        const onboardingPanel = document.getElementById('onboarding-panel');
+                        onboardingPanel.classList.add('translate-y-full');
+                        setTimeout(() => {
+                            onboardingModal.classList.add('hidden');
+                        }, 300);
+                    }
+                });
             }
 
             // Auto-unmute on scroll after first unmute
