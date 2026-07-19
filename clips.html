@@ -421,51 +421,83 @@
         </div>
     </div>
 
-    <!-- Share Modal -->
-    <div id="share-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-[160] hidden items-center justify-center p-4">
-        <div class="bg-gray-900 rounded-2xl w-full max-w-sm max-h-[80vh] overflow-y-auto">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold">Share to</h2>
-                    <button id="close-share-modal" class="p-2 hover:bg-white/10 rounded-full transition-colors">
-                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+    <!-- Share Slide-up Modal -->
+    <div id="share-modal" class="fixed inset-0 bg-black/50 z-[150] hidden">
+        <div class="absolute bottom-0 left-0 right-0 bg-gray-900 rounded-t-2xl transform translate-y-full transition-transform duration-300 max-h-[70vh]" id="share-panel">
+            <div class="p-4">
+                <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
+                <h3 class="text-lg font-bold mb-4">Share to</h3>
+                
+                <div class="flex flex-col items-center gap-4 mb-4">
+                    <button class="share-option flex flex-col items-center gap-2" data-platform="copy">
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ca9627" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">Copy link</span>
+                    </button>
+                    
+                    <button class="share-option flex flex-col items-center gap-2" data-platform="whatsapp">
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">WhatsApp</span>
+                    </button>
+                    
+                    <button class="share-option flex flex-col items-center gap-2" data-platform="twitter">
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-2.7.5-5.6 2.9-7.3-1.4-.1-2.9.3-4-1.1 0 0 0-.1.1-.1 0 1.4 1 2.8 1.1 4.3 1.1 1.4 0 2.8-.1 4.3-.1 2.5 2.1 5.6 1.5 8.5-1.1 2.5-2.1 5.6-1.5 8.5-1.1z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">Twitter</span>
+                    </button>
+                    
+                    <button class="share-option flex flex-col items-center gap-2" data-platform="facebook">
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">Facebook</span>
+                    </button>
+                    
+                    <button class="share-option flex flex-col items-center gap-2" data-platform="instagram">
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">Instagram</span>
+                    </button>
+                    
+                    <button class="share-option flex flex-col items-center gap-2" data-platform="tiktok">
+                        <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                            </svg>
+                        </div>
+                        <span class="text-xs text-gray-400">TikTok</span>
                     </button>
                 </div>
                 
-                <div class="space-y-4">
-                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="copy">
-                        <i data-lucide="link" style="width: 24px; height: 24px;" class="text-[#ca9627]"></i>
-                        <span>Copy link</span>
-                    </button>
-                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="whatsapp">
-                        <i data-lucide="message-square" style="width: 24px; height: 24px;" class="text-green-500"></i>
-                        <span>WhatsApp</span>
-                    </button>
-                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="twitter">
-                        <i data-lucide="twitter" style="width: 24px; height: 24px;" class="text-blue-400"></i>
-                        <span>Twitter</span>
-                    </button>
-                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="facebook">
-                        <i data-lucide="facebook" style="width: 24px; height: 24px;" class="text-blue-600"></i>
-                        <span>Facebook</span>
-                    </button>
-                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="instagram">
-                        <i data-lucide="instagram" style="width: 24px; height: 24px;" class="text-pink-500"></i>
-                        <span>Instagram</span>
-                    </button>
-                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="tiktok">
-                        <i data-lucide="music" style="width: 24px; height: 24px;" class="text-white"></i>
-                        <span>TikTok</span>
-                    </button>
-                </div>
-                
-                <div class="mt-6 pt-4 border-t border-gray-700">
-                    <p class="text-sm text-gray-400 mb-2">Video link:</p>
+                <div class="mt-4 pt-4 border-t border-gray-700">
+                    <p class="text-sm text-gray-400 mb-2 text-center">Video link:</p>
                     <div class="flex items-center gap-2">
                         <input type="text" id="share-link-input" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg p-2 text-white text-sm" readonly>
                         <button id="copy-link-btn" class="px-4 py-2 bg-[#ca9627] text-white rounded-lg text-sm">Copy</button>
                     </div>
                 </div>
+                
+                <button id="close-share-modal" class="w-full mt-4 p-3 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors">
+                    Cancel
+                </button>
             </div>
         </div>
     </div>
@@ -1433,17 +1465,22 @@
                     document.getElementById('share-link-input').value = shareLink;
                     
                     const shareModal = document.getElementById('share-modal');
+                    const sharePanel = document.getElementById('share-panel');
                     shareModal.classList.remove('hidden');
-                    shareModal.classList.add('flex');
-                    lucide.createIcons();
+                    setTimeout(() => {
+                        sharePanel.classList.remove('translate-y-full');
+                    }, 10);
                 });
             });
 
             // Close share modal
             document.getElementById('close-share-modal').addEventListener('click', () => {
                 const shareModal = document.getElementById('share-modal');
-                shareModal.classList.add('hidden');
-                shareModal.classList.remove('flex');
+                const sharePanel = document.getElementById('share-panel');
+                sharePanel.classList.add('translate-y-full');
+                setTimeout(() => {
+                    shareModal.classList.add('hidden');
+                }, 300);
             });
 
             // Share options
