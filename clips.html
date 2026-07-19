@@ -140,6 +140,12 @@
 
     <!-- Video Feed -->
     <div class="video-container hidden" id="video-feed">
+        <!-- Scroll Gesture Overlay for First-Time Users -->
+        <div id="scroll-gesture-overlay" class="fixed inset-0 z-[50] flex flex-col items-center justify-center pointer-events-none hidden">
+            <canvas id="gestureCanvas" width="300" height="500" style="background: transparent;"></canvas>
+            <p class="text-white text-2xl font-semibold mt-4">Scroll</p>
+        </div>
+        
         <!-- Videos will be loaded dynamically from database -->
         <div id="no-videos" class="flex items-center justify-center h-full">
             <div class="text-center">
@@ -151,7 +157,7 @@
     </div>
 
     <!-- Auth/Profile Page -->
-    <div id="auth-page" class="auth-page fixed inset-0 bg-black z-[100] flex-col hidden">
+    <div id="auth-page" class="auth-page fixed inset-0 bg-black z-[50] flex-col hidden pt-16 pb-20 overflow-y-auto">
         <div class="max-w-lg mx-auto w-full p-6 flex flex-col h-full">
             <!-- Auth Required Section -->
             <div id="auth-required" class="flex-1 flex flex-col justify-center">
@@ -779,6 +785,7 @@
             const inboxPage = document.getElementById('inbox-page');
             const discoverPage = document.getElementById('discover-page');
             const uploadModal = document.getElementById('upload-modal');
+            const scrollGestureOverlay = document.getElementById('scroll-gesture-overlay');
             
             // Pause all videos when hiding video feed
             const videoPlayers = document.querySelectorAll('mux-player');
@@ -787,6 +794,12 @@
                     player.pause();
                 }
             });
+            
+            // Hide scroll gesture overlay when switching pages
+            if (scrollGestureOverlay) {
+                scrollGestureOverlay.classList.add('hidden');
+                scrollGestureOverlay.classList.remove('flex');
+            }
             
             if (videoFeed) videoFeed.classList.add('hidden');
             if (authPage) authPage.classList.add('hidden');
@@ -2534,6 +2547,108 @@
             alert('Recipe connection feature coming soon!');
         });
 
+        // Scroll gesture animation for first-time users
+        function initScrollGestureAnimation() {
+            const canvas = document.getElementById('gestureCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const handImg = new Image();
+            
+            // Using a proxy to handle CORS for external imagery
+            const originalUrl = 'https://pics.clipartpng.com/Tuching_Finger_Hand_PNG_Clip_Art-1619.png';
+            const proxyUrl = 'https://images.weserv.nl/?url='; 
+            
+            handImg.crossOrigin = "anonymous";
+            handImg.src = proxyUrl + encodeURIComponent(originalUrl);
+
+            let progress = 0; 
+            let isImageLoaded = false;
+            let animationId = null;
+
+            handImg.onload = () => { isImageLoaded = true; };
+
+            function easeInOut(t) {
+                return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw shorter, cleaner dotted guide line
+                ctx.beginPath();
+                ctx.setLineDash([6, 6]);
+                ctx.strokeStyle = '#9ca3af';
+                ctx.lineWidth = 2;
+                ctx.moveTo(150, 300); 
+                ctx.lineTo(150, 200); 
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                if (isImageLoaded) {
+                    // Reduced hand size for a cleaner aesthetic
+                    const w = 30; 
+                    const h = 50; 
+                    
+                    const startY = 280;
+                    const endY = 180;
+                    
+                    // Calculate position using progress
+                    const currentY = startY + (endY - startY) * easeInOut(progress);
+
+                    ctx.drawImage(handImg, 150 - w / 2, currentY, w, h);
+                }
+
+                // Adjusted speed increment
+                progress += 0.015; 
+                
+                // Loop instantly
+                if (progress > 1.0) { 
+                    progress = 0;
+                }
+
+                animationId = requestAnimationFrame(animate);
+            }
+
+            animate();
+
+            return () => {
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            };
+        }
+
+        // Show scroll gesture overlay for first-time users
+        function showScrollGestureOverlay() {
+            const hasSeenScrollGesture = localStorage.getItem('hasSeenScrollGesture');
+            
+            if (!hasSeenScrollGesture) {
+                const overlay = document.getElementById('scroll-gesture-overlay');
+                if (overlay) {
+                    overlay.classList.remove('hidden');
+                    overlay.classList.add('flex');
+                    
+                    // Initialize animation
+                    const cleanupAnimation = initScrollGestureAnimation();
+                    
+                    // Hide overlay after user scrolls
+                    let scrollTimeout;
+                    const handleScroll = () => {
+                        scrollTimeout = setTimeout(() => {
+                            overlay.classList.add('hidden');
+                            overlay.classList.remove('flex');
+                            localStorage.setItem('hasSeenScrollGesture', 'true');
+                            cleanupAnimation();
+                            document.getElementById('video-feed').removeEventListener('scroll', handleScroll);
+                        }, 500);
+                    };
+                    
+                    document.getElementById('video-feed').addEventListener('scroll', handleScroll);
+                }
+            }
+        }
+
         // Comments modal functionality
         let currentCommentVideoId = null;
 
@@ -2766,6 +2881,9 @@
 
         // Load videos on page load
         loadVideos();
+
+        // Show scroll gesture overlay for first-time users
+        showScrollGestureOverlay();
     </script>
 </body>
 </html>
