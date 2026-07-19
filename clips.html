@@ -650,7 +650,10 @@
             updateNavActive('profile-nav');
             loadUserProfile();
         });
-        backToFeed.addEventListener('click', closeAuthPage);
+        
+        if (backToFeed) {
+            backToFeed.addEventListener('click', closeAuthPage);
+        }
 
         // Toggle between sign in and sign up forms
         showSignup.addEventListener('click', () => {
