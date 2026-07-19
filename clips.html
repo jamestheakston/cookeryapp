@@ -109,12 +109,8 @@
                 <span class="font-serif text-xl font-bold tracking-tight">Cookery Clips</span>
             </div>
             <div class="flex items-center gap-4">
-                <button class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                <button id="search-btn" class="p-2 hover:bg-white/10 rounded-full transition-colors">
                     <i data-lucide="search" style="width: 24px; height: 24px;"></i>
-                </button>
-                <button id="upload-btn" class="bg-[#ca9627] text-white px-4 py-2 rounded-full font-semibold hover:bg-[#b8861f] transition-colors flex items-center gap-2">
-                    <i data-lucide="plus" style="width: 20px; height: 20px;"></i>
-                    Upload
                 </button>
             </div>
         </div>
@@ -224,6 +220,13 @@
 
                     <div class="flex items-center gap-2 mb-2">
                         <h3 id="profile-display-name" class="text-xl font-bold">User Name</h3>
+                        <div id="profile-verified-badge" class="hidden">
+                            <svg class="verified-badge" viewBox="0 0 122.88 116.87">
+                                <defs><style>.cls-1{fill:#10a64a;fill-rule:evenodd;}.cls-2{fill:#fff;}</style></defs>
+                                <polygon class="cls-1" points="61.37 8.24 80.43 0 90.88 17.79 111.15 22.32 109.15 42.85 122.88 58.43 109.2 73.87 111.15 94.55 91 99 80.43 116.87 61.51 108.62 42.45 116.87 32 99.08 11.73 94.55 13.73 74.01 0 58.43 13.68 42.99 11.73 22.32 31.88 17.87 42.45 0 61.37 8.24 61.37 8.24"/>
+                                <path class="cls-2" d="M37.92,65c-6.07-6.53,3.25-16.26,10-10.1,2.38,2.17,5.84,5.34,8.24,7.49L74.66,39.66C81.1,33,91.27,42.78,84.91,49.48L61.67,77.2a7.13,7.13,0,0,1-9.9.44C47.83,73.89,42.05,68.5,37.92,65Z"/>
+                            </svg>
+                        </div>
                         <i data-lucide="lock" style="width: 16px; height: 16px;" class="text-gray-400"></i>
                         <button id="edit-profile-btn" class="ml-2 px-4 py-1 border border-gray-600 rounded text-sm">Edit profile</button>
                     </div>
@@ -468,6 +471,23 @@
                         <input type="text" id="share-link-input" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg p-2 text-white text-sm" readonly>
                         <button id="copy-link-btn" class="px-4 py-2 bg-[#ca9627] text-white rounded-lg text-sm">Copy</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="search-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-[160] hidden items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl w-full max-w-lg">
+            <div class="p-4">
+                <div class="flex items-center gap-3 mb-4">
+                    <button id="close-search-modal" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                    </button>
+                    <input type="text" id="search-input" placeholder="Search videos, users, hashtags..." class="flex-1 bg-gray-800 border border-gray-700 rounded-lg p-3 text-white">
+                </div>
+                <div id="search-results" class="space-y-2 max-h-[60vh] overflow-y-auto">
+                    <p class="text-gray-400 text-center py-8">Start typing to search...</p>
                 </div>
             </div>
         </div>
@@ -779,7 +799,7 @@
                     avatar: session.user.user_metadata.avatar || null
                 };
                 localStorage.setItem('cookery_user', JSON.stringify(currentUser));
-                openAuthPage();
+                // Don't open auth page, stay on home
             } else if (event === 'SIGNED_OUT') {
                 currentUser = null;
                 localStorage.removeItem('cookery_user');
@@ -798,6 +818,14 @@
             
             if (currentUser.avatar) {
                 document.getElementById('profile-avatar').innerHTML = `<img src="${currentUser.avatar}" alt="Avatar" class="w-24 h-24 rounded-full object-cover">`;
+            }
+            
+            // Show verification badge if user is verified
+            const verifiedBadge = document.getElementById('profile-verified-badge');
+            if (currentUser.is_verified) {
+                verifiedBadge.classList.remove('hidden');
+            } else {
+                verifiedBadge.classList.add('hidden');
             }
             
             // Show profile content and hide auth required
@@ -1454,6 +1482,59 @@
                 const shareLink = document.getElementById('share-link-input').value;
                 navigator.clipboard.writeText(shareLink);
                 alert('Link copied to clipboard!');
+            });
+
+            // Search functionality
+            document.getElementById('search-btn').addEventListener('click', () => {
+                const searchModal = document.getElementById('search-modal');
+                searchModal.classList.remove('hidden');
+                searchModal.classList.add('flex');
+                document.getElementById('search-input').focus();
+                lucide.createIcons();
+            });
+
+            document.getElementById('close-search-modal').addEventListener('click', () => {
+                const searchModal = document.getElementById('search-modal');
+                searchModal.classList.add('hidden');
+                searchModal.classList.remove('flex');
+            });
+
+            document.getElementById('search-input').addEventListener('input', async (e) => {
+                const query = e.target.value.trim();
+                const searchResults = document.getElementById('search-results');
+                
+                if (query.length < 2) {
+                    searchResults.innerHTML = '<p class="text-gray-400 text-center py-8">Start typing to search...</p>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`https://ojvigxnwweixjhugekmm.supabase.co/rest/v1/videos?title=ilike.%${query}%&or=(description.ilike.%${query}%,hashtags.cs.{${query}})&order=created_at.desc&limit=10`, {
+                        headers: {
+                            'apikey': 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W',
+                            'Authorization': 'Bearer sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W'
+                        }
+                    });
+
+                    const videos = await response.json();
+                    
+                    if (videos.length === 0) {
+                        searchResults.innerHTML = '<p class="text-gray-400 text-center py-8">No results found</p>';
+                    } else {
+                        searchResults.innerHTML = videos.map(video => `
+                            <div class="flex items-center gap-3 p-3 bg-gray-800 rounded-lg hover:bg-gray-700 cursor-pointer" onclick="window.location.href='?video=${video.id}'">
+                                <img src="https://image.mux.com/${video.playback_id}/thumbnail.webp?width=100&height=100&fit_mode=crop" alt="${video.title}" class="w-16 h-16 rounded object-cover">
+                                <div class="flex-1">
+                                    <p class="font-medium">${video.title}</p>
+                                    <p class="text-sm text-gray-400">${video.description?.substring(0, 50) || ''}...</p>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                } catch (error) {
+                    console.error('Search error:', error);
+                    searchResults.innerHTML = '<p class="text-red-400 text-center py-8">Search failed. Please try again.</p>';
+                }
             });
 
             // Comment buttons
