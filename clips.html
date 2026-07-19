@@ -12,6 +12,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-player" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.14/dist/dotlottie-wc.js" type="module"></script>
     <style>
         body { 
             background-color: #0f0f0f; 
@@ -343,6 +344,20 @@
                     </button>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- Welcome Modal (Before Onboarding) -->
+    <div id="welcome-modal" class="fixed inset-0 bg-black/95 z-[210] hidden items-center justify-center p-4">
+        <div class="text-center">
+            <dotlottie-wc src="https://lottie.host/120dd140-3778-4c6c-a467-1a9e2d093355/jU44iJJZKu.lottie" style="width: 300px; height: 300px" autoplay loop></dotlottie-wc>
+            <h2 class="text-3xl font-bold mt-8 mb-4 text-white">Welcome to Cookery Clips</h2>
+            <p class="text-gray-300 text-lg max-w-md mx-auto leading-relaxed">
+                Share your culinary journey with the world. Whether it's your latest creation or an all-time favourite, the world wants to see what you're cooking.
+            </p>
+            <button id="start-onboarding-btn" class="mt-8 bg-[#ca9627] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
+                Get Started
+            </button>
         </div>
     </div>
 
@@ -765,6 +780,14 @@
             const discoverPage = document.getElementById('discover-page');
             const uploadModal = document.getElementById('upload-modal');
             
+            // Pause all videos when hiding video feed
+            const videoPlayers = document.querySelectorAll('mux-player');
+            videoPlayers.forEach(player => {
+                if (player.pause) {
+                    player.pause();
+                }
+            });
+            
             if (videoFeed) videoFeed.classList.add('hidden');
             if (authPage) authPage.classList.add('hidden');
             if (authPage) authPage.classList.remove('flex');
@@ -944,13 +967,10 @@
                 // Show onboarding after successful signup
                 if (data.user) {
                     closeAuthPage();
-                    // Start onboarding process
-                    onboardingData.email = data.user.email;
-                    onboardingStep = 0;
-                    const onboardingModal = document.getElementById('onboarding-modal');
-                    onboardingModal.classList.remove('hidden');
-                    onboardingModal.classList.add('flex');
-                    updateOnboardingStep();
+                    // Show welcome modal first
+                    const welcomeModal = document.getElementById('welcome-modal');
+                    welcomeModal.classList.remove('hidden');
+                    welcomeModal.classList.add('flex');
                 }
                 // Profile will be created automatically when user signs in
             } catch (error) {
@@ -2127,6 +2147,27 @@
 
                     // Complete onboarding and create profile
                     await finishOnboarding();
+                });
+            }
+
+            // Welcome modal start button
+            const startOnboardingBtn = document.getElementById('start-onboarding-btn');
+            if (startOnboardingBtn) {
+                startOnboardingBtn.addEventListener('click', async () => {
+                    const welcomeModal = document.getElementById('welcome-modal');
+                    welcomeModal.classList.add('hidden');
+                    welcomeModal.classList.remove('flex');
+                    
+                    // Start onboarding process
+                    const session = await supabaseClient.auth.getSession();
+                    if (session.data.session?.user) {
+                        onboardingData.email = session.data.session.user.email;
+                    }
+                    onboardingStep = 0;
+                    const onboardingModal = document.getElementById('onboarding-modal');
+                    onboardingModal.classList.remove('hidden');
+                    onboardingModal.classList.add('flex');
+                    updateOnboardingStep();
                 });
             }
 
