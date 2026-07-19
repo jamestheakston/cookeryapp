@@ -98,6 +98,20 @@
             display: inline-block;
             margin-left: 4px;
         }
+        
+        @keyframes indeterminate {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+        
+        .animate-indeterminate {
+            animation: indeterminate 1.5s ease-in-out infinite;
+            width: 30%;
+        }
     </style>
 </head>
 <body class="bg-black text-white">
@@ -345,10 +359,9 @@
                     <div id="upload-progress" class="hidden mb-4">
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm">Uploading...</span>
-                            <span id="progress-percent" class="text-sm">0%</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div id="progress-bar" class="bg-[#ca9627] h-2 rounded-full transition-all" style="width: 0%"></div>
+                        <div class="w-full bg-gray-700 rounded-full h-2 overflow-hidden">
+                            <div id="progress-bar" class="bg-[#ca9627] h-2 rounded-full animate-indeterminate"></div>
                         </div>
                         <span id="estimated-time" class="text-xs text-gray-400">Estimated time: 30s</span>
                     </div>
@@ -1056,7 +1069,6 @@
         const uploadForm = document.getElementById('upload-form');
         const uploadProgress = document.getElementById('upload-progress');
         const progressBar = document.getElementById('progress-bar');
-        const progressPercent = document.getElementById('progress-percent');
 
         function openModal() {
             if (!currentUser) {
