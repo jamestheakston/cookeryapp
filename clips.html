@@ -40,6 +40,13 @@
             background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
             z-index: 10;
         }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
         .action-btn {
             transition: transform 0.2s ease;
         }
@@ -131,7 +138,7 @@
     </nav>
 
     <!-- Video Feed -->
-    <div class="video-container" id="video-feed">
+    <div class="video-container hidden" id="video-feed">
         <!-- Videos will be loaded dynamically from database -->
         <div id="no-videos" class="flex items-center justify-center h-full">
             <div class="text-center">
@@ -143,7 +150,7 @@
     </div>
 
     <!-- Auth/Profile Page -->
-    <div id="auth-page" class="auth-page fixed inset-0 bg-black z-0 flex-col">
+    <div id="auth-page" class="auth-page fixed inset-0 bg-black z-[100] flex-col hidden">
         <div class="max-w-lg mx-auto w-full p-6 flex flex-col h-full">
             <!-- Auth Required Section -->
             <div id="auth-required" class="flex-1 flex flex-col justify-center">
@@ -241,21 +248,6 @@
                         </div>
                     </div>
                 </section>
-
-                <nav class="flex items-center justify-around border-b border-gray-800 mb-4">
-                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-white border-b-2 border-[#ca9627]" data-tab="posts">
-                        <span class="text-sm">Posts</span>
-                    </button>
-                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-gray-400" data-tab="private">
-                        <span class="text-sm">Private</span>
-                    </button>
-                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-gray-400" data-tab="bookmarks">
-                        <span class="text-sm">Bookmarks</span>
-                    </button>
-                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-gray-400" data-tab="liked">
-                        <span class="text-sm">Liked</span>
-                    </button>
-                </nav>
 
                 <div id="user-videos-grid" class="grid grid-cols-3 gap-0.5 px-0.5">
                 </div>
@@ -365,6 +357,7 @@
                         <div class="onboarding-step-indicator w-3 h-3 rounded-full bg-gray-600" data-step="1"></div>
                         <div class="onboarding-step-indicator w-3 h-3 rounded-full bg-gray-600" data-step="2"></div>
                         <div class="onboarding-step-indicator w-3 h-3 rounded-full bg-gray-600" data-step="3"></div>
+                        <div class="onboarding-step-indicator w-3 h-3 rounded-full bg-gray-600" data-step="4"></div>
                     </div>
                 </div>
 
@@ -442,7 +435,34 @@
                     </div>
                     <p class="text-gray-400 text-sm mb-4">We need to verify you're at least 13 years old to use Cookery Clips.</p>
                     <input type="date" id="onboarding-dob" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white mb-4">
-                    <button id="complete-onboarding" class="w-full py-3 rounded-lg bg-[#ca9627] text-white font-semibold hover:bg-[#b8861f] transition-colors">Complete</button>
+                    <button id="next-dob" class="w-full py-3 rounded-lg bg-[#ca9627] text-white font-semibold hover:bg-[#b8861f] transition-colors">Next</button>
+                </div>
+
+                <!-- Step 4: Beta & Terms Agreement (Required) -->
+                <div id="onboarding-step-4" class="onboarding-step hidden">
+                    <div class="flex items-center gap-3 mb-4">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ca9627" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <h3 class="text-lg font-semibold">Beta & Terms</h3>
+                        <span class="text-red-500 text-sm">*</span>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-4 mb-4 text-sm">
+                        <p class="mb-3"><strong>Beta Software:</strong> Cookery Clips is currently in beta. We use algorithms to personalize your content experience.</p>
+                        <p class="mb-3"><strong>Privacy Policy:</strong> Your data is used to improve our algorithm and provide personalized content. We respect your privacy.</p>
+                        <p><strong>Terms of Service:</strong> By using Cookery Clips, you agree to our community guidelines and terms.</p>
+                    </div>
+                    <div class="space-y-3 mb-4">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" id="agree-beta" class="mt-1 w-5 h-5 rounded border-gray-600 bg-gray-800 text-[#ca9627]">
+                            <span class="text-sm text-gray-300">I understand this is beta software and agree to the algorithm-based content personalization</span>
+                        </label>
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" id="agree-privacy" class="mt-1 w-5 h-5 rounded border-gray-600 bg-gray-800 text-[#ca9627]">
+                            <span class="text-sm text-gray-300">I agree to the Privacy Policy and Terms of Service</span>
+                        </label>
+                    </div>
+                    <button id="complete-onboarding" class="w-full py-3 rounded-lg bg-[#ca9627] text-white font-semibold hover:bg-[#b8861f] transition-colors">Complete Setup</button>
                 </div>
             </div>
         </div>
@@ -529,8 +549,8 @@
                 <div class="w-12 h-1 bg-gray-600 rounded-full mx-auto mb-4"></div>
                 <h3 class="text-lg font-bold mb-4">Share to</h3>
                 
-                <div class="flex flex-col items-center gap-4 mb-4">
-                    <button class="share-option flex flex-col items-center gap-2" data-platform="copy">
+                <div class="flex overflow-x-auto gap-4 mb-4 pb-2 scrollbar-hide">
+                    <button class="share-option flex flex-col items-center gap-2 flex-shrink-0" data-platform="copy">
                         <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ca9627" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
@@ -540,7 +560,7 @@
                         <span class="text-xs text-gray-400">Copy link</span>
                     </button>
                     
-                    <button class="share-option flex flex-col items-center gap-2" data-platform="whatsapp">
+                    <button class="share-option flex flex-col items-center gap-2 flex-shrink-0" data-platform="whatsapp">
                         <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -549,7 +569,7 @@
                         <span class="text-xs text-gray-400">WhatsApp</span>
                     </button>
                     
-                    <button class="share-option flex flex-col items-center gap-2" data-platform="twitter">
+                    <button class="share-option flex flex-col items-center gap-2 flex-shrink-0" data-platform="twitter">
                         <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-2.7.5-5.6 2.9-7.3-1.4-.1-2.9.3-4-1.1 0 0 0-.1.1-.1 0 1.4 1 2.8 1.1 4.3 1.1 1.4 0 2.8-.1 4.3-.1 2.5 2.1 5.6 1.5 8.5-1.1 2.5-2.1 5.6-1.5 8.5-1.1z"></path>
@@ -558,7 +578,7 @@
                         <span class="text-xs text-gray-400">Twitter</span>
                     </button>
                     
-                    <button class="share-option flex flex-col items-center gap-2" data-platform="facebook">
+                    <button class="share-option flex flex-col items-center gap-2 flex-shrink-0" data-platform="facebook">
                         <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
@@ -567,7 +587,7 @@
                         <span class="text-xs text-gray-400">Facebook</span>
                     </button>
                     
-                    <button class="share-option flex flex-col items-center gap-2" data-platform="instagram">
+                    <button class="share-option flex flex-col items-center gap-2 flex-shrink-0" data-platform="instagram">
                         <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -578,7 +598,7 @@
                         <span class="text-xs text-gray-400">Instagram</span>
                     </button>
                     
-                    <button class="share-option flex flex-col items-center gap-2" data-platform="tiktok">
+                    <button class="share-option flex flex-col items-center gap-2 flex-shrink-0" data-platform="tiktok">
                         <div class="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center hover:bg-gray-700 transition-colors">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
@@ -737,6 +757,34 @@
         let userVideos = [];
         let ads = [];
 
+        // Hide all pages except the specified one
+        function hideAllPages() {
+            const videoFeed = document.getElementById('video-feed');
+            const authPage = document.getElementById('auth-page');
+            const inboxPage = document.getElementById('inbox-page');
+            const discoverPage = document.getElementById('discover-page');
+            const uploadModal = document.getElementById('upload-modal');
+            
+            if (videoFeed) videoFeed.classList.add('hidden');
+            if (authPage) authPage.classList.add('hidden');
+            if (authPage) authPage.classList.remove('flex');
+            if (inboxPage) inboxPage.classList.add('hidden');
+            if (discoverPage) discoverPage.classList.add('hidden');
+            if (uploadModal) uploadModal.classList.remove('active');
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            hideAllPages();
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.remove('hidden');
+                if (pageId === 'auth-page') {
+                    page.classList.add('flex');
+                }
+            }
+        }
+
         // Profile page functionality
         const profileNav = document.getElementById('profile-nav');
         const authPage = document.getElementById('auth-page');
@@ -789,12 +837,7 @@
                 showSignInModal();
                 return;
             }
-            hideAllPages();
-            const authPage = document.getElementById('auth-page');
-            if (authPage) {
-                authPage.classList.remove('hidden');
-                authPage.classList.add('flex');
-            }
+            showPage('auth-page');
             updateNavActive('profile-nav');
             loadUserProfile();
         });
@@ -901,7 +944,13 @@
                 // Show onboarding after successful signup
                 if (data.user) {
                     closeAuthPage();
-                    startOnboarding(data.user.email);
+                    // Start onboarding process
+                    onboardingData.email = data.user.email;
+                    onboardingStep = 0;
+                    const onboardingModal = document.getElementById('onboarding-modal');
+                    onboardingModal.classList.remove('hidden');
+                    onboardingModal.classList.add('flex');
+                    updateOnboardingStep();
                 }
                 // Profile will be created automatically when user signs in
             } catch (error) {
@@ -1100,12 +1149,16 @@
                                 <p class="text-white text-xs font-medium truncate">${video.title}</p>
                                 <div class="flex items-center gap-1 mt-1">
                                     <i data-lucide="play" style="width: 12px; height: 12px;" class="text-white"></i>
-                                    <span class="text-white text-xs">0</span>
+                                    <span class="text-white text-xs">${video.views || 0}</span>
                                 </div>
                             </div>
                         `;
+                        videoThumbnail.addEventListener('click', () => {
+                            window.location.href = `?video=${video.id}`;
+                        });
                         videosGrid.appendChild(videoThumbnail);
                     });
+                    
                     lucide.createIcons();
                 }
             } catch (error) {
@@ -1146,8 +1199,7 @@
         const homeNav = document.getElementById('home-nav');
         if (homeNav) {
             homeNav.addEventListener('click', () => {
-                hideAllPages();
-                document.getElementById('video-feed').style.display = 'block';
+                showPage('video-feed');
                 updateNavActive('home-nav');
             });
         }
@@ -1174,24 +1226,32 @@
             });
         }
 
+        // Hide all pages except the specified one
         function hideAllPages() {
             const videoFeed = document.getElementById('video-feed');
-            if (videoFeed) videoFeed.style.display = 'none';
-            
-            const discoverPage = document.getElementById('discover-page');
-            if (discoverPage) discoverPage.classList.add('hidden');
-            
-            const inboxPage = document.getElementById('inbox-page');
-            if (inboxPage) inboxPage.classList.add('hidden');
-            
-            const profileModal = document.getElementById('profile-modal');
-            if (profileModal) {
-                profileModal.classList.add('hidden');
-                profileModal.classList.remove('flex');
-            }
-            
             const authPage = document.getElementById('auth-page');
+            const inboxPage = document.getElementById('inbox-page');
+            const discoverPage = document.getElementById('discover-page');
+            const uploadModal = document.getElementById('upload-modal');
+            
+            if (videoFeed) videoFeed.classList.add('hidden');
             if (authPage) authPage.classList.add('hidden');
+            if (authPage) authPage.classList.remove('flex');
+            if (inboxPage) inboxPage.classList.add('hidden');
+            if (discoverPage) discoverPage.classList.add('hidden');
+            if (uploadModal) uploadModal.classList.remove('active');
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            hideAllPages();
+            const page = document.getElementById(pageId);
+            if (page) {
+                page.classList.remove('hidden');
+                if (pageId === 'auth-page') {
+                    page.classList.add('flex');
+                }
+            }
         }
 
         function updateNavActive(activeId) {
@@ -1475,8 +1535,11 @@
             // Combine videos with ads
             const feedItems = [];
             
-            // Add videos
-            videos.forEach(video => {
+            // Shuffle videos for algorithm
+            const shuffledVideos = [...videos].sort(() => Math.random() - 0.5);
+            
+            // Add shuffled videos
+            shuffledVideos.forEach(video => {
                 feedItems.push({ ...video, is_ad: false });
             });
 
@@ -1524,9 +1587,9 @@
                             metadata-video-title="${title}"
                             metadata-viewer-user-id="${currentUser?.id || 'anonymous'}"
                             stream-type="on-demand"
-                            autoplay
                             muted
                             loop
+                            loading="lazy"
                             style="width: 100%; height: 100%;"
                         ></mux-player>
                         
@@ -1613,6 +1676,25 @@
                     }
                 }, 100);
             });
+
+            // Implement scroll-based video playback
+            const videoItems = document.querySelectorAll('.video-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const player = entry.target.querySelector('mux-player');
+                    if (player) {
+                        if (entry.isIntersecting) {
+                            player.play();
+                        } else {
+                            player.pause();
+                        }
+                    }
+                });
+            }, {
+                threshold: 0.5
+            });
+
+            videoItems.forEach(item => observer.observe(item));
 
             console.log('Finished rendering, calling lucide.createIcons()');
             lucide.createIcons();
@@ -1732,6 +1814,20 @@
                     setTimeout(() => {
                         shareModal.classList.add('hidden');
                     }, 300);
+                });
+            }
+
+            // Close share modal when clicking outside
+            const shareModal = document.getElementById('share-modal');
+            if (shareModal) {
+                shareModal.addEventListener('click', (e) => {
+                    if (e.target.id === 'share-modal') {
+                        const sharePanel = document.getElementById('share-panel');
+                        sharePanel.classList.add('translate-y-full');
+                        setTimeout(() => {
+                            shareModal.classList.add('hidden');
+                        }, 300);
+                    }
                 });
             }
 
@@ -1988,9 +2084,9 @@
             }
 
             // DOB step (required)
-            const completeOnboarding = document.getElementById('complete-onboarding');
-            if (completeOnboarding) {
-                completeOnboarding.addEventListener('click', async () => {
+            const nextDob = document.getElementById('next-dob');
+            if (nextDob) {
+                nextDob.addEventListener('click', async () => {
                     const dob = document.getElementById('onboarding-dob').value;
                     if (!dob) {
                         alert('Please enter your date of birth');
@@ -2013,6 +2109,21 @@
                     }
 
                     onboardingData.dob = dob;
+                    nextOnboardingStep();
+                });
+            }
+
+            // Beta & Terms step (required)
+            const completeOnboarding = document.getElementById('complete-onboarding');
+            if (completeOnboarding) {
+                completeOnboarding.addEventListener('click', async () => {
+                    const agreeBeta = document.getElementById('agree-beta').checked;
+                    const agreePrivacy = document.getElementById('agree-privacy').checked;
+
+                    if (!agreeBeta || !agreePrivacy) {
+                        alert('You must agree to both the beta software terms and privacy policy to continue');
+                        return;
+                    }
 
                     // Complete onboarding and create profile
                     await finishOnboarding();
