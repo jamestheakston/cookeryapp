@@ -424,6 +424,55 @@
         </div>
     </div>
 
+    <!-- Share Modal -->
+    <div id="share-modal" class="fixed inset-0 bg-black/90 backdrop-blur-lg z-[160] hidden items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl w-full max-w-sm max-h-[80vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold">Share to</h2>
+                    <button id="close-share-modal" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="copy">
+                        <i data-lucide="link" style="width: 24px; height: 24px;" class="text-[#ca9627]"></i>
+                        <span>Copy link</span>
+                    </button>
+                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="whatsapp">
+                        <i data-lucide="message-square" style="width: 24px; height: 24px;" class="text-green-500"></i>
+                        <span>WhatsApp</span>
+                    </button>
+                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="twitter">
+                        <i data-lucide="twitter" style="width: 24px; height: 24px;" class="text-blue-400"></i>
+                        <span>Twitter</span>
+                    </button>
+                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="facebook">
+                        <i data-lucide="facebook" style="width: 24px; height: 24px;" class="text-blue-600"></i>
+                        <span>Facebook</span>
+                    </button>
+                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="instagram">
+                        <i data-lucide="instagram" style="width: 24px; height: 24px;" class="text-pink-500"></i>
+                        <span>Instagram</span>
+                    </button>
+                    <button class="share-option w-full flex items-center gap-4 p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition-colors" data-platform="tiktok">
+                        <i data-lucide="music" style="width: 24px; height: 24px;" class="text-white"></i>
+                        <span>TikTok</span>
+                    </button>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-700">
+                    <p class="text-sm text-gray-400 mb-2">Video link:</p>
+                    <div class="flex items-center gap-2">
+                        <input type="text" id="share-link-input" class="flex-1 bg-gray-800 border border-gray-700 rounded-lg p-2 text-white text-sm" readonly>
+                        <button id="copy-link-btn" class="px-4 py-2 bg-[#ca9627] text-white rounded-lg text-sm">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Comments Slide-up Modal -->
     <div id="comments-modal" class="fixed inset-0 bg-black/50 z-[150] hidden">
         <div class="absolute bottom-0 left-0 right-0 bg-gray-900 rounded-t-2xl transform translate-y-full transition-transform duration-300 max-h-[70vh]" id="comments-panel">
@@ -1315,6 +1364,12 @@
             // Follow buttons
             document.querySelectorAll('.follow-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
+                    const videoUser = this.dataset.user;
+                    // Prevent following yourself
+                    if (videoUser === currentUser?.username) {
+                        alert("You can't follow yourself!");
+                        return;
+                    }
                     this.classList.toggle('following');
                 });
             });
@@ -1332,12 +1387,9 @@
                         const videoItem = document.querySelector(`[data-video-id="${videoId}"]`);
                         if (videoItem) {
                             const playbackId = videoItem.querySelector('mux-player')?.getAttribute('playback-id');
-                            const title = videoItem.querySelector('.font-semibold')?.textContent || 'Untitled';
-                            
-                            if (playbackId) {
-                                savedVideos.push({ videoId, playbackId, title });
-                                localStorage.setItem('saved_videos', JSON.stringify(savedVideos));
-                            }
+                            const title = videoItem.querySelector('.font-semibold')?.textContent || '';
+                            savedVideos.push({ videoId, playbackId, title });
+                            localStorage.setItem('saved_videos', JSON.stringify(savedVideos));
                         }
                     } else {
                         // Remove from saved videos
@@ -1351,17 +1403,57 @@
             });
 
             // Share buttons
+            let currentShareVideoId = null;
             document.querySelectorAll('.share-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if (navigator.share) {
-                        navigator.share({
-                            title: 'Check out this cooking video!',
-                            url: window.location.href
-                        });
-                    } else {
-                        alert('Share link copied to clipboard!');
+                    currentShareVideoId = this.dataset.videoId;
+                    const shareLink = `https://cookeryapp.pages.dev/clips?video=${currentShareVideoId}`;
+                    document.getElementById('share-link-input').value = shareLink;
+                    
+                    const shareModal = document.getElementById('share-modal');
+                    shareModal.classList.remove('hidden');
+                    shareModal.classList.add('flex');
+                    lucide.createIcons();
+                });
+            });
+
+            // Close share modal
+            document.getElementById('close-share-modal').addEventListener('click', () => {
+                const shareModal = document.getElementById('share-modal');
+                shareModal.classList.add('hidden');
+                shareModal.classList.remove('flex');
+            });
+
+            // Share options
+            document.querySelectorAll('.share-option').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const platform = this.dataset.platform;
+                    const shareLink = `https://cookeryapp.pages.dev/clips?video=${currentShareVideoId}`;
+                    
+                    if (platform === 'copy') {
+                        navigator.clipboard.writeText(shareLink);
+                        alert('Link copied to clipboard!');
+                    } else if (platform === 'whatsapp') {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(shareLink)}`, '_blank');
+                    } else if (platform === 'twitter') {
+                        window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareLink)}`, '_blank');
+                    } else if (platform === 'facebook') {
+                        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareLink)}`, '_blank');
+                    } else if (platform === 'instagram') {
+                        alert('Instagram sharing requires the app. Link copied to clipboard!');
+                        navigator.clipboard.writeText(shareLink);
+                    } else if (platform === 'tiktok') {
+                        alert('TikTok sharing requires the app. Link copied to clipboard!');
+                        navigator.clipboard.writeText(shareLink);
                     }
                 });
+            });
+
+            // Copy link button
+            document.getElementById('copy-link-btn').addEventListener('click', () => {
+                const shareLink = document.getElementById('share-link-input').value;
+                navigator.clipboard.writeText(shareLink);
+                alert('Link copied to clipboard!');
             });
 
             // Comment buttons
