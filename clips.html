@@ -620,6 +620,37 @@
         </div>
     </div>
 
+    <!-- Sign In Modal -->
+    <div id="signin-modal" class="fixed inset-0 bg-black/90 z-[200] hidden items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl w-full max-w-sm">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold">Sign In</h2>
+                    <button id="close-signin-modal" class="p-2 hover:bg-white/10 rounded-full transition-colors">
+                        <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email</label>
+                        <input type="email" id="modal-signin-email" placeholder="Enter your email" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="modal-signin-password" placeholder="Enter your password" class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white">
+                    </div>
+                    <button id="modal-signin-btn" class="w-full bg-[#ca9627] text-white py-3 rounded-lg font-semibold hover:bg-[#b8861f] transition-colors">
+                        Sign In
+                    </button>
+                    <p class="text-center text-gray-400 text-sm">
+                        Don't have an account? <button id="modal-show-signup" class="text-[#ca9627] hover:underline">Sign Up</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Comments Slide-up Modal -->
     <div id="comments-modal" class="fixed inset-0 bg-black/50 z-[150] hidden">
         <div class="absolute bottom-0 left-0 right-0 bg-gray-900 rounded-t-2xl transform translate-y-full transition-transform duration-300 max-h-[70vh]" id="comments-panel">
@@ -737,9 +768,25 @@
             authPage.classList.remove('active');
         }
 
+        function showSignInModal() {
+            const signInModal = document.getElementById('signin-modal');
+            if (signInModal) {
+                signInModal.classList.remove('hidden');
+                signInModal.classList.add('flex');
+            }
+        }
+
+        function closeSignInModal() {
+            const signInModal = document.getElementById('signin-modal');
+            if (signInModal) {
+                signInModal.classList.add('hidden');
+                signInModal.classList.remove('flex');
+            }
+        }
+
         profileNav.addEventListener('click', () => {
             if (!currentUser) {
-                openAuthPage();
+                showSignInModal();
                 return;
             }
             hideAllPages();
@@ -766,6 +813,49 @@
             signupForm.classList.add('hidden');
             signinForm.classList.remove('hidden');
         });
+
+        // Modal sign-in functionality
+        const closeSignInModalBtn = document.getElementById('close-signin-modal');
+        if (closeSignInModalBtn) {
+            closeSignInModalBtn.addEventListener('click', closeSignInModal);
+        }
+
+        const modalShowSignup = document.getElementById('modal-show-signup');
+        if (modalShowSignup) {
+            modalShowSignup.addEventListener('click', () => {
+                closeSignInModal();
+                openAuthPage();
+                signupForm.classList.remove('hidden');
+                signinForm.classList.add('hidden');
+            });
+        }
+
+        const modalSignInBtn = document.getElementById('modal-signin-btn');
+        if (modalSignInBtn) {
+            modalSignInBtn.addEventListener('click', async () => {
+                const email = document.getElementById('modal-signin-email').value;
+                const password = document.getElementById('modal-signin-password').value;
+
+                if (!email || !password) {
+                    alert('Please enter email and password');
+                    return;
+                }
+
+                try {
+                    const { data, error } = await supabaseClient.auth.signInWithPassword({
+                        email,
+                        password
+                    });
+
+                    if (error) throw error;
+                    
+                    closeSignInModal();
+                } catch (error) {
+                    console.error('Sign in error:', error);
+                    alert('Sign in failed: ' + error.message);
+                }
+            });
+        }
 
         // Email/Password Sign In
         signinBtn.addEventListener('click', async () => {
@@ -1536,8 +1626,7 @@
             document.querySelectorAll('.like-btn').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     if (!currentUser) {
-                        alert('Please sign in to like videos');
-                        openAuthPage();
+                        showSignInModal();
                         return;
                     }
                     
@@ -1561,8 +1650,7 @@
             document.querySelectorAll('.follow-btn').forEach(btn => {
                 btn.addEventListener('click', async function() {
                     if (!currentUser) {
-                        alert('Please sign in to follow users');
-                        openAuthPage();
+                        showSignInModal();
                         return;
                     }
                     
@@ -1617,8 +1705,7 @@
             document.querySelectorAll('.share-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (!currentUser) {
-                        alert('Please sign in to share videos');
-                        openAuthPage();
+                        showSignInModal();
                         return;
                     }
                     
@@ -1993,8 +2080,7 @@
             document.querySelectorAll('.comment-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     if (!currentUser) {
-                        alert('Please sign in to comment on videos');
-                        openAuthPage();
+                        showSignInModal();
                         return;
                     }
                     
