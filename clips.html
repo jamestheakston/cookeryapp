@@ -190,35 +190,87 @@
 
             <!-- Profile Content Section -->
             <div id="profile-content" class="hidden flex-1 overflow-y-auto">
-                <div class="flex flex-col items-center mb-6">
-                    <div class="relative mb-3">
-                        <div id="profile-avatar" class="w-20 h-20 rounded-full bg-[#ca9627] flex items-center justify-center">
-                            <span class="text-2xl font-bold">U</span>
-                        </div>
-                        <input type="file" id="avatar-input" accept="image/*" class="hidden">
-                        <button id="change-avatar" class="absolute bottom-0 right-0 bg-white text-black p-2 rounded-full hover:bg-gray-200 transition-colors">
-                            <i data-lucide="camera" style="width: 16px; height: 16px;"></i>
+                <header class="flex items-center justify-between px-4 py-3">
+                    <button class="p-2">
+                        <i data-lucide="user" style="width: 24px; height: 24px;"></i>
+                    </button>
+                    <div class="flex gap-4">
+                        <button class="p-2">
+                            <i data-lucide="search" style="width: 24px; height: 24px;"></i>
+                        </button>
+                        <button class="p-2">
+                            <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
                         </button>
                     </div>
-                    <p class="text-xs text-gray-400 text-center mb-2">Images uploaded to ImgBB</p>
-                    <h3 id="profile-display-name" class="text-xl font-bold">User Name</h3>
-                    <p id="profile-username" class="text-gray-400 text-sm">@username</p>
-                    <div id="profile-verified-badge" class="hidden mt-1">
-                        <svg class="verified-badge" viewBox="0 0 122.88 116.87">
-                            <defs><style>.cls-1{fill:#10a64a;fill-rule:evenodd;}.cls-2{fill:#fff;}</style></defs>
-                            <polygon class="cls-1" points="61.37 8.24 80.43 0 90.88 17.79 111.15 22.32 109.15 42.85 122.88 58.43 109.2 73.87 111.15 94.55 91 99 80.43 116.87 61.51 108.62 42.45 116.87 32 99.08 11.73 94.55 13.73 74.01 0 58.43 13.68 42.99 11.73 22.32 31.88 17.87 42.45 0 61.37 8.24 61.37 8.24"/>
-                            <path class="cls-2" d="M37.92,65c-6.07-6.53,3.25-16.26,10-10.1,2.38,2.17,5.84,5.34,8.24,7.49L74.66,39.66C81.1,33,91.27,42.78,84.91,49.48L61.67,77.2a7.13,7.13,0,0,1-9.9.44C47.83,73.89,42.05,68.5,37.92,65Z"/>
-                        </svg>
+                </header>
+
+                <section class="flex flex-col items-center px-4 py-6">
+                    <div class="relative mb-4">
+                        <div id="profile-avatar" class="w-24 h-24 rounded-full bg-[#ca9627] flex items-center justify-center">
+                            <span class="text-3xl font-bold">U</span>
+                        </div>
+                        <input type="file" id="avatar-input" accept="image/*" class="hidden">
+                        <button id="change-avatar" class="absolute bottom-0 right-0 bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg">
+                            <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                        </button>
                     </div>
-                    <button id="edit-profile-btn" class="mt-2 text-[#ca9627] text-sm hover:underline">Edit Profile</button>
+
+                    <div class="relative mb-4">
+                        <div class="absolute -top-2 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-black rotate-45"></div>
+                        <div class="bg-gray-800 rounded-lg px-4 py-2 text-sm text-gray-300">
+                            <span class="text-[#ca9627]">Add a bio to tell people about yourself</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-2">
+                        <h3 id="profile-display-name" class="text-xl font-bold">User Name</h3>
+                        <i data-lucide="lock" style="width: 16px; height: 16px;" class="text-gray-400"></i>
+                        <button id="edit-profile-btn" class="ml-2 px-4 py-1 border border-gray-600 rounded text-sm">Edit profile</button>
+                    </div>
+
+                    <p id="profile-username" class="text-gray-400 text-sm mb-4">@username</p>
+
+                    <div class="flex items-center gap-8 mb-6">
+                        <div class="text-center">
+                            <p class="font-bold">0</p>
+                            <p class="text-gray-400 text-sm">Following</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="font-bold">0</p>
+                            <p class="text-gray-400 text-sm">Followers</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="font-bold">0</p>
+                            <p class="text-gray-400 text-sm">Likes</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2 mb-6">
+                        <button class="px-4 py-2 bg-gray-800 rounded-full text-sm">Add bio</button>
+                        <button class="px-4 py-2 bg-gray-800 rounded-full text-sm">Add interests</button>
+                    </div>
+                </section>
+
+                <nav class="flex items-center justify-around border-b border-gray-800 mb-4">
+                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-white border-b-2 border-[#ca9627]" data-tab="posts">
+                        <i data-lucide="grid" style="width: 24px; height: 24px;"></i>
+                    </button>
+                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-gray-400" data-tab="private">
+                        <i data-lucide="lock" style="width: 24px; height: 24px;"></i>
+                    </button>
+                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-gray-400" data-tab="bookmarks">
+                        <i data-lucide="bookmark" style="width: 24px; height: 24px;"></i>
+                    </button>
+                    <button class="tab-btn flex flex-col items-center py-3 px-4 text-gray-400" data-tab="liked">
+                        <i data-lucide="heart" style="width: 24px; height: 24px;"></i>
+                    </button>
+                </nav>
+
+                <div id="user-videos-grid" class="grid grid-cols-3 gap-0.5 px-0.5">
                 </div>
 
-                <!-- User's Videos -->
-                <div id="user-videos-grid" class="grid grid-cols-3 gap-1 px-2">
-                    <!-- Videos will be loaded here -->
-                </div>
-                
-                <div id="no-user-videos" class="text-center py-8 text-gray-400">
+                <div id="no-user-videos" class="text-center py-12 text-gray-400">
+                    <i data-lucide="video-off" style="width: 48px; height: 48px;" class="mx-auto mb-4 text-gray-600"></i>
                     <p>No videos yet</p>
                 </div>
             </div>
@@ -570,6 +622,11 @@
             await supabaseClient.auth.signOut();
             currentUser = null;
             localStorage.removeItem('cookery_user');
+            
+            // Hide profile content and show auth required
+            document.getElementById('profile-content').classList.add('hidden');
+            document.getElementById('profile-edit').classList.add('hidden');
+            document.getElementById('auth-required').classList.remove('hidden');
             openAuthPage();
         });
 
@@ -691,16 +748,13 @@
             document.getElementById('bio-input').value = currentUser.bio || '';
             
             if (currentUser.avatar) {
-                document.getElementById('profile-avatar').innerHTML = `<img src="${currentUser.avatar}" alt="Avatar" class="w-20 h-20 rounded-full object-cover">`;
+                document.getElementById('profile-avatar').innerHTML = `<img src="${currentUser.avatar}" alt="Avatar" class="w-24 h-24 rounded-full object-cover">`;
             }
             
-            // Show verification badge if user is verified
-            const verifiedBadge = document.getElementById('profile-verified-badge');
-            if (currentUser.is_verified) {
-                verifiedBadge.classList.remove('hidden');
-            } else {
-                verifiedBadge.classList.add('hidden');
-            }
+            // Show profile content and hide auth required
+            document.getElementById('auth-required').classList.add('hidden');
+            document.getElementById('profile-content').classList.remove('hidden');
+            document.getElementById('profile-content').classList.add('flex');
             
             loadUserVideos();
         }
@@ -729,15 +783,23 @@
                     noVideos.classList.add('hidden');
                     videos.forEach(video => {
                         const videoThumbnail = document.createElement('div');
-                        videoThumbnail.className = 'aspect-[9/16] bg-gray-800 relative cursor-pointer';
+                        videoThumbnail.className = 'aspect-[9/16] bg-gray-800 relative cursor-pointer overflow-hidden';
                         videoThumbnail.innerHTML = `
                             <img src="https://image.mux.com/${video.playback_id}/thumbnail.webp?width=200&height=356&fit_mode=crop" 
                                  alt="${video.title}" 
                                  class="w-full h-full object-cover"
                                  onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 356%22%3E%3Crect fill=%22%23333%22 width=%22200%22 height=%22356%22/%3E%3C/svg%3E'">
+                            <div class="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                <p class="text-white text-xs font-medium truncate">${video.title}</p>
+                                <div class="flex items-center gap-1 mt-1">
+                                    <i data-lucide="play" style="width: 12px; height: 12px;" class="text-white"></i>
+                                    <span class="text-white text-xs">0</span>
+                                </div>
+                            </div>
                         `;
                         videosGrid.appendChild(videoThumbnail);
                     });
+                    lucide.createIcons();
                 }
             } catch (error) {
                 console.error('Failed to load user videos:', error);
@@ -748,6 +810,18 @@
         document.getElementById('edit-profile-btn').addEventListener('click', () => {
             document.getElementById('profile-content').classList.add('hidden');
             document.getElementById('profile-edit').classList.remove('hidden');
+        });
+
+        // Tab navigation
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('text-white', 'border-b-2', 'border-[#ca9627]');
+                    b.classList.add('text-gray-400');
+                });
+                btn.classList.remove('text-gray-400');
+                btn.classList.add('text-white', 'border-b-2', 'border-[#ca9627]');
+            });
         });
 
         document.getElementById('back-to-profile').addEventListener('click', () => {
