@@ -918,20 +918,31 @@
                     // If applicationId exists, this is a moderator-triggered restart
                     if (applicationId) {
                         statusDescription.textContent = 'Your moderator has requested that your application undergo automated review again. This will check your name, email, and description.';
+                        // Show moderator note if present
+                        if (moderatorNote) {
+                            moderatorNoteDiv.style.display = 'block';
+                            moderatorNoteText.textContent = moderatorNote;
+                        }
+                        // Add a button to start automated review
+                        const startReviewBtn = document.createElement('button');
+                        startReviewBtn.textContent = 'Start Automated Review';
+                        startReviewBtn.className = 'btn-submit';
+                        startReviewBtn.style.marginTop = '20px';
+                        startReviewBtn.onclick = () => {
+                            startReviewBtn.remove();
+                            checklistDiv.style.display = 'block';
+                            runAutomatedReview();
+                        };
+                        reviewStatus.appendChild(startReviewBtn);
                     } else {
                         statusDescription.textContent = 'Running automated checks on your application...';
+                        // Timeline: Circle 1 active, label 1 active
+                        document.getElementById('timeline-circle-1').classList.add('active');
+                        document.getElementById('timeline-label-1').classList.add('active');
+                        // Show checklist
+                        checklistDiv.style.display = 'block';
+                        runAutomatedReview();
                     }
-                    // Timeline: Circle 1 active, label 1 active
-                    document.getElementById('timeline-circle-1').classList.add('active');
-                    document.getElementById('timeline-label-1').classList.add('active');
-                    // Show moderator note if present
-                    if (moderatorNote) {
-                        moderatorNoteDiv.style.display = 'block';
-                        moderatorNoteText.textContent = moderatorNote;
-                    }
-                    // Show checklist
-                    checklistDiv.style.display = 'block';
-                    runAutomatedReview();
                     break;
                 case 'RA':
                     // Moderator has given another chance - show review status with message
@@ -948,12 +959,18 @@
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
                     }
-                    // Prefill form fields from localStorage and then show form
-                    prefillFormFromStorage();
-                    setTimeout(() => {
+                    // Add a button to continue to form
+                    const continueBtn = document.createElement('button');
+                    continueBtn.textContent = 'Continue to Form';
+                    continueBtn.className = 'btn-submit';
+                    continueBtn.style.marginTop = '20px';
+                    continueBtn.onclick = () => {
+                        continueBtn.remove();
+                        prefillFormFromStorage();
                         formContainer.style.display = 'block';
                         reviewStatus.classList.remove('active');
-                    }, 3000);
+                    };
+                    reviewStatus.appendChild(continueBtn);
                     break;
                 case 'R':
                     statusIcon.classList.add('received');
