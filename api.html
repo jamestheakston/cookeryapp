@@ -934,20 +934,26 @@
                     runAutomatedReview();
                     break;
                 case 'RA':
-                    // Moderator has given another chance - show form with prefilled data
-                    formContainer.style.display = 'block';
-                    reviewStatus.classList.remove('active');
+                    // Moderator has given another chance - show review status with message
+                    formContainer.style.display = 'none';
+                    reviewStatus.classList.add('active');
                     statusIcon.classList.add('received');
                     statusIcon.innerHTML = '<i data-lucide="refresh-cw" style="width: 32px; height: 32px;"></i>';
                     statusTitle.textContent = 'Resubmit Your Application';
                     statusDescription.textContent = 'Your moderator has given you another chance to submit your application. Please review the feedback below and make any necessary changes.';
+                    // Hide checklist
+                    checklistDiv.style.display = 'none';
                     // Show moderator note
                     if (moderatorNote) {
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
                     }
-                    // Prefill form fields from localStorage
+                    // Prefill form fields from localStorage and then show form
                     prefillFormFromStorage();
+                    setTimeout(() => {
+                        formContainer.style.display = 'block';
+                        reviewStatus.classList.remove('active');
+                    }, 3000);
                     break;
                 case 'R':
                     statusIcon.classList.add('received');
