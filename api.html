@@ -1177,9 +1177,29 @@
         }
 
         function runAutomatedReview() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const whatBuilding = document.getElementById('what-building').value;
+            // Get data from localStorage if applicationId exists (moderator-triggered rerun)
+            let name, email, whatBuilding, company, platform, website, description, documentation;
+            
+            if (applicationId) {
+                const appData = JSON.parse(localStorage.getItem('cookery_api_application'));
+                name = appData.name;
+                email = appData.email;
+                whatBuilding = appData.what_building;
+                company = appData.company;
+                platform = appData.platform;
+                website = appData.website;
+                description = appData.description;
+                documentation = appData.documentation;
+            } else {
+                name = document.getElementById('name').value;
+                email = document.getElementById('email').value;
+                whatBuilding = document.getElementById('what-building').value;
+                company = document.getElementById('company').value;
+                platform = document.getElementById('platform').value;
+                website = document.getElementById('website').value;
+                description = document.getElementById('description').value;
+                documentation = document.getElementById('documentation').value;
+            }
             
             const checklistItems = [
                 { 
@@ -1257,18 +1277,19 @@
             setTimeout(async () => {
                 const formData = {
                     name: name,
-                    company: document.getElementById('company').value,
+                    company: company,
                     email: email,
-                    platform: document.getElementById('platform').value,
+                    platform: platform,
                     whatBuilding: whatBuilding,
-                    website: document.getElementById('website').value,
-                    description: document.getElementById('description').value,
-                    documentation: document.getElementById('documentation').value
+                    website: website,
+                    description: description,
+                    documentation: documentation
                 };
                 
                 if (allPassed) {
                     // If this is a rerun (applicationId exists), go to IR instead of R
                     const newStatus = applicationId ? 'IR' : 'R';
+                    console.log('Submitting with status:', newStatus, 'applicationId:', applicationId);
                     await submitApplication(formData, newStatus);
                 } else {
                     await submitApplication(formData, 'D', `Failed Automated Review: ${failureReason}`);
