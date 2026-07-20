@@ -915,12 +915,14 @@
                     statusTitle.textContent = 'Automated Review';
                     // If applicationId exists, this is a moderator-triggered restart
                     if (applicationId) {
-                        statusDescription.textContent = 'We need to run automated review again';
+                        statusDescription.textContent = 'Your moderator believes that your application should undergo automated review again to ensure all requirements are met. This will check your name format, email validity, and description length.';
                         // Show moderator note if present
                         if (moderatorNote) {
                             moderatorNoteDiv.style.display = 'block';
                             moderatorNoteText.textContent = moderatorNote;
                         }
+                        // Hide timeline for moderator-triggered AR
+                        document.querySelector('.status-timeline').style.display = 'none';
                         // Add a button to start automated review
                         const startReviewBtn = document.createElement('button');
                         startReviewBtn.textContent = 'OK';
@@ -928,6 +930,7 @@
                         startReviewBtn.style.marginTop = '20px';
                         startReviewBtn.onclick = () => {
                             startReviewBtn.remove();
+                            document.querySelector('.status-timeline').style.display = 'flex';
                             checklistDiv.style.display = 'block';
                             runAutomatedReview();
                         };
