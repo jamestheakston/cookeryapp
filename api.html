@@ -911,13 +911,19 @@
 
             switch (status) {
                 case 'AR':
+                    // AR can be client-side (initial submission) or moderator-triggered restart
                     statusIcon.classList.add('received');
                     statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
                     statusTitle.textContent = 'Automated Review';
-                    statusDescription.textContent = 'Running automated checks on your application...';
+                    statusDescription.textContent = moderatorNote ? 'Your moderator has requested that your application undergo automated review again. This will check your name, email, and description.' : 'Running automated checks on your application...';
                     // Timeline: Circle 1 active, label 1 active
                     document.getElementById('timeline-circle-1').classList.add('active');
                     document.getElementById('timeline-label-1').classList.add('active');
+                    // Show moderator note if present
+                    if (moderatorNote) {
+                        moderatorNoteDiv.style.display = 'block';
+                        moderatorNoteText.textContent = moderatorNote;
+                    }
                     // Show checklist
                     checklistDiv.style.display = 'block';
                     runAutomatedReview();
@@ -937,24 +943,6 @@
                     }
                     // Prefill form fields from localStorage
                     prefillFormFromStorage();
-                    break;
-                case 'ARM':
-                    // Moderator wants to restart automated review
-                    statusIcon.classList.add('received');
-                    statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
-                    statusTitle.textContent = 'Automated Review Restarted';
-                    statusDescription.textContent = 'Your moderator has requested that your application undergo automated review again. This will check your name, email, and description.';
-                    // Timeline: Circle 1 active, label 1 active
-                    document.getElementById('timeline-circle-1').classList.add('active');
-                    document.getElementById('timeline-label-1').classList.add('active');
-                    // Show moderator note
-                    if (moderatorNote) {
-                        moderatorNoteDiv.style.display = 'block';
-                        moderatorNoteText.textContent = moderatorNote;
-                    }
-                    // Show checklist
-                    checklistDiv.style.display = 'block';
-                    runAutomatedReview();
                     break;
                 case 'R':
                     statusIcon.classList.add('received');
