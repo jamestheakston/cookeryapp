@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookery API</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            background-color: #faf8f5; 
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
+        body.no-scroll {
+            overflow: hidden;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+        .modal {
+            background-color: #ffffff;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .step-indicators {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+        .step-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e7e5e4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #78716c;
+            transition: all 0.3s ease;
+        }
+        .step-indicator.active {
+            background-color: #ca9627;
+            color: white;
+        }
+        .step-indicator.completed {
+            background-color: #1c1917;
+            color: white;
+        }
+        .warning-box {
+            background-color: #fef3c7;
+            border: 1px solid #fbbf24;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+        .warning-box.show {
+            display: block;
+        }
+        .warning-box p {
+            color: #92400e;
+            font-size: 13px;
+            margin: 0;
+        }
+        .custom-dropdown {
+            position: relative;
+            width: 100%;
+        }
+        .dropdown-trigger {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1c1917;
+            background-color: #faf8f5;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        .dropdown-trigger:hover {
+            border-color: #ca9627;
+            background-color: #ffffff;
+        }
+        .dropdown-trigger:focus {
+            outline: none;
+            border-color: #ca9627;
+            background-color: #ffffff;
+        }
+        .dropdown-trigger.placeholder {
+            color: #78716c;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 0;
+            right: 0;
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+            display: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-option {
+            padding: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+            color: #1c1917;
+        }
+        .dropdown-option:hover {
+            background-color: #faf8f5;
+        }
+        .dropdown-option.selected {
+            background-color: #fdfbeb;
+            color: #ca9627;
+            font-weight: 600;
+        }
+        .dropdown-arrow {
+            transition: transform 0.2s;
+        }
+        .dropdown-arrow.open {
+            transform: rotate(180deg);
+        }
+        .char-counter {
+            text-align: right;
+            font-size: 12px;
+            color: #78716c;
+            margin-top: 4px;
+        }
+        .char-counter.error {
+            color: #ef4444;
+        }
+        .char-counter.valid {
+            color: #22c55e;
+        }
+        .review-status {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .review-status.active {
+            display: block;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #e7e5e4;
+            border-radius: 8px;
+            height: 8px;
+            margin: 24px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #ca9627;
+            transition: width 0.5s ease;
+            border-radius: 8px;
+        }
+        .status-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .status-icon.received {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        .status-icon.reviewing {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .status-icon.accepted {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        .status-icon.declined {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .status-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+        .status-description {
+            color: #78716c;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .status-timeline {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .timeline-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .timeline-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #e7e5e4;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #78716c;
+        }
+        .timeline-circle.active {
+            background-color: #3b82f6;
+            color: white;
+            transform: scale(1.1);
+        }
+        .timeline-circle.completed {
+            background-color: #1c1917;
+            color: white;
+        }
+        .timeline-circle i {
+            width: 16px;
+            height: 16px;
+        }
+        .timeline-label {
+            font-size: 12px;
+            color: #78716c;
+            font-weight: 500;
+        }
+        .timeline-label.active {
+            color: #3b82f6;
+        }
+        .timeline-label.completed {
+            color: #1c1917;
+        }
+        .timeline-line {
+            flex: 1;
+            height: 2px;
+            background-color: #e7e5e4;
+            transition: all 0.3s ease;
+            margin-top: -16px;
+        }
+        .timeline-line.completed {
+            background-color: #1c1917;
+        }
+        .moderator-note {
+            background-color: #f5f3ef;
+            border-left: 4px solid #ca9627;
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        .moderator-note h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 0 0 8px 0;
+        }
+        .moderator-note p {
+            font-size: 13px;
+            color: #78716c;
+            margin: 0;
+            line-height: 1.5;
+        }
+        .loading-spinner {
+            border: 3px solid #e7e5e4;
+            border-top: 3px solid #ca9627;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        .checklist {
+            margin-top: 24px;
+            text-align: left;
+        }
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #e7e5e4;
+        }
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+        .checklist-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .checklist-icon.pending {
+            color: #e7e5e4;
+        }
+        .checklist-icon.loading {
+            color: #ca9627;
+        }
+        .checklist-icon.completed {
+            color: #16a34a;
+        }
+        .checklist-text {
+            font-size: 14px;
+            color: #78716c;
+        }
+        .checklist-text.completed {
+            color: #1c1917;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn-back {
+            background-color: transparent;
+            border: 2px solid #e7e5e4;
+            color: #1c1917;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+        .btn-back:hover {
+            background-color: #f5f3ef;
+            border-color: #d6d3d1;
+        }
+        .btn-next {
+            background-color: #ca9627;
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+        .btn-next:hover {
+            background-color: #b8861f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(202, 150, 39, 0.3);
+        }
+        .btn-submit {
+            background-color: #ca9627;
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background-color: #b8861f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(202, 150, 39, 0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .modal-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: #1c1917;
+            margin: 0;
+        }
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #78716c;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: #1c1917;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #1c1917;
+            margin-bottom: 8px;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e7e5e4;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1c1917;
+            background-color: #faf8f5;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #ca9627;
+            background-color: #ffffff;
+        }
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+        .error-message.show {
+            display: block;
+        }
+        .btn-submit {
+            background-color: #ca9627;
+            color: white;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background-color: #b8861f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(202, 150, 39, 0.3);
+        }
+        .stat-card {
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        .stat-card:hover {
+            border-color: #ca9627;
+            box-shadow: 0 8px 24px rgba(202, 150, 39, 0.15);
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-[#faf8f5] border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="32" height="32" class="rounded-lg">
+                    <span class="font-serif text-lg font-bold text-stone-900 tracking-tight">Cookery API</span>
+                </div>
+                <a href="index.html" class="text-stone-600 hover:text-stone-900 transition-colors font-medium">← Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- API Dashboard -->
+    <div class="max-w-6xl mx-auto px-6 py-16">
+        <!-- Header -->
+        <div class="mb-12">
+            <h1 class="font-serif text-4xl text-stone-900 mb-4">API Dashboard</h1>
+            <p class="text-lg text-stone-600">Access Cookery's powerful recipe generation API for your applications.</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid md:grid-cols-3 gap-6 mb-12">
+            <div class="stat-card">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="zap" class="text-[#ca9627]" style="width: 24px; height: 24px;"></i>
+                    <h3 class="font-semibold text-stone-900">Requests</h3>
+                </div>
+                <p class="text-3xl font-bold text-stone-900 mb-2">0</p>
+                <p class="text-sm text-stone-500">Total API calls</p>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="clock" class="text-[#ca9627]" style="width: 24px; height: 24px;"></i>
+                    <h3 class="font-semibold text-stone-900">Rate Limit</h3>
+                </div>
+                <p class="text-3xl font-bold text-stone-900 mb-2">100</p>
+                <p class="text-sm text-stone-500">Requests per day</p>
+            </div>
+            <div class="stat-card">
+                <div class="flex items-center gap-3 mb-4">
+                    <i data-lucide="key" class="text-[#ca9627]" style="width: 24px; height: 24px;"></i>
+                    <h3 class="font-semibold text-stone-900">API Key</h3>
+                </div>
+                <p class="text-xl font-bold text-stone-900 mb-2">Not configured</p>
+                <button id="request-key-btn" class="text-sm text-[#ca9627] font-semibold hover:underline">Request API Key</button>
+            </div>
+        </div>
+
+        <!-- API Endpoints -->
+        <div class="bg-white rounded-2xl p-8 border border-stone-200 mb-8">
+            <h2 class="font-serif text-2xl font-bold text-stone-900 mb-6">Available Endpoints</h2>
+            <div class="space-y-4">
+                <div class="bg-stone-50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2 py-1 rounded">POST</span>
+                        <code class="text-stone-900 font-mono text-sm">/api/v1/generate</code>
+                    </div>
+                    <p class="text-stone-600 text-sm">Generate AI-powered recipes based on your prompt</p>
+                </div>
+                <div class="bg-stone-50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">GET</span>
+                        <code class="text-stone-900 font-mono text-sm">/api/v1/recipes</code>
+                    </div>
+                    <p class="text-stone-600 text-sm">Retrieve your saved recipes</p>
+                </div>
+                <div class="bg-stone-50 rounded-lg p-4">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded">GET</span>
+                        <code class="text-stone-900 font-mono text-sm">/api/v1/status</code>
+                    </div>
+                    <p class="text-stone-600 text-sm">Check API status and rate limits</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Documentation -->
+        <div class="bg-white rounded-2xl p-8 border border-stone-200">
+            <h2 class="font-serif text-2xl font-bold text-stone-900 mb-6">Quick Start</h2>
+            <div class="space-y-4 text-stone-600">
+                <p>1. Request an API key using the button above</p>
+                <p>2. Include your API key in the <code class="bg-stone-100 px-2 py-1 rounded text-sm">Authorization</code> header</p>
+                <p>3. Make requests to our endpoints with your desired parameters</p>
+            </div>
+            <div class="mt-6 bg-stone-900 rounded-lg p-4 overflow-x-auto">
+                <pre class="text-green-400 text-sm"><code>curl -X POST https://api.cookeryapp.com/v1/generate \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "chicken pasta", "quantity": 4}'</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Key Request Modal -->
+    <div id="api-key-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Request API Key</h2>
+            </div>
+            
+            <!-- Form Steps -->
+            <div id="form-container">
+                <div class="step-indicators">
+                    <div class="step-indicator active" data-step="1">1</div>
+                    <div class="step-indicator" data-step="2">2</div>
+                    <div class="step-indicator" data-step="3">3</div>
+                    <div class="step-indicator" data-step="4">4</div>
+                </div>
+
+                <form id="api-key-form">
+                    <!-- Step 1: Basic Info -->
+                    <div id="step-1" class="step active">
+                        <div class="form-group">
+                            <label for="name">Name *</label>
+                            <input type="text" id="name" name="name" required placeholder="John Doe">
+                            <div class="error-message" id="name-error">Name is required</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company Name</label>
+                            <input type="text" id="company" name="company" placeholder="Your Company">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" required placeholder="john@example.com">
+                            <div class="error-message" id="email-error">Valid email is required</div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-back" disabled>Back</button>
+                            <button type="button" class="btn-next" onclick="nextStep(1)">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Platform & Use Case -->
+                    <div id="step-2" class="step">
+                        <div class="form-group">
+                            <label for="platform">What platform are you building for? *</label>
+                            <div class="custom-dropdown" id="platform-dropdown">
+                                <div class="dropdown-trigger placeholder" id="platform-trigger">
+                                    <span id="platform-selected">Select platform</span>
+                                    <i data-lucide="chevron-down" class="dropdown-arrow" style="width: 16px; height: 16px;"></i>
+                                </div>
+                                <div class="dropdown-menu" id="platform-menu">
+                                    <div class="dropdown-option" data-value="web">Web Application</div>
+                                    <div class="dropdown-option" data-value="mobile">Mobile App (iOS/Android)</div>
+                                    <div class="dropdown-option" data-value="desktop">Desktop Application</div>
+                                    <div class="dropdown-option" data-value="extension">Browser Extension</div>
+                                    <div class="dropdown-option" data-value="social">Social Media Platform</div>
+                                    <div class="dropdown-option" data-value="other">Other</div>
+                                </div>
+                                <input type="hidden" id="platform" name="platform" required>
+                            </div>
+                            <div class="error-message" id="platform-error">Platform selection is required</div>
+                            <div id="social-warning" class="warning-box">
+                                <p>⚠️ We're unlikely to accept this application as we are already developing our own social media platform. Please consider a different use case.</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="what-building">What are you building? * (minimum 250 characters)</label>
+                            <textarea id="what-building" name="what-building" required placeholder="Describe your project in detail..."></textarea>
+                            <div class="char-counter" id="what-building-counter">0 / 250 characters</div>
+                            <div class="error-message" id="what-building-error">Project description must be at least 250 characters</div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-back" onclick="prevStep(2)">Back</button>
+                            <button type="button" class="btn-next" onclick="nextStep(2)">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Additional Details -->
+                    <div id="step-3" class="step">
+                        <div class="form-group">
+                            <label for="website">Website (optional)</label>
+                            <input type="url" id="website" name="website" placeholder="https://yourwebsite.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Additional Details (optional)</label>
+                            <textarea id="description" name="description" placeholder="Any additional information about your project..."></textarea>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-back" onclick="prevStep(3)">Back</button>
+                            <button type="button" class="btn-next" onclick="nextStep(3)">Next</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Use Case Documentation -->
+                    <div id="step-4" class="step">
+                        <div class="form-group">
+                            <label for="documentation">Use Case Documentation (optional)</label>
+                            <textarea id="documentation" name="documentation" placeholder="Please describe how you plan to use the API, expected usage patterns, and any specific requirements..." style="min-height: 150px;"></textarea>
+                            <p class="text-sm text-stone-500 mt-2">Help us understand your use case better by providing details about your integration plans.</p>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" class="btn-back" onclick="prevStep(4)">Back</button>
+                            <button type="submit" class="btn-submit">Submit Request</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Review Status -->
+            <div id="review-status" class="review-status">
+                <div id="status-icon" class="status-icon received">
+                    <i data-lucide="inbox" style="width: 32px; height: 32px;"></i>
+                </div>
+                <h3 id="status-title" class="status-title">Application Received</h3>
+                <p id="status-description" class="status-description">Your application has been received and is being reviewed by our team.</p>
+                <div class="status-timeline">
+                    <div class="timeline-item">
+                        <div id="timeline-circle-1" class="timeline-circle active">
+                            <i data-lucide="inbox" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <span id="timeline-label-1" class="timeline-label active">Automated Review</span>
+                    </div>
+                    <div id="timeline-line-1" class="timeline-line"></div>
+                    <div class="timeline-item">
+                        <div id="timeline-circle-2" class="timeline-circle">
+                            <i data-lucide="inbox" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <span id="timeline-label-2" class="timeline-label">Received</span>
+                    </div>
+                    <div id="timeline-line-2" class="timeline-line"></div>
+                    <div class="timeline-item">
+                        <div id="timeline-circle-3" class="timeline-circle">
+                            <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <span id="timeline-label-3" class="timeline-label">Reviewing</span>
+                    </div>
+                    <div id="timeline-line-3" class="timeline-line"></div>
+                    <div class="timeline-item">
+                        <div id="timeline-circle-4" class="timeline-circle">
+                            <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <span id="timeline-label-4" class="timeline-label">Decision</span>
+                    </div>
+                </div>
+                <div id="moderator-note" class="moderator-note" style="display: none;">
+                    <h4>Moderator Note</h4>
+                    <p id="moderator-note-text"></p>
+                </div>
+                <div id="automated-review-checklist" class="checklist" style="display: none;">
+                    <div class="checklist-item">
+                        <div id="check-item-1-icon" class="checklist-icon pending">
+                            <i data-lucide="circle" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <div>
+                            <span id="check-item-1-text" class="checklist-text">Name Validation</span>
+                            <p class="text-xs text-stone-500 mt-1">Checks for full name format (FIRST NAME LAST NAME)</p>
+                        </div>
+                    </div>
+                    <div class="checklist-item">
+                        <div id="check-item-2-icon" class="checklist-icon pending">
+                            <i data-lucide="circle" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <div>
+                            <span id="check-item-2-text" class="checklist-text">Email Validation</span>
+                            <p class="text-xs text-stone-500 mt-1">Verifies valid email format</p>
+                        </div>
+                    </div>
+                    <div class="checklist-item">
+                        <div id="check-item-3-icon" class="checklist-icon pending">
+                            <i data-lucide="circle" style="width: 16px; height: 16px;"></i>
+                        </div>
+                        <div>
+                            <span id="check-item-3-text" class="checklist-text">Character Count Check</span>
+                            <p class="text-xs text-stone-500 mt-1">Ensures "What you are building" meets minimum length requirements</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://ojvigxnwweixjhugekmm.supabase.co';
+        const supabaseKey = 'sb_publishable_ok_vkZ1FDJ_hv-qdv76tJw_RJ78nd6W';
+        const SupabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Multi-step modal functionality
+        let currentStep = 1;
+        const totalSteps = 4;
+        let applicationId = null;
+
+        // Check for existing application on page load
+        async function checkExistingApplication() {
+            const storedApp = localStorage.getItem('cookery_api_application');
+            if (storedApp) {
+                const appData = JSON.parse(storedApp);
+                // Clear old data with old status codes
+                if (appData.status === 'RECEIVED' || appData.status === 'REVIEWING' || appData.status === 'ACCEPTED' || appData.status === 'DECLINED') {
+                    localStorage.removeItem('cookery_api_application');
+                    document.body.classList.add('no-scroll');
+                    return;
+                }
+                applicationId = appData.id;
+                
+                // Fetch fresh data from Supabase to get latest moderator note
+                try {
+                    const { data, error } = await SupabaseClient
+                        .from('api_applications')
+                        .select('status, moderator_note')
+                        .eq('id', applicationId)
+                        .single();
+                    
+                    if (data && !error) {
+                        // Update localStorage with fresh data from Supabase
+                        localStorage.setItem('cookery_api_application', JSON.stringify({ 
+                            id: applicationId, 
+                            status: data.status,
+                            moderator_note: data.moderator_note
+                        }));
+                        // Don't show AR status on page load, skip to R
+                        const displayStatus = data.status === 'AR' ? 'R' : data.status;
+                        showReviewStatus(displayStatus, data.moderator_note);
+                    } else {
+                        // Supabase returned no data or error - clear localStorage
+                        console.log('Supabase data not found or error, clearing localStorage');
+                        localStorage.removeItem('cookery_api_application');
+                        document.body.classList.add('no-scroll');
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error fetching fresh data:', error);
+                    // On error, still try to show stored data
+                    showReviewStatus(appData.status, appData.moderator_note);
+                }
+                
+                startStatusPolling();
+            } else {
+                // Modal shows by default, prevent scrolling
+                document.body.classList.add('no-scroll');
+            }
+        }
+
+        function showReviewStatus(status, moderatorNote = null) {
+            const formContainer = document.getElementById('form-container');
+            const reviewStatus = document.getElementById('review-status');
+            const statusIcon = document.getElementById('status-icon');
+            const statusTitle = document.getElementById('status-title');
+            const statusDescription = document.getElementById('status-description');
+            const moderatorNoteDiv = document.getElementById('moderator-note');
+            const moderatorNoteText = document.getElementById('moderator-note-text');
+            const checklistDiv = document.getElementById('automated-review-checklist');
+
+            formContainer.style.display = 'none';
+            reviewStatus.classList.add('active');
+
+            // Hide moderator note and checklist by default
+            moderatorNoteDiv.style.display = 'none';
+            checklistDiv.style.display = 'none';
+
+            // Reset classes
+            statusIcon.className = 'status-icon';
+
+            // Reset timeline
+            document.querySelectorAll('.timeline-circle').forEach(circle => {
+                circle.classList.remove('active', 'completed');
+            });
+            document.querySelectorAll('.timeline-label').forEach(label => {
+                label.classList.remove('active', 'completed');
+            });
+            document.querySelectorAll('.timeline-line').forEach(line => {
+                line.classList.remove('completed');
+            });
+
+            switch (status) {
+                case 'AR':
+                    statusIcon.classList.add('received');
+                    statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
+                    statusTitle.textContent = 'Automated Review';
+                    statusDescription.textContent = 'Running automated checks on your application...';
+                    // Timeline: Circle 1 active, label 1 active
+                    document.getElementById('timeline-circle-1').classList.add('active');
+                    document.getElementById('timeline-label-1').classList.add('active');
+                    // Show checklist
+                    checklistDiv.style.display = 'block';
+                    runAutomatedReview();
+                    break;
+                case 'R':
+                    statusIcon.classList.add('received');
+                    statusIcon.innerHTML = '<i data-lucide="inbox" style="width: 32px; height: 32px;"></i>';
+                    statusTitle.textContent = 'Application Received';
+                    statusDescription.textContent = 'Your application has been received and is being reviewed by our team.';
+                    // Timeline: Circle 1 completed, label 1 completed, line 1 completed, circle 2 active, label 2 active
+                    document.getElementById('timeline-circle-1').classList.add('completed');
+                    document.getElementById('timeline-label-1').classList.add('completed');
+                    document.getElementById('timeline-line-1').classList.add('completed');
+                    document.getElementById('timeline-circle-2').classList.add('active');
+                    document.getElementById('timeline-label-2').classList.add('active');
+                    break;
+                case 'IR':
+                    statusIcon.classList.add('reviewing');
+                    statusIcon.innerHTML = '<i data-lucide="search" style="width: 32px; height: 32px;"></i>';
+                    statusTitle.textContent = 'In Review';
+                    statusDescription.textContent = 'Our team is currently reviewing your application. This typically takes 24-48 hours.';
+                    // Timeline: Circle 1 completed, label 1 completed, line 1 completed, circle 2 completed, label 2 completed, line 2 completed, circle 3 active, label 3 active
+                    document.getElementById('timeline-circle-1').classList.add('completed');
+                    document.getElementById('timeline-label-1').classList.add('completed');
+                    document.getElementById('timeline-line-1').classList.add('completed');
+                    document.getElementById('timeline-circle-2').classList.add('completed');
+                    document.getElementById('timeline-label-2').classList.add('completed');
+                    document.getElementById('timeline-line-2').classList.add('completed');
+                    document.getElementById('timeline-circle-3').classList.add('active');
+                    document.getElementById('timeline-label-3').classList.add('active');
+                    break;
+                case 'A':
+                    statusIcon.classList.add('accepted');
+                    statusIcon.innerHTML = '<i data-lucide="check-circle" style="width: 32px; height: 32px;"></i>';
+                    statusTitle.textContent = 'Application Accepted';
+                    statusDescription.textContent = 'We will reach out to you soon with your API key.';
+                    // Timeline: All circles and lines completed, circle 4 active, label 4 active
+                    document.getElementById('timeline-circle-1').classList.add('completed');
+                    document.getElementById('timeline-label-1').classList.add('completed');
+                    document.getElementById('timeline-line-1').classList.add('completed');
+                    document.getElementById('timeline-circle-2').classList.add('completed');
+                    document.getElementById('timeline-label-2').classList.add('completed');
+                    document.getElementById('timeline-line-2').classList.add('completed');
+                    document.getElementById('timeline-circle-3').classList.add('completed');
+                    document.getElementById('timeline-label-3').classList.add('completed');
+                    document.getElementById('timeline-line-3').classList.add('completed');
+                    document.getElementById('timeline-circle-4').classList.add('active');
+                    document.getElementById('timeline-label-4').classList.add('active');
+                    if (moderatorNote) {
+                        moderatorNoteDiv.style.display = 'block';
+                        moderatorNoteText.textContent = moderatorNote;
+                    }
+                    break;
+                case 'D':
+                    statusIcon.classList.add('declined');
+                    statusIcon.innerHTML = '<i data-lucide="x-circle" style="width: 32px; height: 32px;"></i>';
+                    statusTitle.textContent = 'Application Declined';
+                    statusDescription.textContent = 'Unfortunately, your application was not approved at this time. You may reapply in 30 days.';
+                    // Timeline: All circles and lines completed, circle 4 active, label 4 active
+                    document.getElementById('timeline-circle-1').classList.add('completed');
+                    document.getElementById('timeline-label-1').classList.add('completed');
+                    document.getElementById('timeline-line-1').classList.add('completed');
+                    document.getElementById('timeline-circle-2').classList.add('completed');
+                    document.getElementById('timeline-label-2').classList.add('completed');
+                    document.getElementById('timeline-line-2').classList.add('completed');
+                    document.getElementById('timeline-circle-3').classList.add('completed');
+                    document.getElementById('timeline-label-3').classList.add('completed');
+                    document.getElementById('timeline-line-3').classList.add('completed');
+                    document.getElementById('timeline-circle-4').classList.add('active');
+                    document.getElementById('timeline-label-4').classList.add('active');
+                    // Change circle 4 icon to x-circle for declined
+                    document.getElementById('timeline-circle-4').innerHTML = '<i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>';
+                    if (moderatorNote) {
+                        moderatorNoteDiv.style.display = 'block';
+                        moderatorNoteText.textContent = moderatorNote;
+                    }
+                    break;
+            }
+
+            lucide.createIcons();
+        }
+
+        async function submitApplication(formData, status = 'R', moderatorNote = null) {
+            try {
+                const { data, error } = await SupabaseClient
+                    .from('api_applications')
+                    .insert([{
+                        name: formData.name,
+                        company: formData.company,
+                        email: formData.email,
+                        platform: formData.platform,
+                        what_building: formData.whatBuilding,
+                        website: formData.website,
+                        description: formData.description,
+                        documentation: formData.documentation,
+                        status: status,
+                        moderator_note: moderatorNote,
+                        created_at: new Date().toISOString()
+                    }])
+                    .select();
+
+                if (error) throw error;
+
+                if (data && data[0]) {
+                    applicationId = data[0].id;
+                    localStorage.setItem('cookery_api_application', JSON.stringify(data[0]));
+                    showReviewStatus(status, moderatorNote);
+                    if (status !== 'D') {
+                        startStatusPolling();
+                    }
+                }
+            } catch (error) {
+                console.error('Error submitting application:', error);
+                alert('There was an error submitting your application. Please try again.');
+            }
+        }
+
+        function startStatusPolling() {
+            console.log('Starting status polling for application ID:', applicationId);
+            const pollInterval = setInterval(async () => {
+                if (!applicationId) {
+                    console.log('No application ID, stopping polling');
+                    clearInterval(pollInterval);
+                    return;
+                }
+
+                try {
+                    const { data, error } = await SupabaseClient
+                        .from('api_applications')
+                        .select('status, moderator_note')
+                        .eq('id', applicationId)
+                        .single();
+
+                    if (error) throw error;
+
+                    console.log('Polling result:', data);
+
+                    if (data) {
+                        const storedApp = localStorage.getItem('cookery_api_application');
+                        const currentStatus = storedApp ? JSON.parse(storedApp).status : 'R';
+                        const currentModeratorNote = storedApp ? JSON.parse(storedApp).moderator_note : null;
+                        
+                        console.log('Current status from localStorage:', currentStatus);
+                        console.log('New status from Supabase:', data.status);
+                        console.log('Current moderator note from localStorage:', currentModeratorNote);
+                        console.log('New moderator note from Supabase:', data.moderator_note);
+                        
+                        // Skip AR status in polling (client-side only)
+                        const displayStatus = data.status === 'AR' ? 'R' : data.status;
+                        
+                        // Check for status change
+                        if (displayStatus !== currentStatus) {
+                            console.log('Status changed, updating UI');
+                            localStorage.setItem('cookery_api_application', JSON.stringify({ 
+                                id: applicationId, 
+                                status: data.status,
+                                moderator_note: data.moderator_note
+                            }));
+                            showReviewStatus(displayStatus, data.moderator_note);
+                        }
+                        // Check for moderator note change (even if status hasn't changed)
+                        else if (data.moderator_note !== currentModeratorNote) {
+                            console.log('Moderator note changed, updating UI');
+                            localStorage.setItem('cookery_api_application', JSON.stringify({ 
+                                id: applicationId, 
+                                status: data.status,
+                                moderator_note: data.moderator_note
+                            }));
+                            showReviewStatus(displayStatus, data.moderator_note);
+                        }
+                    } else {
+                        // Supabase returned no data - clear localStorage and stop polling
+                        console.log('Supabase returned no data, clearing localStorage and stopping polling');
+                        localStorage.removeItem('cookery_api_application');
+                        clearInterval(pollInterval);
+                        document.body.classList.add('no-scroll');
+                        location.reload();
+                    }
+                } catch (error) {
+                    console.error('Error polling status:', error);
+                }
+            }, 5000); // Poll every 5 seconds
+        }
+
+        function runAutomatedReview() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const whatBuilding = document.getElementById('what-building').value;
+            
+            const checklistItems = [
+                { 
+                    id: 1, 
+                    duration: 800,
+                    validate: () => {
+                        // Name validation: must be at least two words (FIRST NAME LAST NAME)
+                        const nameParts = name.trim().split(/\s+/);
+                        return nameParts.length >= 2 && nameParts.every(part => part.length > 0);
+                    },
+                    failMessage: 'Name must be in format: FIRST NAME LAST NAME'
+                },
+                { 
+                    id: 2, 
+                    duration: 1000,
+                    validate: () => {
+                        // Email validation
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        return emailRegex.test(email);
+                    },
+                    failMessage: 'Invalid email format'
+                },
+                { 
+                    id: 3, 
+                    duration: 800,
+                    validate: () => {
+                        // Character count check for what-building field (minimum 250 characters)
+                        return whatBuilding.trim().length >= 250;
+                    },
+                    failMessage: '"What you are building" must be at least 250 characters'
+                }
+            ];
+
+            let delay = 0;
+            let allPassed = true;
+            let failureReason = '';
+
+            checklistItems.forEach(item => {
+                setTimeout(() => {
+                    const icon = document.getElementById(`check-item-${item.id}-icon`);
+                    const text = document.getElementById(`check-item-${item.id}-text`);
+                    
+                    // Set to loading
+                    icon.classList.remove('pending');
+                    icon.classList.add('loading');
+                    icon.innerHTML = '<div class="loading-spinner" style="width: 16px; height: 16px; border-width: 2px;"></div>';
+                    
+                    setTimeout(() => {
+                        const passed = item.validate();
+                        
+                        if (passed) {
+                            // Set to completed
+                            icon.classList.remove('loading');
+                            icon.classList.add('completed');
+                            icon.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px;"></i>';
+                            text.classList.add('completed');
+                        } else {
+                            // Set to failed
+                            icon.classList.remove('loading');
+                            icon.classList.add('completed');
+                            icon.innerHTML = '<i data-lucide="x" style="width: 16px; height: 16px; color: #dc2626;"></i>';
+                            text.classList.add('completed');
+                            text.style.color = '#dc2626';
+                            allPassed = false;
+                            failureReason = item.failMessage;
+                        }
+                        
+                        lucide.createIcons();
+                    }, item.duration);
+                }, delay);
+                delay += item.duration + 200;
+            });
+
+            // After all checks complete, submit to Supabase
+            setTimeout(async () => {
+                const formData = {
+                    name: name,
+                    company: document.getElementById('company').value,
+                    email: email,
+                    platform: document.getElementById('platform').value,
+                    whatBuilding: whatBuilding,
+                    website: document.getElementById('website').value,
+                    description: document.getElementById('description').value,
+                    documentation: document.getElementById('documentation').value
+                };
+                
+                if (allPassed) {
+                    await submitApplication(formData, 'R');
+                } else {
+                    await submitApplication(formData, 'D', `Failed Automated Review: ${failureReason}`);
+                }
+            }, delay + 500);
+        }
+
+        function showStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            // Show current step
+            document.getElementById(`step-${step}`).classList.add('active');
+            
+            // Update indicators
+            document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                indicator.classList.remove('active', 'completed');
+                if (index + 1 === step) {
+                    indicator.classList.add('active');
+                } else if (index + 1 < step) {
+                    indicator.classList.add('completed');
+                }
+            });
+        }
+
+        function nextStep(current) {
+            // Validate current step
+            const currentStepEl = document.getElementById(`step-${current}`);
+            const requiredFields = currentStepEl.querySelectorAll('[required]');
+            let isValid = true;
+            
+            // Hide all error messages first
+            currentStepEl.querySelectorAll('.error-message').forEach(msg => {
+                msg.classList.remove('show');
+            });
+            
+            // Reset field borders
+            currentStepEl.querySelectorAll('input, textarea').forEach(field => {
+                field.style.borderColor = '#e7e5e4';
+            });
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#ef4444';
+                    
+                    // Show specific error message
+                    const errorId = field.id + '-error';
+                    const errorEl = document.getElementById(errorId);
+                    if (errorEl) {
+                        errorEl.classList.add('show');
+                    }
+                } else {
+                    field.style.borderColor = '#e7e5e4';
+                }
+            });
+
+            // Email validation
+            const emailField = document.getElementById('email');
+            if (emailField && emailField.value.trim()) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(emailField.value.trim())) {
+                    isValid = false;
+                    emailField.style.borderColor = '#ef4444';
+                    const emailError = document.getElementById('email-error');
+                    if (emailError) {
+                        emailError.textContent = 'Please enter a valid email address';
+                        emailError.classList.add('show');
+                    }
+                }
+            }
+
+            // Special validation for what-building field (minimum 250 characters)
+            if (current === 2) {
+                const whatBuilding = document.getElementById('what-building');
+                if (whatBuilding.value.length < 250) {
+                    isValid = false;
+                    whatBuilding.style.borderColor = '#ef4444';
+                    const whatBuildingError = document.getElementById('what-building-error');
+                    if (whatBuildingError) {
+                        whatBuildingError.textContent = 'Project description must be at least 250 characters';
+                        whatBuildingError.classList.add('show');
+                    }
+                } else {
+                    whatBuilding.style.borderColor = '#e7e5e4';
+                }
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            if (current < totalSteps) {
+                currentStep = current + 1;
+                showStep(currentStep);
+            }
+        }
+
+        function prevStep(current) {
+            if (current > 1) {
+                currentStep = current - 1;
+                showStep(currentStep);
+            }
+        }
+
+        function checkPlatform() {
+            const platform = document.getElementById('platform').value;
+            const warning = document.getElementById('social-warning');
+            
+            if (platform === 'social') {
+                warning.classList.add('show');
+            } else {
+                warning.classList.remove('show');
+            }
+        }
+
+        // Custom dropdown functionality
+        const platformDropdown = document.getElementById('platform-dropdown');
+        const platformTrigger = document.getElementById('platform-trigger');
+        const platformMenu = document.getElementById('platform-menu');
+        const platformSelected = document.getElementById('platform-selected');
+        const platformInput = document.getElementById('platform');
+        const dropdownOptions = document.querySelectorAll('.dropdown-option');
+
+        if (platformTrigger && platformMenu) {
+            platformTrigger.addEventListener('click', () => {
+                platformMenu.classList.toggle('show');
+                platformTrigger.querySelector('.dropdown-arrow').classList.toggle('open');
+            });
+        }
+
+        dropdownOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const value = option.getAttribute('data-value');
+                const text = option.textContent;
+                
+                // Update hidden input
+                platformInput.value = value;
+                
+                // Update trigger text and styling
+                platformSelected.textContent = text;
+                platformTrigger.classList.remove('placeholder');
+                
+                // Update selected state
+                dropdownOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                // Close dropdown
+                platformMenu.classList.remove('show');
+                platformTrigger.querySelector('.dropdown-arrow').classList.remove('open');
+                
+                // Check for social media warning
+                checkPlatform();
+            });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (platformDropdown && !platformDropdown.contains(e.target)) {
+                platformMenu.classList.remove('show');
+                platformTrigger.querySelector('.dropdown-arrow').classList.remove('open');
+            }
+        });
+
+        // Character counter for description field
+        const descriptionField = document.getElementById('description');
+        const descCounter = document.getElementById('desc-counter');
+        
+        if (descriptionField && descCounter) {
+            descriptionField.addEventListener('input', () => {
+                const currentLength = descriptionField.value.length;
+                const minLength = 250;
+                
+                descCounter.textContent = `${currentLength} / ${minLength} characters`;
+                
+                if (currentLength < minLength) {
+                    descCounter.classList.add('error');
+                    descCounter.classList.remove('valid');
+                } else {
+                    descCounter.classList.remove('error');
+                    descCounter.classList.add('valid');
+                }
+            });
+        }
+
+        // Character counter for what-building field
+        const whatBuildingField = document.getElementById('what-building');
+        const whatBuildingCounter = document.getElementById('what-building-counter');
+        
+        if (whatBuildingField && whatBuildingCounter) {
+            whatBuildingField.addEventListener('input', () => {
+                const currentLength = whatBuildingField.value.length;
+                const minLength = 250;
+                
+                whatBuildingCounter.textContent = `${currentLength} / ${minLength} characters`;
+                
+                if (currentLength < minLength) {
+                    whatBuildingCounter.classList.add('error');
+                    whatBuildingCounter.classList.remove('valid');
+                } else {
+                    whatBuildingCounter.classList.remove('error');
+                    whatBuildingCounter.classList.add('valid');
+                }
+            });
+        }
+
+        // Modal cannot be closed - removed close functionality
+
+        const apiKeyForm = document.getElementById('api-key-form');
+
+        if (apiKeyForm) {
+            apiKeyForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Show automated review first
+                showReviewStatus('AR');
+                
+                // The runAutomatedReview function will handle submission after checks complete
+            });
+        }
+
+        // Initialize on page load
+        checkExistingApplication();
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
