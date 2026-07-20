@@ -1267,7 +1267,9 @@
                 };
                 
                 if (allPassed) {
-                    await submitApplication(formData, 'R');
+                    // If this is a rerun (applicationId exists), go to IR instead of R
+                    const newStatus = applicationId ? 'IR' : 'R';
+                    await submitApplication(formData, newStatus);
                 } else {
                     await submitApplication(formData, 'D', `Failed Automated Review: ${failureReason}`);
                 }
