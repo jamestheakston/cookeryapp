@@ -812,22 +812,19 @@
                 }
                 applicationId = appData.id;
                 
-                // Fetch fresh data from Supabase to get latest moderator note
+                // Fetch fresh data from Supabase to get latest moderator note and form data
                 try {
                     const { data, error } = await SupabaseClient
                         .from('api_applications')
-                        .select('status, moderator_note')
+                        .select('*')
                         .eq('id', applicationId)
                         .single();
                     
                     if (data && !error) {
                         // Update localStorage with fresh data from Supabase
-                        localStorage.setItem('cookery_api_application', JSON.stringify({ 
-                            id: applicationId, 
-                            status: data.status,
-                            moderator_note: data.moderator_note
-                        }));
+                        localStorage.setItem('cookery_api_application', JSON.stringify(data));
                         // Don't show AR status on page load, skip to R
+                        // Show RA and ARM statuses as-is
                         const displayStatus = data.status === 'AR' ? 'R' : data.status;
                         showReviewStatus(displayStatus, data.moderator_note);
                     } else {
@@ -847,6 +844,37 @@
             } else {
                 // Modal shows by default, prevent scrolling
                 document.body.classList.add('no-scroll');
+            }
+        }
+
+        function prefillFormFromStorage() {
+            const appData = JSON.parse(localStorage.getItem('cookery_api_application'));
+            if (appData) {
+                // Prefill form fields from localStorage data
+                if (appData.name) document.getElementById('name').value = appData.name;
+                if (appData.company) document.getElementById('company').value = appData.company;
+                if (appData.email) document.getElementById('email').value = appData.email;
+                if (appData.platform) document.getElementById('platform').value = appData.platform;
+                if (appData.what_building) document.getElementById('what-building').value = appData.what_building;
+                if (appData.website) document.getElementById('website').value = appData.website;
+                if (appData.description) document.getElementById('description').value = appData.description;
+                if (appData.documentation) document.getElementById('documentation').value = appData.documentation;
+                
+                // Update character counters
+                const whatBuildingField = document.getElementById('what-building');
+                const whatBuildingCounter = document.getElementById('what-building-counter');
+                if (whatBuildingField && whatBuildingCounter) {
+                    const currentLength = whatBuildingField.value.length;
+                    const minLength = 250;
+                    whatBuildingCounter.textContent = `${currentLength} / ${minLength} characters`;
+                    if (currentLength < minLength) {
+                        whatBuildingCounter.classList.add('error');
+                        whatBuildingCounter.classList.remove('valid');
+                    } else {
+                        whatBuildingCounter.classList.remove('error');
+                        whatBuildingCounter.classList.add('valid');
+                    }
+                }
             }
         }
 
@@ -890,6 +918,40 @@
                     // Timeline: Circle 1 active, label 1 active
                     document.getElementById('timeline-circle-1').classList.add('active');
                     document.getElementById('timeline-label-1').classList.add('active');
+                    // Show checklist
+                    checklistDiv.style.display = 'block';
+                    runAutomatedReview();
+                    break;
+                case 'RA':
+                    // Moderator has given another chance - show form with prefilled data
+                    formContainer.style.display = 'block';
+                    reviewStatus.classList.remove('active');
+                    statusIcon.classList.add('received');
+                    statusIcon.innerHTML = '<i data-lucide="refresh-cw" style="width: 32px; height: 32px;"></i>';
+                    statusTitle.textContent = 'Resubmit Your Application';
+                    statusDescription.textContent = 'Your moderator has given you another chance to submit your application. Please review the feedback below and make any necessary changes.';
+                    // Show moderator note
+                    if (moderatorNote) {
+                        moderatorNoteDiv.style.display = 'block';
+                        moderatorNoteText.textContent = moderatorNote;
+                    }
+                    // Prefill form fields from localStorage
+                    prefillFormFromStorage();
+                    break;
+                case 'ARM':
+                    // Moderator wants to restart automated review
+                    statusIcon.classList.add('received');
+                    statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
+                    statusTitle.textContent = 'Automated Review Restarted';
+                    statusDescription.textContent = 'Your moderator has requested that your application undergo automated review again. This will check your name, email, and description.';
+                    // Timeline: Circle 1 active, label 1 active
+                    document.getElementById('timeline-circle-1').classList.add('active');
+                    document.getElementById('timeline-label-1').classList.add('active');
+                    // Show moderator note
+                    if (moderatorNote) {
+                        moderatorNoteDiv.style.display = 'block';
+                        moderatorNoteText.textContent = moderatorNote;
+                    }
                     // Show checklist
                     checklistDiv.style.display = 'block';
                     runAutomatedReview();
@@ -974,23 +1036,46 @@
 
         async function submitApplication(formData, status = 'R', moderatorNote = null) {
             try {
-                const { data, error } = await SupabaseClient
-                    .from('api_applications')
-                    .insert([{
-                        name: formData.name,
-                        company: formData.company,
-                        email: formData.email,
-                        platform: formData.platform,
-                        what_building: formData.whatBuilding,
-                        website: formData.website,
-                        description: formData.description,
-                        documentation: formData.documentation,
-                        status: status,
-                        moderator_note: moderatorNote,
-                        created_at: new Date().toISOString()
-                    }])
-                    .select();
+                let result;
+                if (applicationId) {
+                    // Update existing application
+                    result = await SupabaseClient
+                        .from('api_applications')
+                        .update({
+                            name: formData.name,
+                            company: formData.company,
+                            email: formData.email,
+                            platform: formData.platform,
+                            what_building: formData.whatBuilding,
+                            website: formData.website,
+                            description: formData.description,
+                            documentation: formData.documentation,
+                            status: status,
+                            moderator_note: moderatorNote
+                        })
+                        .eq('id', applicationId)
+                        .select();
+                } else {
+                    // Insert new application
+                    result = await SupabaseClient
+                        .from('api_applications')
+                        .insert([{
+                            name: formData.name,
+                            company: formData.company,
+                            email: formData.email,
+                            platform: formData.platform,
+                            what_building: formData.whatBuilding,
+                            website: formData.website,
+                            description: formData.description,
+                            documentation: formData.documentation,
+                            status: status,
+                            moderator_note: moderatorNote,
+                            created_at: new Date().toISOString()
+                        }])
+                        .select();
+                }
 
+                const { data, error } = result;
                 if (error) throw error;
 
                 if (data && data[0]) {
@@ -1019,7 +1104,7 @@
                 try {
                     const { data, error } = await SupabaseClient
                         .from('api_applications')
-                        .select('status, moderator_note')
+                        .select('*')
                         .eq('id', applicationId)
                         .single();
 
@@ -1038,26 +1123,19 @@
                         console.log('New moderator note from Supabase:', data.moderator_note);
                         
                         // Skip AR status in polling (client-side only)
+                        // Show RA and ARM statuses as-is
                         const displayStatus = data.status === 'AR' ? 'R' : data.status;
                         
                         // Check for status change
                         if (displayStatus !== currentStatus) {
                             console.log('Status changed, updating UI');
-                            localStorage.setItem('cookery_api_application', JSON.stringify({ 
-                                id: applicationId, 
-                                status: data.status,
-                                moderator_note: data.moderator_note
-                            }));
+                            localStorage.setItem('cookery_api_application', JSON.stringify(data));
                             showReviewStatus(displayStatus, data.moderator_note);
                         }
                         // Check for moderator note change (even if status hasn't changed)
                         else if (data.moderator_note !== currentModeratorNote) {
                             console.log('Moderator note changed, updating UI');
-                            localStorage.setItem('cookery_api_application', JSON.stringify({ 
-                                id: applicationId, 
-                                status: data.status,
-                                moderator_note: data.moderator_note
-                            }));
+                            localStorage.setItem('cookery_api_application', JSON.stringify(data));
                             showReviewStatus(displayStatus, data.moderator_note);
                         }
                     } else {
