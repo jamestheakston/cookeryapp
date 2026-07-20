@@ -915,7 +915,7 @@
                     statusTitle.textContent = 'Automated Review';
                     // If applicationId exists, this is a moderator-triggered restart
                     if (applicationId) {
-                        statusDescription.textContent = 'Your moderator has requested that your application undergo automated review again. This will check your name, email, and description.';
+                        statusDescription.textContent = 'We need to run automated review again';
                         // Show moderator note if present
                         if (moderatorNote) {
                             moderatorNoteDiv.style.display = 'block';
@@ -923,7 +923,7 @@
                         }
                         // Add a button to start automated review
                         const startReviewBtn = document.createElement('button');
-                        startReviewBtn.textContent = 'Start Automated Review';
+                        startReviewBtn.textContent = 'OK';
                         startReviewBtn.className = 'btn-submit';
                         startReviewBtn.style.marginTop = '20px';
                         startReviewBtn.onclick = () => {
