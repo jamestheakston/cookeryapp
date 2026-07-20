@@ -845,37 +845,6 @@
             }
         }
 
-        function prefillFormFromStorage() {
-            const appData = JSON.parse(localStorage.getItem('cookery_api_application'));
-            if (appData) {
-                // Prefill form fields from localStorage data
-                if (appData.name) document.getElementById('name').value = appData.name;
-                if (appData.company) document.getElementById('company').value = appData.company;
-                if (appData.email) document.getElementById('email').value = appData.email;
-                if (appData.platform) document.getElementById('platform').value = appData.platform;
-                if (appData.what_building) document.getElementById('what-building').value = appData.what_building;
-                if (appData.website) document.getElementById('website').value = appData.website;
-                if (appData.description) document.getElementById('description').value = appData.description;
-                if (appData.documentation) document.getElementById('documentation').value = appData.documentation;
-                
-                // Update character counters
-                const whatBuildingField = document.getElementById('what-building');
-                const whatBuildingCounter = document.getElementById('what-building-counter');
-                if (whatBuildingField && whatBuildingCounter) {
-                    const currentLength = whatBuildingField.value.length;
-                    const minLength = 250;
-                    whatBuildingCounter.textContent = `${currentLength} / ${minLength} characters`;
-                    if (currentLength < minLength) {
-                        whatBuildingCounter.classList.add('error');
-                        whatBuildingCounter.classList.remove('valid');
-                    } else {
-                        whatBuildingCounter.classList.remove('error');
-                        whatBuildingCounter.classList.add('valid');
-                    }
-                }
-            }
-        }
-
         function showReviewStatus(status, moderatorNote = null) {
             const formContainer = document.getElementById('form-container');
             const reviewStatus = document.getElementById('review-status');
@@ -908,71 +877,6 @@
             });
 
             switch (status) {
-                case 'AR':
-                    // AR can be client-side (initial submission) or moderator-triggered restart
-                    statusIcon.classList.add('received');
-                    statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
-                    statusTitle.textContent = 'Automated Review';
-                    // If applicationId exists, this is a moderator-triggered restart
-                    if (applicationId) {
-                        statusDescription.textContent = 'Your moderator believes that your application should undergo automated review again to ensure all requirements are met. This will check your name format, email validity, and description length.';
-                        // Show moderator note if present
-                        if (moderatorNote) {
-                            moderatorNoteDiv.style.display = 'block';
-                            moderatorNoteText.textContent = moderatorNote;
-                        }
-                        // Hide timeline for moderator-triggered AR
-                        document.querySelector('.status-timeline').style.display = 'none';
-                        // Add a button to start automated review
-                        const startReviewBtn = document.createElement('button');
-                        startReviewBtn.textContent = 'OK';
-                        startReviewBtn.className = 'btn-submit';
-                        startReviewBtn.style.marginTop = '20px';
-                        startReviewBtn.onclick = () => {
-                            startReviewBtn.remove();
-                            document.querySelector('.status-timeline').style.display = 'flex';
-                            checklistDiv.style.display = 'block';
-                            runAutomatedReview();
-                        };
-                        reviewStatus.appendChild(startReviewBtn);
-                    } else {
-                        statusDescription.textContent = 'Running automated checks on your application...';
-                        // Timeline: Circle 1 active, label 1 active
-                        document.getElementById('timeline-circle-1').classList.add('active');
-                        document.getElementById('timeline-label-1').classList.add('active');
-                        // Show checklist
-                        checklistDiv.style.display = 'block';
-                        runAutomatedReview();
-                    }
-                    break;
-                case 'RA':
-                    // Moderator has given another chance - show review status with message
-                    formContainer.style.display = 'none';
-                    reviewStatus.classList.add('active');
-                    statusIcon.classList.add('received');
-                    statusIcon.innerHTML = '<i data-lucide="refresh-cw" style="width: 32px; height: 32px;"></i>';
-                    statusTitle.textContent = 'Resubmit Your Application';
-                    statusDescription.textContent = 'Your application was declined, but your moderator has given you another chance to submit your application. Please review the feedback below and make any necessary changes.';
-                    // Hide checklist
-                    checklistDiv.style.display = 'none';
-                    // Show moderator note
-                    if (moderatorNote) {
-                        moderatorNoteDiv.style.display = 'block';
-                        moderatorNoteText.textContent = moderatorNote;
-                    }
-                    // Add a button to continue to form
-                    const continueBtn = document.createElement('button');
-                    continueBtn.textContent = 'Continue to Form';
-                    continueBtn.className = 'btn-submit';
-                    continueBtn.style.marginTop = '20px';
-                    continueBtn.onclick = () => {
-                        continueBtn.remove();
-                        prefillFormFromStorage();
-                        formContainer.style.display = 'block';
-                        reviewStatus.classList.remove('active');
-                    };
-                    reviewStatus.appendChild(continueBtn);
-                    break;
                 case 'R':
                     statusIcon.classList.add('received');
                     statusIcon.innerHTML = '<i data-lucide="inbox" style="width: 32px; height: 32px;"></i>';
@@ -1177,29 +1081,9 @@
         }
 
         function runAutomatedReview() {
-            // Get data from localStorage if applicationId exists (moderator-triggered rerun)
-            let name, email, whatBuilding, company, platform, website, description, documentation;
-            
-            if (applicationId) {
-                const appData = JSON.parse(localStorage.getItem('cookery_api_application'));
-                name = appData.name;
-                email = appData.email;
-                whatBuilding = appData.what_building;
-                company = appData.company;
-                platform = appData.platform;
-                website = appData.website;
-                description = appData.description;
-                documentation = appData.documentation;
-            } else {
-                name = document.getElementById('name').value;
-                email = document.getElementById('email').value;
-                whatBuilding = document.getElementById('what-building').value;
-                company = document.getElementById('company').value;
-                platform = document.getElementById('platform').value;
-                website = document.getElementById('website').value;
-                description = document.getElementById('description').value;
-                documentation = document.getElementById('documentation').value;
-            }
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const whatBuilding = document.getElementById('what-building').value;
             
             const checklistItems = [
                 { 
@@ -1277,20 +1161,17 @@
             setTimeout(async () => {
                 const formData = {
                     name: name,
-                    company: company,
+                    company: document.getElementById('company').value,
                     email: email,
-                    platform: platform,
+                    platform: document.getElementById('platform').value,
                     whatBuilding: whatBuilding,
-                    website: website,
-                    description: description,
-                    documentation: documentation
+                    website: document.getElementById('website').value,
+                    description: document.getElementById('description').value,
+                    documentation: document.getElementById('documentation').value
                 };
                 
                 if (allPassed) {
-                    // If this is a rerun (applicationId exists), go to IR instead of R
-                    const newStatus = applicationId ? 'IR' : 'R';
-                    console.log('Submitting with status:', newStatus, 'applicationId:', applicationId);
-                    await submitApplication(formData, newStatus);
+                    await submitApplication(formData, 'R');
                 } else {
                     await submitApplication(formData, 'D', `Failed Automated Review: ${failureReason}`);
                 }
