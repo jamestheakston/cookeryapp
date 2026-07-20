@@ -823,10 +823,8 @@
                     if (data && !error) {
                         // Update localStorage with fresh data from Supabase
                         localStorage.setItem('cookery_api_application', JSON.stringify(data));
-                        // Don't show AR status on page load, skip to R
-                        // Show RA and ARM statuses as-is
-                        const displayStatus = data.status === 'AR' ? 'R' : data.status;
-                        showReviewStatus(displayStatus, data.moderator_note);
+                        // Don't skip AR status - it could be moderator-triggered
+                        showReviewStatus(data.status, data.moderator_note);
                     } else {
                         // Supabase returned no data or error - clear localStorage
                         console.log('Supabase data not found or error, clearing localStorage');
@@ -1146,9 +1144,8 @@
                         console.log('Current moderator note from localStorage:', currentModeratorNote);
                         console.log('New moderator note from Supabase:', data.moderator_note);
                         
-                        // Skip AR status in polling (client-side only)
-                        // Show RA and ARM statuses as-is
-                        const displayStatus = data.status === 'AR' ? 'R' : data.status;
+                        // Don't skip AR status in polling - it could be moderator-triggered
+                        const displayStatus = data.status;
                         
                         // Check for status change
                         if (displayStatus !== currentStatus) {
