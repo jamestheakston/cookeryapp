@@ -11,55 +11,47 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body { 
-            background-color: #0f0f0f; 
+            background-color: #faf8f5; 
             font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
         }
     </style>
 </head>
-<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
     <div class="max-w-2xl w-full text-center">
         <div class="mb-8">
             <img src="https://static.wixstatic.com/media/7e69ed_330f79c01501431c864036c560eede24~mv2.png/v1/fill/w_432,h_426,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/AppIcon~ios-marketing.png" alt="Cookery Logo" width="120" height="120" class="mx-auto mb-6 rounded-lg">
-            <h1 class="text-4xl font-bold mb-4 font-serif">Install Cookery for Slack</h1>
-            <p class="text-gray-400 text-lg mb-8">
-                Get cooking inspiration directly in your Slack workspace. Share recipes, discover new dishes, and connect with fellow food enthusiasts.
+            <h1 class="text-4xl font-bold mb-4 font-serif text-stone-900">Install Cookery for Slack</h1>
+            <p class="text-stone-600 text-lg mb-8">
+                Get cooking inspiration directly in your Slack workspace. Generate AI-powered recipes with simple commands.
             </p>
         </div>
 
-        <div class="bg-gray-900 rounded-2xl p-8 mb-8">
-            <h2 class="text-2xl font-bold mb-4">Features</h2>
-            <ul class="text-left space-y-3 text-gray-300">
+        <div class="bg-white rounded-2xl p-8 mb-8 border border-stone-200">
+            <h2 class="text-2xl font-bold mb-4 text-stone-900">Commands</h2>
+            <ul class="text-left space-y-3 text-stone-600">
                 <li class="flex items-start gap-3">
-                    <i data-lucide="check-circle" class="w-5 h-5 text-[#ca9627] flex-shrink-0 mt-0.5"></i>
-                    <span>Get daily recipe recommendations in your channels</span>
+                    <i data-lucide="terminal" class="w-5 h-5 text-[#ca9627] flex-shrink-0 mt-0.5"></i>
+                    <span><code class="bg-stone-100 px-2 py-1 rounded text-sm">/setkey [chatgpt|gemini|claude] [api key]</code> - Set your AI provider API key</span>
                 </li>
                 <li class="flex items-start gap-3">
-                    <i data-lucide="check-circle" class="w-5 h-5 text-[#ca9627] flex-shrink-0 mt-0.5"></i>
-                    <span>Search recipes with simple slash commands</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <i data-lucide="check-circle" class="w-5 h-5 text-[#ca9627] flex-shrink-0 mt-0.5"></i>
-                    <span>Share cooking tips and techniques with your team</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <i data-lucide="check-circle" class="w-5 h-5 text-[#ca9627] flex-shrink-0 mt-0.5"></i>
-                    <span>Integrate with your existing workflow seamlessly</span>
+                    <i data-lucide="sparkles" class="w-5 h-5 text-[#ca9627] flex-shrink-0 mt-0.5"></i>
+                    <span><code class="bg-stone-100 px-2 py-1 rounded text-sm">/generate [quantity] [budget] [prompt]</code> - Generate AI recipes</span>
                 </li>
             </ul>
         </div>
 
-        <div class="mb-8">
+        <div class="flex justify-center mb-8">
             <a href="https://slack.com/oauth/v2/authorize?client_id=11625829619537.11625831018497&scope=chat:write,chat:write.customize,commands&user_scope=">
                 <img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />
             </a>
         </div>
 
-        <div class="text-gray-500 text-sm">
+        <div class="text-stone-500 text-sm">
             <p>By installing, you agree to our <a href="privacy.html" class="text-[#ca9627] hover:underline">Privacy Policy</a> and <a href="terms.html" class="text-[#ca9627] hover:underline">Terms of Service</a></p>
         </div>
 
         <div class="mt-8">
-            <a href="index.html" class="text-gray-400 hover:text-white transition-colors flex items-center justify-center gap-2">
+            <a href="index.html" class="text-stone-600 hover:text-stone-900 transition-colors flex items-center justify-center gap-2">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 Back to Home
             </a>
