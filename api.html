@@ -960,6 +960,8 @@
                     document.getElementById('timeline-line-1').classList.add('completed');
                     document.getElementById('timeline-circle-2').classList.add('active');
                     document.getElementById('timeline-label-2').classList.add('active');
+                    // Hide checklist
+                    checklistDiv.style.display = 'none';
                     break;
                 case 'IR':
                     statusIcon.classList.add('reviewing');
@@ -975,6 +977,8 @@
                     document.getElementById('timeline-line-2').classList.add('completed');
                     document.getElementById('timeline-circle-3').classList.add('active');
                     document.getElementById('timeline-label-3').classList.add('active');
+                    // Hide checklist
+                    checklistDiv.style.display = 'none';
                     break;
                 case 'A':
                     statusIcon.classList.add('accepted');
@@ -993,6 +997,8 @@
                     document.getElementById('timeline-line-3').classList.add('completed');
                     document.getElementById('timeline-circle-4').classList.add('active');
                     document.getElementById('timeline-label-4').classList.add('active');
+                    // Hide checklist
+                    checklistDiv.style.display = 'none';
                     if (moderatorNote) {
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
@@ -1017,6 +1023,8 @@
                     document.getElementById('timeline-label-4').classList.add('active');
                     // Change circle 4 icon to x-circle for declined
                     document.getElementById('timeline-circle-4').innerHTML = '<i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>';
+                    // Hide checklist
+                    checklistDiv.style.display = 'none';
                     if (moderatorNote) {
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
