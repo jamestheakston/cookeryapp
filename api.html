@@ -1384,6 +1384,14 @@
             apiKeyForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
+                // Get DOM elements
+                const formContainer = document.getElementById('form-container');
+                const reviewStatus = document.getElementById('review-status');
+                const statusIcon = document.getElementById('status-icon');
+                const statusTitle = document.getElementById('status-title');
+                const statusDescription = document.getElementById('status-description');
+                const checklistDiv = document.getElementById('automated-review-checklist');
+                
                 // Show automated review first
                 formContainer.style.display = 'none';
                 reviewStatus.classList.add('active');
