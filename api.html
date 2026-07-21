@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cookery API</title>
+    <link rel="icon" href="/assets/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1384,9 +1385,21 @@
                 e.preventDefault();
                 
                 // Show automated review first
-                showReviewStatus('AR');
+                formContainer.style.display = 'none';
+                reviewStatus.classList.add('active');
+                statusIcon.classList.add('received');
+                statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
+                statusTitle.textContent = 'Automated Review';
+                statusDescription.textContent = 'Running automated checks on your application...';
+                // Timeline: Circle 1 active, label 1 active
+                document.getElementById('timeline-circle-1').classList.add('active');
+                document.getElementById('timeline-label-1').classList.add('active');
+                // Show checklist
+                checklistDiv.style.display = 'block';
+                lucide.createIcons();
                 
-                // The runAutomatedReview function will handle submission after checks complete
+                // Run automated review
+                runAutomatedReview();
             });
         }
 
