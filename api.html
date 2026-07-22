@@ -431,7 +431,10 @@
             color: #1c1917;
             margin: 0;
         }
-        .modal-header.hide-kebab .kebab-menu {
+        .modal-header.form-mode #refresh-status-btn {
+            display: none;
+        }
+        .modal-header.timeline-mode #end-application-btn {
             display: none;
         }
         .kebab-menu {
@@ -1122,9 +1125,10 @@
                 if (appData.status === 'RECEIVED' || appData.status === 'REVIEWING' || appData.status === 'ACCEPTED' || appData.status === 'DECLINED') {
                     localStorage.removeItem('cookery_api_application');
                     document.body.classList.add('no-scroll');
-                    // Hide kebab menu on form
+                    // Set form mode
                     if (modalHeader) {
-                        modalHeader.classList.add('hide-kebab');
+                        modalHeader.classList.add('form-mode');
+                        modalHeader.classList.remove('timeline-mode');
                     }
                     if (loadingSpinner) {
                         loadingSpinner.classList.remove('show');
@@ -1151,9 +1155,10 @@
                         console.log('Supabase data not found or error, clearing localStorage');
                         localStorage.removeItem('cookery_api_application');
                         document.body.classList.add('no-scroll');
-                        // Hide kebab menu on form
+                        // Set form mode
                         if (modalHeader) {
-                            modalHeader.classList.add('hide-kebab');
+                            modalHeader.classList.add('form-mode');
+                            modalHeader.classList.remove('timeline-mode');
                         }
                         if (loadingSpinner) {
                             loadingSpinner.classList.remove('show');
@@ -1170,9 +1175,10 @@
             } else {
                 // Modal shows by default, prevent scrolling
                 document.body.classList.add('no-scroll');
-                // Hide kebab menu on form
+                // Set form mode
                 if (modalHeader) {
-                    modalHeader.classList.add('hide-kebab');
+                    modalHeader.classList.add('form-mode');
+                    modalHeader.classList.remove('timeline-mode');
                 }
             }
 
@@ -1195,9 +1201,10 @@
             formContainer.style.display = 'none';
             reviewStatus.classList.add('active');
             
-            // Show kebab menu on timeline
+            // Set timeline mode - show refresh, hide end
             if (modalHeader) {
-                modalHeader.classList.remove('hide-kebab');
+                modalHeader.classList.remove('form-mode');
+                modalHeader.classList.add('timeline-mode');
             }
 
             // Hide moderator note and checklist by default
