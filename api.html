@@ -454,7 +454,7 @@
             border: 1px solid #e7e5e4;
             border-radius: 12px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-            min-width: 160px;
+            min-width: 180px;
             padding: 6px;
             opacity: 0;
             transform: translateY(-10px);
@@ -472,7 +472,7 @@
             align-items: center;
             gap: 10px;
             width: 100%;
-            padding: 10px 12px;
+            padding: 6px 12px;
             border: none;
             background: none;
             border-radius: 8px;
@@ -490,6 +490,84 @@
         }
         .dropdown-item.danger:hover {
             background-color: #fef2f2;
+        }
+        .confirmation-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .confirmation-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .confirmation-dialog {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+        }
+        .confirmation-overlay.show .confirmation-dialog {
+            transform: scale(1);
+        }
+        .confirmation-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 0 0 12px;
+        }
+        .confirmation-message {
+            color: #78716c;
+            font-size: 14px;
+            line-height: 1.5;
+            margin: 0 0 20px;
+        }
+        .confirmation-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        .btn-cancel {
+            background-color: transparent;
+            border: 1px solid #d6d3d1;
+            color: #1c1917;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cancel:hover {
+            background-color: #faf8f5;
+            border-color: #1c1917;
+        }
+        .btn-confirm {
+            background-color: #dc2626;
+            border: none;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-confirm:hover {
+            background-color: #b91c1c;
         }
         .modal-close {
             background: none;
@@ -680,6 +758,19 @@
                         <i data-lucide="more-vertical" style="width: 20px; height: 20px; color: #78716c;"></i>
                     </button>
                     <div class="kebab-dropdown" id="kebab-dropdown">
+                        <button class="dropdown-item" id="view-status-btn">
+                            <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
+                            Privacy
+                        </button>
+                        <button class="dropdown-item" id="refresh-btn">
+                            <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                            Refresh Status
+                        </button>
+                        <button class="dropdown-item" id="about-btn">
+                            <i data-lucide="info" style="width: 16px; height: 16px;"></i>
+                            About
+                        </button>
+                        <div style="border-top: 1px solid #e7e5e4; margin: 4px 0;"></div>
                         <button class="dropdown-item danger" id="end-application-btn">
                             <i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>
                             End Application
@@ -715,7 +806,6 @@
                             <div class="error-message" id="email-error">Valid email is required</div>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn-back" disabled>Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(1)">Next</button>
                         </div>
                     </div>
@@ -1487,6 +1577,11 @@
         const kebabToggle = document.getElementById('kebab-toggle');
         const kebabDropdown = document.getElementById('kebab-dropdown');
         const endApplicationBtn = document.getElementById('end-application-btn');
+        const viewStatusBtn = document.getElementById('view-status-btn');
+        const refreshBtn = document.getElementById('refresh-btn');
+        const confirmationOverlay = document.getElementById('confirmation-overlay');
+        const confirmationCancel = document.getElementById('confirmation-cancel');
+        const confirmationConfirm = document.getElementById('confirmation-confirm');
 
         if (kebabToggle && kebabDropdown) {
             kebabToggle.addEventListener('click', (e) => {
@@ -1501,15 +1596,62 @@
                 }
             });
 
-            // End application button
+            // View Status button (Privacy)
+            if (viewStatusBtn) {
+                viewStatusBtn.addEventListener('click', () => {
+                    kebabDropdown.classList.remove('show');
+                    window.location.href = '/privacy.html';
+                });
+            }
+
+            // Refresh Status button
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', () => {
+                    kebabDropdown.classList.remove('show');
+                    checkExistingApplication();
+                });
+            }
+
+            // About button
+            const aboutBtn = document.getElementById('about-btn');
+            if (aboutBtn) {
+                aboutBtn.addEventListener('click', () => {
+                    kebabDropdown.classList.remove('show');
+                    window.location.href = '/about.html';
+                });
+            }
+
+            // End application button - show confirmation
             if (endApplicationBtn) {
                 endApplicationBtn.addEventListener('click', () => {
+                    kebabDropdown.classList.remove('show');
+                    confirmationOverlay.classList.add('show');
+                });
+            }
+
+            // Confirmation cancel button
+            if (confirmationCancel) {
+                confirmationCancel.addEventListener('click', () => {
+                    confirmationOverlay.classList.remove('show');
+                });
+            }
+
+            // Confirmation confirm button
+            if (confirmationConfirm) {
+                confirmationConfirm.addEventListener('click', () => {
                     // Clear localStorage
                     localStorage.removeItem('cookery_api_application');
                     // Redirect to session closed page
                     window.location.href = '/api/sessionclosed.html';
                 });
             }
+
+            // Close confirmation when clicking outside
+            confirmationOverlay.addEventListener('click', (e) => {
+                if (e.target === confirmationOverlay) {
+                    confirmationOverlay.classList.remove('show');
+                }
+            });
         }
 
         // Initialize on page load
@@ -1517,5 +1659,17 @@
 
         lucide.createIcons();
     </script>
+
+    <!-- Confirmation Dialog -->
+    <div id="confirmation-overlay" class="confirmation-overlay">
+        <div class="confirmation-dialog">
+            <h3 class="confirmation-title">End Application?</h3>
+            <p class="confirmation-message">Are you sure you want to end your application? This will clear your progress and cannot be undone.</p>
+            <div class="confirmation-actions">
+                <button class="btn-cancel" id="confirmation-cancel">Cancel</button>
+                <button class="btn-confirm" id="confirmation-confirm">End Application</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
