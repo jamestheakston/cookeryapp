@@ -422,6 +422,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
+            position: relative;
         }
         .modal-header h2 {
             font-family: 'Playfair Display', serif;
@@ -429,6 +430,66 @@
             font-weight: 400;
             color: #1c1917;
             margin: 0;
+        }
+        .kebab-menu {
+            position: relative;
+        }
+        .kebab-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        .kebab-button:hover {
+            background-color: #f5f3ef;
+        }
+        .kebab-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background-color: #ffffff;
+            border: 1px solid #e7e5e4;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            padding: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+        .kebab-dropdown.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 10px 12px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #1c1917;
+            transition: background-color 0.2s;
+            text-align: left;
+        }
+        .dropdown-item:hover {
+            background-color: #faf8f5;
+        }
+        .dropdown-item.danger {
+            color: #dc2626;
+        }
+        .dropdown-item.danger:hover {
+            background-color: #fef2f2;
         }
         .modal-close {
             background: none;
@@ -614,6 +675,17 @@
         <div class="modal">
             <div class="modal-header">
                 <h2>Request API Key</h2>
+                <div class="kebab-menu">
+                    <button class="kebab-button" id="kebab-toggle">
+                        <i data-lucide="more-vertical" style="width: 20px; height: 20px; color: #78716c;"></i>
+                    </button>
+                    <div class="kebab-dropdown" id="kebab-dropdown">
+                        <button class="dropdown-item danger" id="end-application-btn">
+                            <i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>
+                            End Application
+                        </button>
+                    </div>
+                </div>
             </div>
             
             <!-- Form Steps -->
@@ -1409,6 +1481,35 @@
                 // Run automated review
                 runAutomatedReview();
             });
+        }
+
+        // Kebab menu functionality
+        const kebabToggle = document.getElementById('kebab-toggle');
+        const kebabDropdown = document.getElementById('kebab-dropdown');
+        const endApplicationBtn = document.getElementById('end-application-btn');
+
+        if (kebabToggle && kebabDropdown) {
+            kebabToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                kebabDropdown.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!kebabToggle.contains(e.target) && !kebabDropdown.contains(e.target)) {
+                    kebabDropdown.classList.remove('show');
+                }
+            });
+
+            // End application button
+            if (endApplicationBtn) {
+                endApplicationBtn.addEventListener('click', () => {
+                    // Clear localStorage
+                    localStorage.removeItem('cookery_api_application');
+                    // Redirect to session closed page
+                    window.location.href = '/api/sessionclosed.html';
+                });
+            }
         }
 
         // Initialize on page load
