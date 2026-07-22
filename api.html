@@ -638,6 +638,29 @@
         .info-close:hover {
             background-color: #292524;
         }
+        .refresh-status-btn {
+            background-color: transparent;
+            border: 1px solid #d6d3d1;
+            color: #1c1917;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 20px auto 0;
+        }
+        .refresh-status-btn:hover {
+            background-color: #faf8f5;
+            border-color: #1c1917;
+        }
+        .refresh-status-btn i {
+            width: 16px;
+            height: 16px;
+        }
         .modal-close {
             background: none;
             border: none;
@@ -978,6 +1001,10 @@
                         <span id="timeline-label-4" class="timeline-label">Decision</span>
                     </div>
                 </div>
+                <button id="refresh-status-btn" class="refresh-status-btn" style="margin-top: 20px; display: none;">
+                    <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                    Refresh Status
+                </button>
                 <div id="moderator-note" class="moderator-note" style="display: none;">
                     <h4>Moderator Note</h4>
                     <p id="moderator-note-text"></p>
@@ -1118,6 +1145,8 @@
                     document.getElementById('timeline-label-2').classList.add('active');
                     // Hide checklist
                     checklistDiv.style.display = 'none';
+                    // Show refresh button
+                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     break;
                 case 'IR':
                     statusIcon.classList.add('reviewing');
@@ -1135,6 +1164,8 @@
                     document.getElementById('timeline-label-3').classList.add('active');
                     // Hide checklist
                     checklistDiv.style.display = 'none';
+                    // Show refresh button
+                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     break;
                 case 'A':
                     statusIcon.classList.add('accepted');
@@ -1155,6 +1186,8 @@
                     document.getElementById('timeline-label-4').classList.add('active');
                     // Hide checklist
                     checklistDiv.style.display = 'none';
+                    // Show refresh button
+                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     if (moderatorNote) {
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
@@ -1181,6 +1214,8 @@
                     document.getElementById('timeline-circle-4').innerHTML = '<i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>';
                     // Hide checklist
                     checklistDiv.style.display = 'none';
+                    // Show refresh button
+                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     if (moderatorNote) {
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
@@ -1746,6 +1781,14 @@
                 if (!kebabToggle.contains(e.target) && !kebabDropdown.contains(e.target)) {
                     kebabDropdown.classList.remove('show');
                 }
+            });
+        }
+
+        // Refresh status button on timeline
+        const refreshStatusBtn = document.getElementById('refresh-status-btn');
+        if (refreshStatusBtn) {
+            refreshStatusBtn.addEventListener('click', () => {
+                checkExistingApplication();
             });
         }
 
