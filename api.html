@@ -431,6 +431,9 @@
             color: #1c1917;
             margin: 0;
         }
+        .modal-header.hide-kebab .kebab-menu {
+            display: none;
+        }
         .kebab-menu {
             position: relative;
         }
@@ -681,10 +684,9 @@
         .spinner {
             width: 40px;
             height: 40px;
-            border: 3px solid #e7e5e4;
-            border-top-color: #ca9627;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         @keyframes spin {
             to {
@@ -702,23 +704,6 @@
         .dropdown-item i.tick {
             color: #16a34a;
             transform: scale(1.2);
-        }
-        .btn-end-application {
-            background-color: transparent;
-            border: 2px solid #dc2626;
-            color: #dc2626;
-            padding: 14px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            flex: 1;
-        }
-        .btn-end-application:hover {
-            background-color: #fef2f2;
-            border-color: #b91c1c;
-            color: #b91c1c;
         }
         .modal-close {
             background: none;
@@ -901,7 +886,9 @@
 
     <!-- Loading Spinner -->
     <div id="loading-spinner" class="loading-spinner">
-        <div class="spinner"></div>
+        <div class="spinner">
+            <i data-lucide="loader-circle" style="width: 40px; height: 40px; animation: spin 1s linear infinite;"></i>
+        </div>
         <span class="loading-text">Loading...</span>
     </div>
 
@@ -963,7 +950,6 @@
                             <div class="error-message" id="email-error">Valid email is required</div>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn-end-application" id="end-application-step-1">End Application</button>
                             <button type="button" class="btn-next" onclick="nextStep(1)">Next</button>
                         </div>
                     </div>
@@ -999,7 +985,6 @@
                             <div class="error-message" id="what-building-error">Project description must be at least 250 characters</div>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn-end-application" id="end-application-step-2">End Application</button>
                             <button type="button" class="btn-back" onclick="prevStep(2)">Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(2)">Next</button>
                         </div>
@@ -1016,7 +1001,6 @@
                             <textarea id="description" name="description" placeholder="Any additional information about your project..."></textarea>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn-end-application" id="end-application-step-3">End Application</button>
                             <button type="button" class="btn-back" onclick="prevStep(3)">Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(3)">Next</button>
                         </div>
@@ -1030,7 +1014,6 @@
                             <p class="text-sm text-stone-500 mt-2">Help us understand your use case better by providing details about your integration plans.</p>
                         </div>
                         <div class="btn-group">
-                            <button type="button" class="btn-end-application" id="end-application-step-4">End Application</button>
                             <button type="button" class="btn-back" onclick="prevStep(4)">Back</button>
                             <button type="submit" class="btn-submit">Submit Request</button>
                         </div>
@@ -1126,6 +1109,8 @@
         // Check for existing application on page load
         async function checkExistingApplication() {
             const loadingSpinner = document.getElementById('loading-spinner');
+            const modalHeader = document.querySelector('.modal-header');
+            
             if (loadingSpinner) {
                 loadingSpinner.classList.add('show');
             }
@@ -1137,6 +1122,10 @@
                 if (appData.status === 'RECEIVED' || appData.status === 'REVIEWING' || appData.status === 'ACCEPTED' || appData.status === 'DECLINED') {
                     localStorage.removeItem('cookery_api_application');
                     document.body.classList.add('no-scroll');
+                    // Hide kebab menu on form
+                    if (modalHeader) {
+                        modalHeader.classList.add('hide-kebab');
+                    }
                     if (loadingSpinner) {
                         loadingSpinner.classList.remove('show');
                     }
@@ -1162,6 +1151,10 @@
                         console.log('Supabase data not found or error, clearing localStorage');
                         localStorage.removeItem('cookery_api_application');
                         document.body.classList.add('no-scroll');
+                        // Hide kebab menu on form
+                        if (modalHeader) {
+                            modalHeader.classList.add('hide-kebab');
+                        }
                         if (loadingSpinner) {
                             loadingSpinner.classList.remove('show');
                         }
@@ -1177,6 +1170,10 @@
             } else {
                 // Modal shows by default, prevent scrolling
                 document.body.classList.add('no-scroll');
+                // Hide kebab menu on form
+                if (modalHeader) {
+                    modalHeader.classList.add('hide-kebab');
+                }
             }
 
             if (loadingSpinner) {
@@ -1193,9 +1190,15 @@
             const moderatorNoteDiv = document.getElementById('moderator-note');
             const moderatorNoteText = document.getElementById('moderator-note-text');
             const checklistDiv = document.getElementById('automated-review-checklist');
+            const modalHeader = document.querySelector('.modal-header');
 
             formContainer.style.display = 'none';
             reviewStatus.classList.add('active');
+            
+            // Show kebab menu on timeline
+            if (modalHeader) {
+                modalHeader.classList.remove('hide-kebab');
+            }
 
             // Hide moderator note and checklist by default
             moderatorNoteDiv.style.display = 'none';
@@ -1815,14 +1818,29 @@
             });
         }
 
-        // End application buttons on form steps
-        for (let i = 1; i <= 4; i++) {
-            const stepEndBtn = document.getElementById(`end-application-step-${i}`);
-            if (stepEndBtn && confirmationOverlay) {
-                stepEndBtn.addEventListener('click', () => {
-                    confirmationOverlay.classList.add('show');
-                });
-            }
+        // Refresh status button - show tick icon animation
+        if (refreshStatusBtn) {
+            refreshStatusBtn.addEventListener('click', () => {
+                if (kebabDropdown) kebabDropdown.classList.remove('show');
+                
+                const icon = refreshStatusBtn.querySelector('i');
+                const originalIcon = icon.getAttribute('data-lucide');
+                
+                // Change to tick icon
+                icon.setAttribute('data-lucide', 'check');
+                icon.classList.add('tick');
+                lucide.createIcons();
+                
+                // Call checkExistingApplication
+                checkExistingApplication();
+                
+                // Revert to refresh icon after 2 seconds
+                setTimeout(() => {
+                    icon.setAttribute('data-lucide', 'refresh-cw');
+                    icon.classList.remove('tick');
+                    lucide.createIcons();
+                }, 2000);
+            });
         }
 
         // Confirmation cancel button
