@@ -572,6 +572,72 @@
         .btn-confirm:hover {
             background-color: #b91c1c;
         }
+        .info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+        .info-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .info-dialog {
+            background-color: #ffffff;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
+        }
+        .info-overlay.show .info-dialog {
+            transform: scale(1);
+        }
+        .info-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: #1c1917;
+            margin: 0 0 12px;
+        }
+        .info-content {
+            color: #78716c;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 0 0 20px;
+        }
+        .info-content p {
+            margin: 0 0 12px;
+        }
+        .info-content p:last-child {
+            margin: 0;
+        }
+        .info-close {
+            background-color: #1c1917;
+            border: none;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .info-close:hover {
+            background-color: #292524;
+        }
         .modal-close {
             background: none;
             border: none;
@@ -764,10 +830,6 @@
                         <button class="dropdown-item" id="view-status-btn">
                             <i data-lucide="shield" style="width: 16px; height: 16px;"></i>
                             Privacy
-                        </button>
-                        <button class="dropdown-item" id="refresh-btn">
-                            <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
-                            Refresh Status
                         </button>
                         <button class="dropdown-item" id="about-btn">
                             <i data-lucide="info" style="width: 16px; height: 16px;"></i>
@@ -1581,10 +1643,14 @@
         const kebabDropdown = document.getElementById('kebab-dropdown');
         const endApplicationBtn = document.getElementById('end-application-btn');
         const viewStatusBtn = document.getElementById('view-status-btn');
-        const refreshBtn = document.getElementById('refresh-btn');
+        const aboutBtn = document.getElementById('about-btn');
         const confirmationOverlay = document.getElementById('confirmation-overlay');
         const confirmationCancel = document.getElementById('confirmation-cancel');
         const confirmationConfirm = document.getElementById('confirmation-confirm');
+        const aboutOverlay = document.getElementById('about-overlay');
+        const aboutClose = document.getElementById('about-close');
+        const privacyOverlay = document.getElementById('privacy-overlay');
+        const privacyClose = document.getElementById('privacy-close');
 
         if (kebabToggle && kebabDropdown) {
             kebabToggle.addEventListener('click', (e) => {
@@ -1599,38 +1665,27 @@
                 }
             });
 
-            // View Status button (Privacy)
-            if (viewStatusBtn) {
+            // Privacy button - show privacy modal
+            if (viewStatusBtn && privacyOverlay) {
                 viewStatusBtn.addEventListener('click', () => {
                     kebabDropdown.classList.remove('show');
-                    window.location.href = '/privacy.html';
+                    privacyOverlay.classList.add('show');
                 });
             }
 
-            // Refresh Status button
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', () => {
-                    kebabDropdown.classList.remove('show');
-                    checkExistingApplication();
-                });
-            }
-
-            // About button
-            const aboutBtn = document.getElementById('about-btn');
-            if (aboutBtn) {
+            // About button - show about modal
+            if (aboutBtn && aboutOverlay) {
                 aboutBtn.addEventListener('click', () => {
                     kebabDropdown.classList.remove('show');
-                    window.location.href = '/about.html';
+                    aboutOverlay.classList.add('show');
                 });
             }
 
             // End application button - show confirmation
-            if (endApplicationBtn) {
+            if (endApplicationBtn && confirmationOverlay) {
                 endApplicationBtn.addEventListener('click', () => {
                     kebabDropdown.classList.remove('show');
-                    if (confirmationOverlay) {
-                        confirmationOverlay.classList.add('show');
-                    }
+                    confirmationOverlay.classList.add('show');
                 });
             }
 
@@ -1659,6 +1714,38 @@
                     }
                 });
             }
+
+            // About modal close button
+            if (aboutClose && aboutOverlay) {
+                aboutClose.addEventListener('click', () => {
+                    aboutOverlay.classList.remove('show');
+                });
+            }
+
+            // Close about modal when clicking outside
+            if (aboutOverlay) {
+                aboutOverlay.addEventListener('click', (e) => {
+                    if (e.target === aboutOverlay) {
+                        aboutOverlay.classList.remove('show');
+                    }
+                });
+            }
+
+            // Privacy modal close button
+            if (privacyClose && privacyOverlay) {
+                privacyClose.addEventListener('click', () => {
+                    privacyOverlay.classList.remove('show');
+                });
+            }
+
+            // Close privacy modal when clicking outside
+            if (privacyOverlay) {
+                privacyOverlay.addEventListener('click', (e) => {
+                    if (e.target === privacyOverlay) {
+                        privacyOverlay.classList.remove('show');
+                    }
+                });
+            }
         }
 
         // Initialize on page load
@@ -1676,6 +1763,43 @@
                 <button class="btn-cancel" id="confirmation-cancel">Cancel</button>
                 <button class="btn-confirm" id="confirmation-confirm">End Application</button>
             </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-overlay" class="info-overlay">
+        <div class="info-dialog">
+            <h3 class="info-title">About Cookery API</h3>
+            <div class="info-content">
+                <p>The Cookery API provides programmatic access to our recipe database, allowing developers to integrate cooking functionality into their applications.</p>
+                <p><strong>Features:</strong></p>
+                <p>• Recipe search and retrieval<br>• Ingredient substitution suggestions<br>• Nutritional information<br>• Cooking instructions and tips</p>
+                <p><strong>Rate Limits:</strong></p>
+                <p>Our API is rate-limited to ensure fair usage for all developers. Please refer to our documentation for specific limits.</p>
+                <p><strong>Support:</strong></p>
+                <p>For technical support or questions about the API, please contact our team at support.cookery@gmail.com</p>
+            </div>
+            <button class="info-close" id="about-close">Close</button>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacy-overlay" class="info-overlay">
+        <div class="info-dialog">
+            <h3 class="info-title">Privacy Policy</h3>
+            <div class="info-content">
+                <p><strong>Data Collection:</strong></p>
+                <p>We collect only the information necessary to process your API application, including your name, email, company, and project details.</p>
+                <p><strong>Data Usage:</strong></p>
+                <p>Your information is used solely to evaluate your API application and provide access to our services. We do not sell or share your data with third parties.</p>
+                <p><strong>Data Storage:</strong></p>
+                <p>Your application data is stored securely in our database and is accessible only to authorized personnel for review purposes.</p>
+                <p><strong>Data Retention:</strong></p>
+                <p>We retain your application data for as long as necessary to provide our services and for legitimate business purposes. You may request deletion of your data at any time.</p>
+                <p><strong>Security:</strong></p>
+                <p>We implement industry-standard security measures to protect your data, including encryption and access controls.</p>
+            </div>
+            <button class="info-close" id="privacy-close">Close</button>
         </div>
     </div>
 </body>
