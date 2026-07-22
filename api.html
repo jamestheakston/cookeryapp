@@ -1640,38 +1640,40 @@
 
         // Modal cannot be closed - removed close functionality
 
-        const apiKeyForm = document.getElementById('api-key-form');
+        // Wait for DOM to be fully loaded before setting up event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiKeyForm = document.getElementById('api-key-form');
 
-        if (apiKeyForm) {
-            apiKeyForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                // Get DOM elements
-                const formContainer = document.getElementById('form-container');
-                const reviewStatus = document.getElementById('review-status');
-                const statusIcon = document.getElementById('status-icon');
-                const statusTitle = document.getElementById('status-title');
-                const statusDescription = document.getElementById('status-description');
-                const checklistDiv = document.getElementById('automated-review-checklist');
-                
-                // Show automated review first
-                formContainer.style.display = 'none';
-                reviewStatus.classList.add('active');
-                statusIcon.classList.add('received');
-                statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
-                statusTitle.textContent = 'Automated Review';
-                statusDescription.textContent = 'Running automated checks on your application...';
-                // Timeline: Circle 1 active, label 1 active
-                document.getElementById('timeline-circle-1').classList.add('active');
-                document.getElementById('timeline-label-1').classList.add('active');
-                // Show checklist
-                checklistDiv.style.display = 'block';
-                lucide.createIcons();
-                
-                // Run automated review
-                runAutomatedReview();
-            });
-        }
+            if (apiKeyForm) {
+                apiKeyForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    // Get DOM elements
+                    const formContainer = document.getElementById('form-container');
+                    const reviewStatus = document.getElementById('review-status');
+                    const statusIcon = document.getElementById('status-icon');
+                    const statusTitle = document.getElementById('status-title');
+                    const statusDescription = document.getElementById('status-description');
+                    const checklistDiv = document.getElementById('automated-review-checklist');
+                    
+                    // Show automated review first
+                    formContainer.style.display = 'none';
+                    reviewStatus.classList.add('active');
+                    statusIcon.classList.add('received');
+                    statusIcon.innerHTML = '<i data-lucide="bot" style="width: 32px; height: 32px; animation: pulse 1.5s ease-in-out infinite;"></i>';
+                    statusTitle.textContent = 'Automated Review';
+                    statusDescription.textContent = 'Running automated checks on your application...';
+                    // Timeline: Circle 1 active, label 1 active
+                    document.getElementById('timeline-circle-1').classList.add('active');
+                    document.getElementById('timeline-label-1').classList.add('active');
+                    // Show checklist
+                    checklistDiv.style.display = 'block';
+                    lucide.createIcons();
+                    
+                    // Run automated review
+                    runAutomatedReview();
+                });
+            }
 
         // Kebab menu functionality
         const kebabToggle = document.getElementById('kebab-toggle');
@@ -1796,6 +1798,7 @@
         checkExistingApplication();
 
         lucide.createIcons();
+        }); // End DOMContentLoaded
     </script>
 
     <!-- Confirmation Dialog -->
