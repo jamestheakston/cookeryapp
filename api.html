@@ -691,6 +691,9 @@
             align-items: center;
             justify-content: center;
         }
+        .spinner i {
+            animation: spin 1s linear infinite;
+        }
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -890,7 +893,7 @@
     <!-- Loading Spinner -->
     <div id="loading-spinner" class="loading-spinner">
         <div class="spinner">
-            <i data-lucide="loader-circle" style="width: 40px; height: 40px; animation: spin 1s linear infinite;"></i>
+            <i data-lucide="loader-circle" style="width: 40px; height: 40px;"></i>
         </div>
         <span class="loading-text">Loading...</span>
     </div>
