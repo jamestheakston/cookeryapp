@@ -661,6 +661,41 @@
             width: 16px;
             height: 16px;
         }
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(250, 248, 245, 0.9);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .loading-spinner.show {
+            display: flex;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e7e5e4;
+            border-top-color: #ca9627;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .loading-text {
+            color: #78716c;
+            font-size: 14px;
+            font-weight: 500;
+        }
         .modal-close {
             background: none;
             border: none;
@@ -838,6 +873,12 @@
   -d '{"prompt": "chicken pasta", "quantity": 4}'</code></pre>
             </div>
         </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <span class="loading-text">Loading...</span>
     </div>
 
     <!-- API Key Request Modal -->
@@ -1051,6 +1092,11 @@
 
         // Check for existing application on page load
         async function checkExistingApplication() {
+            const loadingSpinner = document.getElementById('loading-spinner');
+            if (loadingSpinner) {
+                loadingSpinner.classList.add('show');
+            }
+
             const storedApp = localStorage.getItem('cookery_api_application');
             if (storedApp) {
                 const appData = JSON.parse(storedApp);
@@ -1058,6 +1104,9 @@
                 if (appData.status === 'RECEIVED' || appData.status === 'REVIEWING' || appData.status === 'ACCEPTED' || appData.status === 'DECLINED') {
                     localStorage.removeItem('cookery_api_application');
                     document.body.classList.add('no-scroll');
+                    if (loadingSpinner) {
+                        loadingSpinner.classList.remove('show');
+                    }
                     return;
                 }
                 applicationId = appData.id;
@@ -1080,6 +1129,9 @@
                         console.log('Supabase data not found or error, clearing localStorage');
                         localStorage.removeItem('cookery_api_application');
                         document.body.classList.add('no-scroll');
+                        if (loadingSpinner) {
+                            loadingSpinner.classList.remove('show');
+                        }
                         return;
                     }
                 } catch (error) {
@@ -1092,6 +1144,10 @@
             } else {
                 // Modal shows by default, prevent scrolling
                 document.body.classList.add('no-scroll');
+            }
+
+            if (loadingSpinner) {
+                loadingSpinner.classList.remove('show');
             }
         }
 
