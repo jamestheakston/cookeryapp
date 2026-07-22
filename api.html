@@ -1652,6 +1652,89 @@
         const privacyOverlay = document.getElementById('privacy-overlay');
         const privacyClose = document.getElementById('privacy-close');
 
+        // Privacy button - show privacy modal
+        if (viewStatusBtn && privacyOverlay) {
+            viewStatusBtn.addEventListener('click', () => {
+                if (kebabDropdown) kebabDropdown.classList.remove('show');
+                privacyOverlay.classList.add('show');
+            });
+        }
+
+        // About button - show about modal
+        if (aboutBtn && aboutOverlay) {
+            aboutBtn.addEventListener('click', () => {
+                if (kebabDropdown) kebabDropdown.classList.remove('show');
+                aboutOverlay.classList.add('show');
+            });
+        }
+
+        // End application button - show confirmation
+        if (endApplicationBtn && confirmationOverlay) {
+            endApplicationBtn.addEventListener('click', () => {
+                if (kebabDropdown) kebabDropdown.classList.remove('show');
+                confirmationOverlay.classList.add('show');
+            });
+        }
+
+        // Confirmation cancel button
+        if (confirmationCancel && confirmationOverlay) {
+            confirmationCancel.addEventListener('click', () => {
+                confirmationOverlay.classList.remove('show');
+            });
+        }
+
+        // Confirmation confirm button
+        if (confirmationConfirm && confirmationOverlay) {
+            confirmationConfirm.addEventListener('click', () => {
+                // Clear localStorage
+                localStorage.removeItem('cookery_api_application');
+                // Redirect to session closed page
+                window.location.href = '/api/sessionclosed.html';
+            });
+        }
+
+        // Close confirmation when clicking outside
+        if (confirmationOverlay) {
+            confirmationOverlay.addEventListener('click', (e) => {
+                if (e.target === confirmationOverlay) {
+                    confirmationOverlay.classList.remove('show');
+                }
+            });
+        }
+
+        // About modal close button
+        if (aboutClose && aboutOverlay) {
+            aboutClose.addEventListener('click', () => {
+                aboutOverlay.classList.remove('show');
+            });
+        }
+
+        // Close about modal when clicking outside
+        if (aboutOverlay) {
+            aboutOverlay.addEventListener('click', (e) => {
+                if (e.target === aboutOverlay) {
+                    aboutOverlay.classList.remove('show');
+                }
+            });
+        }
+
+        // Privacy modal close button
+        if (privacyClose && privacyOverlay) {
+            privacyClose.addEventListener('click', () => {
+                privacyOverlay.classList.remove('show');
+            });
+        }
+
+        // Close privacy modal when clicking outside
+        if (privacyOverlay) {
+            privacyOverlay.addEventListener('click', (e) => {
+                if (e.target === privacyOverlay) {
+                    privacyOverlay.classList.remove('show');
+                }
+            });
+        }
+
+        // Kebab dropdown toggle
         if (kebabToggle && kebabDropdown) {
             kebabToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
@@ -1664,88 +1747,6 @@
                     kebabDropdown.classList.remove('show');
                 }
             });
-
-            // Privacy button - show privacy modal
-            if (viewStatusBtn && privacyOverlay) {
-                viewStatusBtn.addEventListener('click', () => {
-                    kebabDropdown.classList.remove('show');
-                    privacyOverlay.classList.add('show');
-                });
-            }
-
-            // About button - show about modal
-            if (aboutBtn && aboutOverlay) {
-                aboutBtn.addEventListener('click', () => {
-                    kebabDropdown.classList.remove('show');
-                    aboutOverlay.classList.add('show');
-                });
-            }
-
-            // End application button - show confirmation
-            if (endApplicationBtn && confirmationOverlay) {
-                endApplicationBtn.addEventListener('click', () => {
-                    kebabDropdown.classList.remove('show');
-                    confirmationOverlay.classList.add('show');
-                });
-            }
-
-            // Confirmation cancel button
-            if (confirmationCancel && confirmationOverlay) {
-                confirmationCancel.addEventListener('click', () => {
-                    confirmationOverlay.classList.remove('show');
-                });
-            }
-
-            // Confirmation confirm button
-            if (confirmationConfirm && confirmationOverlay) {
-                confirmationConfirm.addEventListener('click', () => {
-                    // Clear localStorage
-                    localStorage.removeItem('cookery_api_application');
-                    // Redirect to session closed page
-                    window.location.href = '/api/sessionclosed.html';
-                });
-            }
-
-            // Close confirmation when clicking outside
-            if (confirmationOverlay) {
-                confirmationOverlay.addEventListener('click', (e) => {
-                    if (e.target === confirmationOverlay) {
-                        confirmationOverlay.classList.remove('show');
-                    }
-                });
-            }
-
-            // About modal close button
-            if (aboutClose && aboutOverlay) {
-                aboutClose.addEventListener('click', () => {
-                    aboutOverlay.classList.remove('show');
-                });
-            }
-
-            // Close about modal when clicking outside
-            if (aboutOverlay) {
-                aboutOverlay.addEventListener('click', (e) => {
-                    if (e.target === aboutOverlay) {
-                        aboutOverlay.classList.remove('show');
-                    }
-                });
-            }
-
-            // Privacy modal close button
-            if (privacyClose && privacyOverlay) {
-                privacyClose.addEventListener('click', () => {
-                    privacyOverlay.classList.remove('show');
-                });
-            }
-
-            // Close privacy modal when clicking outside
-            if (privacyOverlay) {
-                privacyOverlay.addEventListener('click', (e) => {
-                    if (e.target === privacyOverlay) {
-                        privacyOverlay.classList.remove('show');
-                    }
-                });
-            }
         }
 
         // Initialize on page load
