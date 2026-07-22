@@ -696,6 +696,30 @@
             font-size: 14px;
             font-weight: 500;
         }
+        .dropdown-item i {
+            transition: transform 0.3s ease;
+        }
+        .dropdown-item i.tick {
+            color: #16a34a;
+            transform: scale(1.2);
+        }
+        .btn-end-application {
+            background-color: transparent;
+            border: 2px solid #dc2626;
+            color: #dc2626;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+        .btn-end-application:hover {
+            background-color: #fef2f2;
+            border-color: #b91c1c;
+            color: #b91c1c;
+        }
         .modal-close {
             background: none;
             border: none;
@@ -899,6 +923,15 @@
                             <i data-lucide="info" style="width: 16px; height: 16px;"></i>
                             About
                         </button>
+                        <button class="dropdown-item" id="refresh-status-btn">
+                            <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                            Refresh Status
+                        </button>
+                        <div style="border-top: 1px solid #e7e5e4; margin: 4px 0;"></div>
+                        <button class="dropdown-item danger" id="end-application-btn">
+                            <i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>
+                            End Application
+                        </button>
                     </div>
                 </div>
             </div>
@@ -930,6 +963,7 @@
                             <div class="error-message" id="email-error">Valid email is required</div>
                         </div>
                         <div class="btn-group">
+                            <button type="button" class="btn-end-application" id="end-application-step-1">End Application</button>
                             <button type="button" class="btn-next" onclick="nextStep(1)">Next</button>
                         </div>
                     </div>
@@ -965,6 +999,7 @@
                             <div class="error-message" id="what-building-error">Project description must be at least 250 characters</div>
                         </div>
                         <div class="btn-group">
+                            <button type="button" class="btn-end-application" id="end-application-step-2">End Application</button>
                             <button type="button" class="btn-back" onclick="prevStep(2)">Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(2)">Next</button>
                         </div>
@@ -981,6 +1016,7 @@
                             <textarea id="description" name="description" placeholder="Any additional information about your project..."></textarea>
                         </div>
                         <div class="btn-group">
+                            <button type="button" class="btn-end-application" id="end-application-step-3">End Application</button>
                             <button type="button" class="btn-back" onclick="prevStep(3)">Back</button>
                             <button type="button" class="btn-next" onclick="nextStep(3)">Next</button>
                         </div>
@@ -994,6 +1030,7 @@
                             <p class="text-sm text-stone-500 mt-2">Help us understand your use case better by providing details about your integration plans.</p>
                         </div>
                         <div class="btn-group">
+                            <button type="button" class="btn-end-application" id="end-application-step-4">End Application</button>
                             <button type="button" class="btn-back" onclick="prevStep(4)">Back</button>
                             <button type="submit" class="btn-submit">Submit Request</button>
                         </div>
@@ -1037,10 +1074,6 @@
                         <span id="timeline-label-4" class="timeline-label">Decision</span>
                     </div>
                 </div>
-                <button id="refresh-status-btn" class="refresh-status-btn" style="margin-top: 20px; display: none;">
-                    <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
-                    Refresh Status
-                </button>
                 <div id="moderator-note" class="moderator-note" style="display: none;">
                     <h4>Moderator Note</h4>
                     <p id="moderator-note-text"></p>
@@ -1196,8 +1229,6 @@
                     document.getElementById('timeline-label-2').classList.add('active');
                     // Hide checklist
                     checklistDiv.style.display = 'none';
-                    // Show refresh button
-                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     break;
                 case 'IR':
                     statusIcon.classList.add('reviewing');
@@ -1215,8 +1246,6 @@
                     document.getElementById('timeline-label-3').classList.add('active');
                     // Hide checklist
                     checklistDiv.style.display = 'none';
-                    // Show refresh button
-                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     break;
                 case 'A':
                     statusIcon.classList.add('accepted');
@@ -1237,8 +1266,6 @@
                     document.getElementById('timeline-label-4').classList.add('active');
                     // Hide checklist
                     checklistDiv.style.display = 'none';
-                    // Show refresh button
-                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     if (moderatorNote) {
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
@@ -1265,8 +1292,6 @@
                     document.getElementById('timeline-circle-4').innerHTML = '<i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>';
                     // Hide checklist
                     checklistDiv.style.display = 'none';
-                    // Show refresh button
-                    document.getElementById('refresh-status-btn').style.display = 'flex';
                     if (moderatorNote) {
                         moderatorNoteDiv.style.display = 'block';
                         moderatorNoteText.textContent = moderatorNote;
@@ -1729,8 +1754,10 @@
         // Kebab menu functionality
         const kebabToggle = document.getElementById('kebab-toggle');
         const kebabDropdown = document.getElementById('kebab-dropdown');
+        const endApplicationBtn = document.getElementById('end-application-btn');
         const viewStatusBtn = document.getElementById('view-status-btn');
         const aboutBtn = document.getElementById('about-btn');
+        const refreshStatusBtn = document.getElementById('refresh-status-btn');
         const confirmationOverlay = document.getElementById('confirmation-overlay');
         const confirmationCancel = document.getElementById('confirmation-cancel');
         const confirmationConfirm = document.getElementById('confirmation-confirm');
@@ -1752,6 +1779,75 @@
             aboutBtn.addEventListener('click', () => {
                 if (kebabDropdown) kebabDropdown.classList.remove('show');
                 aboutOverlay.classList.add('show');
+            });
+        }
+
+        // Refresh status button - show tick icon animation
+        if (refreshStatusBtn) {
+            refreshStatusBtn.addEventListener('click', () => {
+                if (kebabDropdown) kebabDropdown.classList.remove('show');
+                
+                const icon = refreshStatusBtn.querySelector('i');
+                const originalIcon = icon.getAttribute('data-lucide');
+                
+                // Change to tick icon
+                icon.setAttribute('data-lucide', 'check');
+                icon.classList.add('tick');
+                lucide.createIcons();
+                
+                // Call checkExistingApplication
+                checkExistingApplication();
+                
+                // Revert to refresh icon after 2 seconds
+                setTimeout(() => {
+                    icon.setAttribute('data-lucide', 'refresh-cw');
+                    icon.classList.remove('tick');
+                    lucide.createIcons();
+                }, 2000);
+            });
+        }
+
+        // End application button - show confirmation
+        if (endApplicationBtn && confirmationOverlay) {
+            endApplicationBtn.addEventListener('click', () => {
+                if (kebabDropdown) kebabDropdown.classList.remove('show');
+                confirmationOverlay.classList.add('show');
+            });
+        }
+
+        // End application buttons on form steps
+        for (let i = 1; i <= 4; i++) {
+            const stepEndBtn = document.getElementById(`end-application-step-${i}`);
+            if (stepEndBtn && confirmationOverlay) {
+                stepEndBtn.addEventListener('click', () => {
+                    confirmationOverlay.classList.add('show');
+                });
+            }
+        }
+
+        // Confirmation cancel button
+        if (confirmationCancel && confirmationOverlay) {
+            confirmationCancel.addEventListener('click', () => {
+                confirmationOverlay.classList.remove('show');
+            });
+        }
+
+        // Confirmation confirm button
+        if (confirmationConfirm && confirmationOverlay) {
+            confirmationConfirm.addEventListener('click', () => {
+                // Clear localStorage
+                localStorage.removeItem('cookery_api_application');
+                // Redirect to session closed page
+                window.location.href = '/api/sessionclosed.html';
+            });
+        }
+
+        // Close confirmation when clicking outside
+        if (confirmationOverlay) {
+            confirmationOverlay.addEventListener('click', (e) => {
+                if (e.target === confirmationOverlay) {
+                    confirmationOverlay.classList.remove('show');
+                }
             });
         }
 
@@ -1799,14 +1895,6 @@
                 if (!kebabToggle.contains(e.target) && !kebabDropdown.contains(e.target)) {
                     kebabDropdown.classList.remove('show');
                 }
-            });
-        }
-
-        // Refresh status button on timeline
-        const refreshStatusBtn = document.getElementById('refresh-status-btn');
-        if (refreshStatusBtn) {
-            refreshStatusBtn.addEventListener('click', () => {
-                checkExistingApplication();
             });
         }
 
