@@ -858,11 +858,6 @@
                             <i data-lucide="info" style="width: 16px; height: 16px;"></i>
                             About
                         </button>
-                        <div style="border-top: 1px solid #e7e5e4; margin: 4px 0;"></div>
-                        <button class="dropdown-item danger" id="end-application-btn">
-                            <i data-lucide="x-circle" style="width: 16px; height: 16px;"></i>
-                            End Application
-                        </button>
                     </div>
                 </div>
             </div>
@@ -1678,7 +1673,6 @@
         // Kebab menu functionality
         const kebabToggle = document.getElementById('kebab-toggle');
         const kebabDropdown = document.getElementById('kebab-dropdown');
-        const endApplicationBtn = document.getElementById('end-application-btn');
         const viewStatusBtn = document.getElementById('view-status-btn');
         const aboutBtn = document.getElementById('about-btn');
         const confirmationOverlay = document.getElementById('confirmation-overlay');
@@ -1702,40 +1696,6 @@
             aboutBtn.addEventListener('click', () => {
                 if (kebabDropdown) kebabDropdown.classList.remove('show');
                 aboutOverlay.classList.add('show');
-            });
-        }
-
-        // End application button - show confirmation
-        if (endApplicationBtn && confirmationOverlay) {
-            endApplicationBtn.addEventListener('click', () => {
-                if (kebabDropdown) kebabDropdown.classList.remove('show');
-                confirmationOverlay.classList.add('show');
-            });
-        }
-
-        // Confirmation cancel button
-        if (confirmationCancel && confirmationOverlay) {
-            confirmationCancel.addEventListener('click', () => {
-                confirmationOverlay.classList.remove('show');
-            });
-        }
-
-        // Confirmation confirm button
-        if (confirmationConfirm && confirmationOverlay) {
-            confirmationConfirm.addEventListener('click', () => {
-                // Clear localStorage
-                localStorage.removeItem('cookery_api_application');
-                // Redirect to session closed page
-                window.location.href = '/api/sessionclosed.html';
-            });
-        }
-
-        // Close confirmation when clicking outside
-        if (confirmationOverlay) {
-            confirmationOverlay.addEventListener('click', (e) => {
-                if (e.target === confirmationOverlay) {
-                    confirmationOverlay.classList.remove('show');
-                }
             });
         }
 
