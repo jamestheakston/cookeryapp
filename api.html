@@ -1628,19 +1628,21 @@
             if (endApplicationBtn) {
                 endApplicationBtn.addEventListener('click', () => {
                     kebabDropdown.classList.remove('show');
-                    confirmationOverlay.classList.add('show');
+                    if (confirmationOverlay) {
+                        confirmationOverlay.classList.add('show');
+                    }
                 });
             }
 
             // Confirmation cancel button
-            if (confirmationCancel) {
+            if (confirmationCancel && confirmationOverlay) {
                 confirmationCancel.addEventListener('click', () => {
                     confirmationOverlay.classList.remove('show');
                 });
             }
 
             // Confirmation confirm button
-            if (confirmationConfirm) {
+            if (confirmationConfirm && confirmationOverlay) {
                 confirmationConfirm.addEventListener('click', () => {
                     // Clear localStorage
                     localStorage.removeItem('cookery_api_application');
@@ -1650,11 +1652,13 @@
             }
 
             // Close confirmation when clicking outside
-            confirmationOverlay.addEventListener('click', (e) => {
-                if (e.target === confirmationOverlay) {
-                    confirmationOverlay.classList.remove('show');
-                }
-            });
+            if (confirmationOverlay) {
+                confirmationOverlay.addEventListener('click', (e) => {
+                    if (e.target === confirmationOverlay) {
+                        confirmationOverlay.classList.remove('show');
+                    }
+                });
+            }
         }
 
         // Initialize on page load
